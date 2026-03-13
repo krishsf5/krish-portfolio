@@ -1,0 +1,200 @@
+@import 'tailwindcss';
+@import '../../vendor/livewire/flux/dist/flux.css';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/livewire/flux/stubs/**/*.blade.php';
+@source '../../app/Livewire/**/*.php';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    --color-navy-950: #080a14;
+    --color-navy-900: #0c0f1e;
+    --color-navy-800: #0c1120;
+    --color-navy-700: #111d30;
+    --color-navy-600: #19243a;
+    --color-navy-500: #1a2540;
+    --color-navy-400: #2a364e;
+    --color-navy-300: #3d4f6e;
+    --color-navy-200: #4a5878;
+    --color-navy-100: #8899bb;
+
+    --color-zinc-50: #fafafa;
+    --color-zinc-100: #f5f5f5;
+    --color-zinc-200: #e5e5e5;
+    --color-zinc-300: #d4d4d4;
+    --color-zinc-400: #a3a3a3;
+    --color-zinc-500: #737373;
+    --color-zinc-600: #525252;
+    --color-zinc-700: #404040;
+    --color-zinc-800: #262626;
+    --color-zinc-900: #171717;
+    --color-zinc-950: #0a0a0a;
+
+    --color-accent: var(--color-zinc-800);
+    --color-accent-content: var(--color-zinc-800);
+    --color-accent-foreground: var(--color-white);
+}
+
+@layer theme {
+    .dark {
+        --color-accent: var(--color-white);
+        --color-accent-content: var(--color-white);
+        --color-accent-foreground: var(--color-zinc-800);
+    }
+}
+
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+
+    html {
+        font-family: var(--font-sans);
+    }
+
+    body {
+        @apply bg-gray-50 dark:bg-navy-950 text-slate-800 dark:text-slate-200;
+    }
+}
+
+@layer components {
+
+    /* Buttons */
+    .btn-primary {
+        @apply bg-cyan-400 text-navy-950 font-semibold text-xs px-4 py-2 rounded-lg
+               hover:bg-cyan-300 active:scale-95 transition-all cursor-pointer border-0
+               tracking-wide font-mono;
+    }
+    .btn-edit {
+        @apply text-yellow-400 border border-yellow-400/30 text-[10px] px-2.5 py-1.5
+               rounded-md bg-transparent hover:bg-yellow-400/10 hover:border-yellow-400
+               transition-all cursor-pointer font-semibold tracking-wide font-mono;
+    }
+    .btn-delete {
+        @apply text-red-400 border border-red-400/30 text-[10px] px-2.5 py-1.5
+               rounded-md bg-transparent hover:bg-red-400/10 hover:border-red-400
+               transition-all cursor-pointer font-semibold tracking-wide font-mono;
+    }
+    .btn-ghost {
+        @apply text-slate-400 dark:text-navy-100 border border-slate-200 dark:border-navy-500
+               text-[10px] px-2.5 py-1.5 rounded-md bg-transparent
+               hover:text-slate-600 dark:hover:text-slate-300
+               hover:border-slate-400 dark:hover:border-navy-300
+               transition-all cursor-pointer font-semibold tracking-wide font-mono;
+    }
+
+    /* Cards */
+    .card {
+        @apply bg-white dark:bg-navy-800
+               border border-slate-200 dark:border-navy-600
+               rounded-xl transition-colors;
+    }
+    .card-hover {
+        @apply card hover:border-slate-300 dark:hover:border-cyan-900/60 transition-all;
+    }
+
+    /* Stat Cards */
+    .stat-card {
+        @apply bg-slate-100 dark:bg-navy-800
+               border border-slate-200 dark:border-navy-600
+               rounded-xl p-4;
+    }
+    .stat-label {
+        @apply text-[10px] font-mono tracking-widest
+               text-slate-400 dark:text-navy-300 mb-1.5;
+    }
+    .stat-value {
+        @apply text-2xl font-medium text-slate-800 dark:text-slate-100;
+    }
+
+    /* Forms */
+    .form-input {
+        @apply w-full bg-slate-50 dark:bg-navy-800
+               border border-slate-200 dark:border-navy-600
+               rounded-lg px-3 py-2 text-xs font-mono
+               text-slate-800 dark:text-slate-200
+               placeholder-slate-400 dark:placeholder-navy-300
+               focus:outline-none focus:ring-1
+               focus:ring-cyan-400/40 focus:border-cyan-400/50
+               transition-all;
+    }
+    .form-label {
+        @apply block text-[10px] font-mono tracking-widest
+               text-slate-400 dark:text-navy-300 mb-1.5;
+    }
+    .form-textarea {
+        @apply form-input resize-none;
+    }
+    .form-select {
+        @apply form-input cursor-pointer;
+    }
+
+    /* Nav */
+    .nav-link {
+        @apply px-3.5 py-1.5 rounded-lg text-xs font-mono tracking-wide
+               text-slate-400 dark:text-navy-200
+               hover:text-slate-700 dark:hover:text-slate-200
+               hover:bg-slate-100 dark:hover:bg-navy-700
+               border border-transparent transition-all cursor-pointer bg-transparent;
+    }
+    .nav-link-active {
+        @apply px-3.5 py-1.5 rounded-lg text-xs font-mono tracking-wide
+               text-cyan-600 dark:text-cyan-400
+               bg-cyan-50 dark:bg-cyan-950/30
+               border border-cyan-200 dark:border-cyan-900/60 cursor-pointer;
+    }
+
+    /* Badges */
+    .badge-live {
+        @apply inline-flex items-center gap-1.5 text-[10px] font-mono tracking-widest
+               px-2.5 py-1 rounded bg-cyan-50 dark:bg-cyan-950/20
+               text-cyan-600 dark:text-cyan-400
+               border border-cyan-200 dark:border-cyan-900/50;
+    }
+    .badge-wip {
+        @apply inline-flex items-center gap-1.5 text-[10px] font-mono tracking-widest
+               px-2.5 py-1 rounded bg-orange-50 dark:bg-orange-950/20
+               text-orange-500 dark:text-orange-400
+               border border-orange-200 dark:border-orange-900/50;
+    }
+    .badge-hidden {
+        @apply inline-flex items-center gap-1.5 text-[10px] font-mono tracking-widest
+               px-2.5 py-1 rounded bg-slate-100 dark:bg-navy-700
+               text-slate-400 dark:text-navy-200
+               border border-slate-200 dark:border-navy-500;
+    }
+
+    /* Skill Bars */
+    .skill-bar-track {
+        @apply flex-1 h-1.5 bg-slate-100 dark:bg-navy-700 rounded-full overflow-hidden;
+    }
+    .skill-bar-fill {
+        @apply h-full rounded-full bg-cyan-400 transition-all duration-500;
+    }
+    .skill-bar-fill-low {
+        @apply h-full rounded-full bg-orange-400 transition-all duration-500;
+    }
+
+    /* Divider */
+    .divider {
+        @apply border-0 border-t border-slate-100 dark:border-navy-600 my-5;
+    }
+
+    /* Upload Zone */
+    .upload-zone {
+        @apply border-2 border-dashed border-slate-200 dark:border-navy-500
+               rounded-xl p-12 text-center cursor-pointer
+               hover:border-slate-300 dark:hover:border-cyan-900/60
+               hover:bg-slate-50 dark:hover:bg-navy-800/50
+               transition-all;
+    }
+}
