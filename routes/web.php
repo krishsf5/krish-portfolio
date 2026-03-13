@@ -7,10 +7,10 @@ use App\Livewire\Skills\SkillManager;
 use App\Livewire\About\AboutManager;
 use App\Livewire\Resume\ResumeManager;
 
-// Public portfolio
+// Public Home
 Route::get('/', function () {
     return view('welcome');
-})->name('portfolio');
+})->name('home');
 
 // Dashboard CMS — protected
 Route::middleware(['auth', 'verified'])->group(function () {
