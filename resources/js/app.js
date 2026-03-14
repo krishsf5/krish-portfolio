@@ -46,3 +46,13 @@ document.addEventListener("mousemove", (e) => {
     glow.style.left = e.clientX + "px";
     glow.style.top = e.clientY + "px";
 });
+
+import { Sortable } from "@shopify/draggable";
+
+document.addEventListener("DOMContentLoaded", () => {
+    const containers = document.querySelectorAll(".tech-list");
+
+    new Sortable(containers, {
+        draggable: ".tech-card",
+    });
+});

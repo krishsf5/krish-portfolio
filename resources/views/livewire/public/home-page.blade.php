@@ -173,8 +173,7 @@
     </section>
 
     <!-- SKILLS -->
-
-    <section id="skills" class="py-28 bg-slate-100 dark:bg-[#0c1120] reveal">
+    <section id="skills" class="py-28 bg-slate-100 dark:bg-[#0c1120]">
 
         <div class="max-w-7xl mx-auto px-8">
 
@@ -182,38 +181,99 @@
                 Tech Stack
             </h2>
 
-            <div class="grid md:grid-cols-2 gap-10">
+            <div class="grid md:grid-cols-4 gap-8" id="tech-board">
 
-                @foreach ($skills as $skill)
-                    <div>
 
-                        <div class="flex justify-between text-sm mb-2">
+                <!-- FRONTEND -->
 
-                            <span class="text-slate-700 dark:text-slate-300">
+                <div class="tech-column">
+
+                    <h3 class="text-cyan-500 mb-4 font-semibold">
+                        Frontend
+                    </h3>
+
+                    <div class="tech-list">
+
+                        @foreach ($skills->where('category', 'Frontend') as $skill)
+                            <div class="tech-card">
                                 {{ $skill->name }}
-                            </span>
-
-                            <span class="text-slate-500">
-                                {{ $skill->proficiency }}%
-                            </span>
-
-                        </div>
-
-                        <div class="h-2 rounded bg-slate-200 dark:bg-slate-800 overflow-hidden">
-
-                            <div class="h-full bg-cyan-500 transition-all duration-700"
-                                style="width: {{ $skill->proficiency }}%"></div>
-
-                        </div>
+                            </div>
+                        @endforeach
 
                     </div>
-                @endforeach
+
+                </div>
+
+
+                <!-- BACKEND -->
+
+                <div class="tech-column">
+
+                    <h3 class="text-cyan-500 mb-4 font-semibold">
+                        Backend
+                    </h3>
+
+                    <div class="tech-list">
+
+                        @foreach ($skills->where('category', 'Backend') as $skill)
+                            <div class="tech-card">
+                                {{ $skill->name }}
+                            </div>
+                        @endforeach
+
+                    </div>
+
+                </div>
+
+
+                <!-- DATABASE -->
+
+                <div class="tech-column">
+
+                    <h3 class="text-cyan-500 mb-4 font-semibold">
+                        Database
+                    </h3>
+
+                    <div class="tech-list">
+
+                        @foreach ($skills->where('category', 'Database') as $skill)
+                            <div class="tech-card">
+                                {{ $skill->name }}
+                            </div>
+                        @endforeach
+
+                    </div>
+
+                </div>
+
+
+                <!-- TOOLS -->
+
+                <div class="tech-column">
+
+                    <h3 class="text-cyan-500 mb-4 font-semibold">
+                        Tools
+                    </h3>
+
+                    <div class="tech-list">
+
+                        @foreach ($skills->where('category', 'Tools') as $skill)
+                            <div class="tech-card">
+                                {{ $skill->name }}
+                            </div>
+                        @endforeach
+
+                    </div>
+
+                </div>
+
 
             </div>
 
         </div>
 
     </section>
+
 
     <!-- ABOUT -->
 
