@@ -409,9 +409,9 @@ body {
 .card-hover {
     transition: all 0.25s ease;
 }
-
 .card-hover:hover {
-    transform: translateY(-6px);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 }
 
 .reveal {

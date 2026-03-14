@@ -33,15 +33,16 @@
 
     </div>
 
+    <hr class="divider">
 
     {{-- PROJECTS --}}
     <div>
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-bold text-cyan-400">
+        <div class="flex items-center justify-center mb-6">
+            <h2 class="text-5xl font-bold text-cyan-400">
                 Projects
             </h2>
         </div>
-
+        <hr class="divider mb-5">
         <livewire:projects.project-manager />
     </div>
 

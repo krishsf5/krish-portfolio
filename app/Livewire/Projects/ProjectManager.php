@@ -5,12 +5,18 @@ namespace App\Livewire\Projects;
 use App\Models\Project;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class ProjectManager extends Component
 {
-    public bool $showModal  = false;
+    use WithFileUploads;
+
+    public bool $showModal = false;
+
     public bool $showDelete = false;
-    public ?int $editingId  = null;
+
+    public ?int $editingId = null;
+
     public ?int $deletingId = null;
 
     #[Validate('required|string|max:255')]
@@ -31,6 +37,9 @@ class ProjectManager extends Component
     #[Validate('required|in:live,wip,hidden')]
     public string $status = 'wip';
 
+    #[Validate('nullable|image|max:2048')]
+    public $thumbnail;
+
     public function create(): void
     {
         $this->resetForm();
@@ -41,14 +50,14 @@ class ProjectManager extends Component
     {
         $project = Project::findOrFail($id);
 
-        $this->editingId   = $id;
-        $this->title       = $project->title;
+        $this->editingId = $id;
+        $this->title = $project->title;
         $this->description = $project->description ?? '';
-        $this->live_url    = $project->live_url ?? '';
-        $this->repo_url    = $project->repo_url ?? '';
-        $this->tags        = is_array($project->tags) ? implode(', ', $project->tags) : '';
-        $this->status      = $project->status;
-        $this->showModal   = true;
+        $this->live_url = $project->live_url ?? '';
+        $this->repo_url = $project->repo_url ?? '';
+        $this->tags = is_array($project->tags) ? implode(', ', $project->tags) : '';
+        $this->status = $project->status;
+        $this->showModal = true;
     }
 
     public function save(): void
@@ -56,22 +65,33 @@ class ProjectManager extends Component
         $this->validate();
 
         $data = [
-            'title'       => trim($this->title),
+            'title' => trim($this->title),
             'description' => trim($this->description) ?: null,
-            'live_url'    => trim($this->live_url) ?: null,
-            'repo_url'    => trim($this->repo_url) ?: null,
-            'tags'        => $this->parseTags($this->tags),
-            'status'      => $this->status,
-            'is_visible'  => $this->status !== 'hidden',
+            'live_url' => trim($this->live_url) ?: null,
+            'repo_url' => trim($this->repo_url) ?: null,
+            'tags' => $this->parseTags($this->tags),
+            'status' => $this->status,
+            'is_visible' => $this->status !== 'hidden',
         ];
 
+        if ($this->thumbnail) {
+            $data['thumbnail'] = $this->thumbnail->store('projects', 'public');
+        }
+
         if ($this->editingId) {
+
             Project::findOrFail($this->editingId)->update($data);
+
             session()->flash('success', 'Project updated successfully.');
+
         } else {
+
             $data['sort_order'] = Project::max('sort_order') + 1;
+
             Project::create($data);
+
             session()->flash('success', 'Project created successfully.');
+
         }
 
         $this->closeModal();
@@ -102,26 +122,30 @@ class ProjectManager extends Component
 
     public function closeModal(): void
     {
-        $this->showModal  = false;
+        $this->showModal = false;
         $this->showDelete = false;
         $this->resetForm();
     }
 
     private function resetForm(): void
     {
-        $this->title       = '';
+
+        $this->thumbnail = null;
+        $this->title = '';
         $this->description = '';
-        $this->live_url    = '';
-        $this->repo_url    = '';
-        $this->tags        = '';
-        $this->status      = 'wip';
-        $this->editingId   = null;
+        $this->live_url = '';
+        $this->repo_url = '';
+        $this->tags = '';
+        $this->status = 'wip';
+        $this->editingId = null;
         $this->resetValidation();
     }
 
     private function parseTags(string $raw): array
     {
-        if (empty(trim($raw))) return [];
+        if (empty(trim($raw))) {
+            return [];
+        }
 
         return array_values(
             array_filter(

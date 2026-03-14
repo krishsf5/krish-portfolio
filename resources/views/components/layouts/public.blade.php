@@ -31,15 +31,15 @@
 
                 <nav class="flex items-center gap-10 text-sm font-mono">
 
-                    <a href="#projects" class="nav-link  text-[#080a14]">
+                    <a href="/#projects" class="nav-link  text-[#080a14]">
                         Projects
                     </a>
 
-                    <a href="#skills" class="nav-link  text-[#080a14]">
+                    <a href="/#skills" class="nav-link  text-[#080a14]">
                         Skills
                     </a>
 
-                    <a href="#about" class="nav-link  text-[#080a14]">
+                    <a href="/#about" class="nav-link  text-[#080a14]">
                         About
                     </a>
 

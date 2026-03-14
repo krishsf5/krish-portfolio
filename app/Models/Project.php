@@ -14,7 +14,10 @@ class Project extends Model
         'thumbnail',
         'live_url',
         'repo_url',
-        'tags'
+        'tags',
+        'status',
+        'is_visible',
+        'sort_order',
     ];
 
     protected static function boot()
@@ -22,13 +25,13 @@ class Project extends Model
         parent::boot();
 
         static::creating(function ($project) {
-            if (!$project->slug) {
+            if (! $project->slug) {
                 $project->slug = Str::slug($project->title);
             }
         });
     }
 
     protected $casts = [
-        'tags' => 'array'
+        'tags' => 'array',
     ];
 }
