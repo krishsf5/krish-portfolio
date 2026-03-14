@@ -4,12 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Dashboard;
 use App\Livewire\Skills\SkillManager;
 use App\Livewire\About\AboutManager;
+use App\Livewire\Public\HomePage;
 use App\Livewire\Resume\ResumeManager;
 
-// Public Home
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', HomePage::class)->name('home');
 
 // Dashboard CMS — protected
 Route::middleware(['auth', 'verified'])->group(function () {
