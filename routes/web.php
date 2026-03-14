@@ -6,8 +6,11 @@ use App\Livewire\Skills\SkillManager;
 use App\Livewire\About\AboutManager;
 use App\Livewire\Public\HomePage;
 use App\Livewire\Resume\ResumeManager;
+use App\Livewire\Public\ProjectShow;
 
+//public routes
 Route::get('/', HomePage::class)->name('home');
+Route::get('/project/{slug}', ProjectShow::class)->name('project.show');
 
 // Dashboard CMS — protected
 Route::middleware(['auth', 'verified'])->group(function () {

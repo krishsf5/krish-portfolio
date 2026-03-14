@@ -114,54 +114,56 @@
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
 
                 @foreach ($projects as $project)
-                    <div
-                        class="group rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1120] overflow-hidden transition duration-300 hover:-translate-y-2 hover:shadow-xl">
+                    <a href="{{ route('project.show', $project->slug) }}">
+                        <div
+                            class="group rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1120] overflow-hidden transition duration-300 hover:-translate-y-2 hover:shadow-xl">
 
-                        <div class="aspect-video bg-slate-200 dark:bg-slate-800"></div>
+                            <div class="aspect-video bg-slate-200 dark:bg-slate-800"></div>
 
-                        <div class="p-6">
+                            <div class="p-6">
 
-                            <h3
-                                class="text-lg font-semibold text-slate-900 dark:text-white group-hover:text-cyan-500 transition">
-                                {{ $project->title }}
-                            </h3>
+                                <h3
+                                    class="text-lg font-semibold text-slate-900 dark:text-white group-hover:text-cyan-500 transition">
+                                    {{ $project->title }}
+                                </h3>
 
-                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-4">
-                                {{ $project->description }}
-                            </p>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-4">
+                                    {{ $project->description }}
+                                </p>
 
-                            <div class="flex flex-wrap gap-2 mb-4">
+                                <div class="flex flex-wrap gap-2 mb-4">
 
-                                @foreach ($project->tags ?? [] as $tag)
-                                    <span
-                                        class="text-xs px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                                        {{ $tag }}
-                                    </span>
-                                @endforeach
+                                    @foreach ($project->tags ?? [] as $tag)
+                                        <span
+                                            class="text-xs px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                                            {{ $tag }}
+                                        </span>
+                                    @endforeach
 
-                            </div>
+                                </div>
 
-                            <div class="flex gap-3">
+                                <div class="flex gap-3">
 
-                                @if ($project->live_url)
-                                    <a href="{{ $project->live_url }}" target="_blank"
-                                        class="text-sm px-3 py-1 rounded bg-cyan-600 text-white hover:bg-cyan-500 transition">
+                                    @if ($project->live_url)
+                                        <a href="{{ $project->live_url }}" target="_blank"
+                                            class="text-sm px-3 py-1 rounded bg-cyan-600 text-white hover:bg-cyan-500 transition">
 
-                                        Live </a>
-                                @endif
+                                            Live </a>
+                                    @endif
 
-                                @if ($project->repo_url)
-                                    <a href="{{ $project->repo_url }}" target="_blank"
-                                        class="text-sm px-3 py-1 rounded border border-slate-300 dark:border-slate-700 hover:border-cyan-500 transition">
+                                    @if ($project->repo_url)
+                                        <a href="{{ $project->repo_url }}" target="_blank"
+                                            class="text-sm px-3 py-1 rounded border border-slate-300 dark:border-slate-700 hover:border-cyan-500 transition">
 
-                                        GitHub </a>
-                                @endif
+                                            GitHub </a>
+                                    @endif
+
+                                </div>
 
                             </div>
 
                         </div>
-
-                    </div>
+                    </a>
                 @endforeach
 
             </div>
