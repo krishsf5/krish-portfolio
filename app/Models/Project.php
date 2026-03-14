@@ -19,7 +19,7 @@ class Project extends Model
     ];
 
     protected $casts = [
-        'tags'       => AsArray::class,
+        'tags'       => 'array',
         'is_visible' => 'boolean',
     ];
 }

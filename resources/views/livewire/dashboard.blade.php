@@ -1,33 +1,48 @@
-<div>
-    {{-- Page Header --}}
-    <div class="flex items-end justify-between mb-6">
-        <div>
-            <h1 class="text-xl font-medium text-slate-800 dark:text-slate-100 tracking-tight">Projects</h1>
-            <p class="text-xs font-mono text-slate-400 dark:text-navy-300 mt-1">Manage what appears on your portfolio</p>
+<div class="space-y-8 max-w-5xl">
+
+    {{-- STATS --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+
+        <div class="stat-card p-10">
+            <p class="text-sm text-slate-400">Total Projects</p>
+            <h3 class="text-5xl font-bold text-cyan-400 mt-3">
+                {{ $totalProjects }}
+            </h3>
         </div>
-        <button class="btn-primary">+ New Project</button>
+
+        <div class="stat-card p-10">
+            <p class="text-sm text-slate-400">Live Projects</p>
+            <h3 class="text-5xl font-bold text-green-400 mt-3">
+                {{ $liveProjects }}
+            </h3>
+        </div>
+
+        <div class="stat-card p-10">
+            <p class="text-sm text-slate-400">WIP Projects</p>
+            <h3 class="text-5xl font-bold text-orange-400 mt-3">
+                {{ $wipProjects }}
+            </h3>
+        </div>
+
+        <div class="stat-card p-10">
+            <p class="text-sm text-slate-400">Hidden Projects</p>
+            <h3 class="text-5xl font-bold text-red-400 mt-3">
+                {{ $hiddenProjects }}
+            </h3>
+        </div>
+
     </div>
 
-    {{-- Stat Cards --}}
-    <div class="grid grid-cols-4 gap-3 mb-6">
-        <div class="stat-card">
-            <div class="stat-label">TOTAL</div>
-            <div class="stat-value">{{ $totalProjects }} <span class="text-xs text-slate-400 dark:text-navy-300 font-mono">projects</span></div>
+
+    {{-- PROJECTS --}}
+    <div>
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-cyan-400">
+                Projects
+            </h2>
         </div>
-        <div class="stat-card">
-            <div class="stat-label">LIVE</div>
-            <div class="stat-value text-cyan-500 dark:text-cyan-400">{{ $liveProjects }} <span class="text-xs font-mono">visible</span></div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">IN PROGRESS</div>
-            <div class="stat-value text-orange-400">{{ $wipProjects }} <span class="text-xs font-mono">wip</span></div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">HIDDEN</div>
-            <div class="stat-value text-slate-400">{{ $hiddenProjects }} <span class="text-xs font-mono">hidden</span></div>
-        </div>
+
+        <livewire:projects.project-manager />
     </div>
 
-    {{-- Projects Component --}}
-    @livewire('projects.project-manager')
 </div>

@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Dashboard;
-use App\Livewire\Projects\ProjectManager;
 use App\Livewire\Skills\SkillManager;
 use App\Livewire\About\AboutManager;
 use App\Livewire\Resume\ResumeManager;
