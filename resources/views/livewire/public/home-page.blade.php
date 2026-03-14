@@ -195,14 +195,23 @@
                     <div class="tech-list">
 
                         @foreach ($skills->where('category', 'Frontend') as $skill)
-                            <div class="tech-card">
-                                {{ $skill->name }}
+                            <div class="tech-card flex items-center gap-3">
+
+                                @if ($skill->icon)
+                                    <i class="{{ $skill->icon }} text-2xl"></i>
+                                @endif
+
+                                <span>
+                                    {{ $skill->name }}
+                                </span>
+
                             </div>
                         @endforeach
 
                     </div>
 
                 </div>
+
 
 
                 <!-- BACKEND -->
@@ -216,14 +225,23 @@
                     <div class="tech-list">
 
                         @foreach ($skills->where('category', 'Backend') as $skill)
-                            <div class="tech-card">
-                                {{ $skill->name }}
+                            <div class="tech-card flex items-center gap-3">
+
+                                @if ($skill->icon)
+                                    <i class="{{ $skill->icon }} text-2xl"></i>
+                                @endif
+
+                                <span>
+                                    {{ $skill->name }}
+                                </span>
+
                             </div>
                         @endforeach
 
                     </div>
 
                 </div>
+
 
 
                 <!-- DATABASE -->
@@ -237,14 +255,23 @@
                     <div class="tech-list">
 
                         @foreach ($skills->where('category', 'Database') as $skill)
-                            <div class="tech-card">
-                                {{ $skill->name }}
+                            <div class="tech-card flex items-center gap-3">
+
+                                @if ($skill->icon)
+                                    <i class="{{ $skill->icon }} text-2xl"></i>
+                                @endif
+
+                                <span>
+                                    {{ $skill->name }}
+                                </span>
+
                             </div>
                         @endforeach
 
                     </div>
 
                 </div>
+
 
 
                 <!-- TOOLS -->
@@ -258,8 +285,16 @@
                     <div class="tech-list">
 
                         @foreach ($skills->where('category', 'Tools') as $skill)
-                            <div class="tech-card">
-                                {{ $skill->name }}
+                            <div class="tech-card flex items-center gap-3">
+
+                                @if ($skill->icon)
+                                    <i class="{{ $skill->icon }} text-2xl"></i>
+                                @endif
+
+                                <span>
+                                    {{ $skill->name }}
+                                </span>
+
                             </div>
                         @endforeach
 
@@ -269,7 +304,6 @@
 
 
             </div>
-
         </div>
 
     </section>

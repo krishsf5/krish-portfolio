@@ -9,6 +9,7 @@ class Skill extends Model
     protected $fillable = [
         'name',
         'category',
-        'proficiency'
+        'proficiency',
+        'icon',
     ];
 }
