@@ -15,3 +15,34 @@ document.addEventListener("DOMContentLoaded", () => {
         }, i * 120);
     });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const revealElements = document.querySelectorAll(".reveal");
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("revealed");
+                    observer.unobserve(entry.target);
+                }
+            });
+        },
+        {
+            threshold: 0.15,
+        },
+    );
+
+    revealElements.forEach((el) => observer.observe(el));
+});
+
+/* cursor glow */
+
+const glow = document.createElement("div");
+glow.className = "cursor-glow";
+document.body.appendChild(glow);
+
+document.addEventListener("mousemove", (e) => {
+    glow.style.left = e.clientX + "px";
+    glow.style.top = e.clientY + "px";
+});

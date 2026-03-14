@@ -406,10 +406,35 @@ body {
         color: #020617;
     }
 }
-.card-hover{
-    transition: all .25s ease;
+.card-hover {
+    transition: all 0.25s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-6px);
+}
+
+.reveal{
+    opacity:0;
+    transform:translateY(30px);
+    transition:all .7s ease;
     }
 
-    .card-hover:hover{
-    transform: translateY(-6px);
+    .revealed{
+    opacity:1;
+    transform:translateY(0);
+    }
+
+    .cursor-glow{
+    position:fixed;
+    width:220px;
+    height:220px;
+    background:radial-gradient(circle, rgba(34,211,238,.18) 0%, transparent 70%);
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+    z-index:0;
+    }
+
+    .dark .cursor-glow{
+    background:radial-gradient(circle, rgba(34,211,238,.25) 0%, transparent 70%);
     }

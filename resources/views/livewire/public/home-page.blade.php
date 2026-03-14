@@ -2,7 +2,7 @@
 
     <!-- HERO -->
 
-    <section class="pt-32 pb-28">
+    <section class="pt-32 pb-28 reveal">
 
         <div class="max-w-7xl mx-auto px-8">
 
@@ -48,7 +48,7 @@
 
     <!-- FEATURED PROJECT -->
 
-    <section class="py-24 bg-slate-100 dark:bg-[#0c1120]">
+    <section class="py-24 bg-slate-100 dark:bg-[#0c1120]  reveal">
 
         <div class="max-w-7xl mx-auto px-8">
 
@@ -103,7 +103,7 @@
 
     <!-- PROJECTS -->
 
-    <section id="projects" class="py-28">
+    <section id="projects" class="py-28  reveal">
 
         <div class="max-w-7xl mx-auto px-8">
 
@@ -172,7 +172,7 @@
 
     <!-- SKILLS -->
 
-    <section id="skills" class="py-28 bg-slate-100 dark:bg-[#0c1120]">
+    <section id="skills" class="py-28 bg-slate-100 dark:bg-[#0c1120] reveal">
 
         <div class="max-w-7xl mx-auto px-8">
 
@@ -215,7 +215,7 @@
 
     <!-- ABOUT -->
 
-    <section id="about" class="py-28">
+    <section id="about" class="py-28 reveal">
 
         <div class="max-w-4xl mx-auto px-8 text-center">
 
