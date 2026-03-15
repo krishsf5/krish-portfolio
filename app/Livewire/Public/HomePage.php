@@ -30,6 +30,6 @@ class HomePage extends Component
     public function render()
     {
         return view('livewire.public.home-page')
-        ->layout('components.layouts.public');
+            ->layout('components.layouts.public');
     }
 }

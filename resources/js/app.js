@@ -1,56 +1,214 @@
-import { Sortable } from "@shopify/draggable";
-import "./bootstrap";
-import "../css/app.css";
+import { Sortable } from "@shopify/draggable"
+
+import "./bootstrap"
+import "../css/app.css"
+
+/* --------------------------------------------------
+   INITIALIZE AFTER DOM READY
+-------------------------------------------------- */
 
 document.addEventListener("DOMContentLoaded", () => {
-    const elements = document.querySelectorAll(".card");
 
-    elements.forEach((el, i) => {
-        el.style.opacity = 0;
-        el.style.transform = "translateY(20px)";
+    initCardAnimations()
+
+    initScrollReveal()
+
+    initCursorGlow()
+
+    initTechStackDrag()
+
+    initTechParallax()
+
+    initProjectTilt()
+
+})
+
+/* --------------------------------------------------
+   CARD ENTRANCE ANIMATION
+-------------------------------------------------- */
+
+function initCardAnimations() {
+
+    const cards = document.querySelectorAll(".card")
+
+    cards.forEach((card, index) => {
+
+        card.style.opacity = "0"
+        card.style.transform = "translateY(20px)"
 
         setTimeout(() => {
-            el.style.transition = "all .6s ease";
-            el.style.opacity = 1;
-            el.style.transform = "translateY(0)";
-        }, i * 120);
-    });
-});
 
-document.addEventListener("DOMContentLoaded", () => {
-    const revealElements = document.querySelectorAll(".reveal");
+            card.style.transition = "all .6s ease"
+            card.style.opacity = "1"
+            card.style.transform = "translateY(0)"
+
+        }, index * 120)
+
+    })
+
+}
+
+/* --------------------------------------------------
+   SCROLL REVEAL
+-------------------------------------------------- */
+
+function initScrollReveal() {
+
+    const revealElements = document.querySelectorAll(".reveal")
+
+    if (!revealElements.length) return
 
     const observer = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add("revealed");
-                    observer.unobserve(entry.target);
-                }
-            });
+
+        (entries, observer) => {
+
+            entries.forEach(entry => {
+
+                if (!entry.isIntersecting) return
+
+                entry.target.classList.add("revealed")
+
+                observer.unobserve(entry.target)
+
+            })
+
         },
+
         {
-            threshold: 0.15,
-        },
-    );
+            threshold: 0.15
+        }
 
-    revealElements.forEach((el) => observer.observe(el));
-});
+    )
 
-/* cursor glow */
-const glow = document.createElement("div");
-glow.className = "cursor-glow";
-document.body.appendChild(glow);
+    revealElements.forEach(el => observer.observe(el))
 
-document.addEventListener("mousemove", (e) => {
-    glow.style.left = e.clientX + "px";
-    glow.style.top = e.clientY + "px";
-});
+}
 
-document.addEventListener("DOMContentLoaded", () => {
-    const containers = document.querySelectorAll(".tech-list");
+/* --------------------------------------------------
+   CURSOR GLOW (GPU optimized)
+-------------------------------------------------- */
 
-    new Sortable(containers, {
-        draggable: ".tech-card",
-    });
-});
+function initCursorGlow() {
+
+    const glow = document.createElement("div")
+
+    glow.className = "cursor-glow"
+
+    document.body.appendChild(glow)
+
+    let mouseX = 0
+    let mouseY = 0
+
+    document.addEventListener("mousemove", (e) => {
+
+        mouseX = e.clientX
+        mouseY = e.clientY
+
+    })
+
+    function animateGlow() {
+
+        glow.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`
+
+        requestAnimationFrame(animateGlow)
+
+    }
+
+    animateGlow()
+
+}
+
+/* --------------------------------------------------
+   TECH STACK DRAGGING
+-------------------------------------------------- */
+
+function initTechStackDrag() {
+
+    const columns = document.querySelectorAll(".tech-list")
+
+    if (!columns.length) return
+
+    columns.forEach(column => {
+
+        new Sortable(column, {
+
+            draggable: ".tech-card",
+
+            mirror: {
+                constrainDimensions: true
+            },
+
+            plugins: [],
+
+            delay: 100
+
+        })
+
+    })
+
+}
+
+/* --------------------------------------------------
+   TECH STACK PARALLAX
+-------------------------------------------------- */
+
+function initTechParallax(){
+
+    const columns=document.querySelectorAll(".tech-column")
+
+    window.addEventListener("scroll",()=>{
+
+        const scrollY=window.scrollY
+
+        columns.forEach((col,index)=>{
+
+            const speed=(index+1)*0.05
+
+            col.style.transform=`translateY(${scrollY*speed*0.2}px)`
+
+        })
+
+    })
+
+}
+
+/* --------------------------------------------------
+   PROJECT CARD TILT INTERACTION
+-------------------------------------------------- */
+
+function initProjectTilt() {
+
+    const cards = document.querySelectorAll(".project-card")
+
+    if (!cards.length) return
+
+    cards.forEach(card => {
+
+        card.addEventListener("mousemove", e => {
+
+            const rect = card.getBoundingClientRect()
+
+            const x = e.clientX - rect.left
+            const y = e.clientY - rect.top
+
+            const centerX = rect.width / 2
+            const centerY = rect.height / 2
+
+            const rotateX = -(y - centerY) / 15
+            const rotateY = (x - centerX) / 15
+
+            card.style.transform =
+                `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`
+
+        })
+
+        card.addEventListener("mouseleave", () => {
+
+            card.style.transform =
+                "perspective(900px) rotateX(0) rotateY(0) scale(1)"
+
+        })
+
+    })
+
+}
