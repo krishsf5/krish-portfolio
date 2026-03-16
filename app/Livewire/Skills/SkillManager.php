@@ -11,6 +11,6 @@ class SkillManager extends Component
     public function render()
     {
         return view('livewire.skills.skill-manager')
-               ->layout('components.layouts.dashboard');
+               ->layout('layouts.dashboard');
     }
 }

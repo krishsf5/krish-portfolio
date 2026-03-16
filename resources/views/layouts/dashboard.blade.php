@@ -13,7 +13,7 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#080a14] dark:text-white">
+    <body class="dashboard min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#080a14] dark:text-white">
         <div class="flex min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#080a14] dark:text-white">
             <aside class="w-64 border-r border-slate-200 bg-white/80 flex flex-col transition-colors duration-300 dark:border-slate-800 dark:bg-[#0c1120]">
                 <div class="h-16 flex items-center px-6 border-b border-slate-200 transition-colors duration-300 dark:border-slate-800">
@@ -23,10 +23,27 @@
                 </div>
 
                 <nav class="flex-1 px-4 py-6 space-y-2">
-                    <a href="/dashboard" class="nav-link">Dashboard</a>
-                    <a href="/dashboard/skills" class="nav-link">Skills</a>
-                    <a href="/dashboard/about" class="nav-link">About</a>
-                    <a href="/dashboard/resume" class="nav-link">Resume</a>
+
+                    <a href="/dashboard"
+                       class="nav-link {{ request()->routeIs('dashboard') ? 'bg-slate-200 text-cyan-400 dark:bg-slate-800' : '' }}">
+                        Dashboard
+                    </a>
+
+                    <a href="/dashboard/skills"
+                       class="nav-link {{ request()->routeIs('skills') ? 'bg-slate-200 text-cyan-400 dark:bg-slate-800' : '' }}">
+                        Skills
+                    </a>
+
+                    <a href="/dashboard/about"
+                       class="nav-link {{ request()->routeIs('about') ? 'bg-slate-200 text-cyan-400 dark:bg-slate-800' : '' }}">
+                        About
+                    </a>
+
+                    <a href="/dashboard/resume"
+                       class="nav-link {{ request()->routeIs('resume') ? 'bg-slate-200 text-cyan-400 dark:bg-slate-800' : '' }}">
+                        Resume
+                    </a>
+
                 </nav>
             </aside>
 

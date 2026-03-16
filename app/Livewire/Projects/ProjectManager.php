@@ -156,7 +156,7 @@ class ProjectManager extends Component
 
     public function render()
     {
-        return view('livewire.projects.project-manager', [
+        return view('livewire.admin.projects.project-manager', [
             'projects' => Project::orderBy('sort_order')->orderByDesc('created_at')->get(),
         ]);
     }

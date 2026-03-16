@@ -23,11 +23,11 @@ class Dashboard extends Component
         $hiddenProjects = Project::where('is_visible', false)
             ->count();
 
-        return view('livewire.dashboard', [
+        return view('pages.dashboard', [
             'totalProjects' => $totalProjects,
             'liveProjects' => $liveProjects,
             'wipProjects' => $wipProjects,
             'hiddenProjects' => $hiddenProjects,
-        ])->layout('components.layouts.dashboard');
+        ])->layout('layouts.dashboard');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Public;
+namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Project;
@@ -29,7 +29,7 @@ class HomePage extends Component
 
     public function render()
     {
-        return view('livewire.public.home-page')
-            ->layout('components.layouts.public');
+        return view('pages.home-page')
+            ->layout('layouts.public');
     }
 }

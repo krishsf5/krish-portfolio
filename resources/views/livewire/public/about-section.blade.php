@@ -13,7 +13,7 @@
 
         <div class="grid lg:grid-cols-2 gap-16 items-center">
 
-            <div class="relative flex justify-center">
+            <div class="relative flex">
 
                 <div class="relative group">
 

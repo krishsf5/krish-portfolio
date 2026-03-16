@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Dashboard;
 use App\Livewire\Skills\SkillManager;
 use App\Livewire\About\AboutManager;
-use App\Livewire\Public\HomePage;
+use App\Livewire\HomePage;
 use App\Livewire\Resume\ResumeManager;
 // use App\Livewire\Public\ProjectShow;
 

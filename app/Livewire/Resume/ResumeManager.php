@@ -11,6 +11,6 @@ class ResumeManager extends Component
     public function render()
     {
         return view('livewire.resume.resume-manager')
-               ->layout('components.layouts.dashboard');
+               ->layout('layouts.dashboard');
     }
 }
