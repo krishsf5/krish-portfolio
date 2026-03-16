@@ -6,6 +6,7 @@ use App\Livewire\Skills\SkillManager;
 use App\Livewire\About\AboutManager;
 use App\Livewire\HomePage;
 use App\Livewire\Resume\ResumeManager;
+use App\Livewire\Projects\CreateProject;
 // use App\Livewire\Public\ProjectShow;
 
 //public routes
@@ -15,6 +16,9 @@ Route::get('/', HomePage::class)->name('home');
 // Dashboard CMS — protected
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
+    Route::get('/dashboard/projects/create', CreateProject::class)
+    ->name('projects.create');
+
     Route::get('/dashboard/skills', SkillManager::class)->name('skills');
     Route::get('/dashboard/about', AboutManager::class)->name('about');
     Route::get('/dashboard/resume', ResumeManager::class)->name('resume');
