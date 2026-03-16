@@ -1,4 +1,4 @@
-<section id="skills" class="py-36 reveal relative overflow-hidden">
+<section id="skills" class="py-10 reveal relative overflow-hidden">
 
     <div class="max-w-7xl mx-auto px-8">
 

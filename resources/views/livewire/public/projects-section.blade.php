@@ -1,4 +1,4 @@
-<section id="projects" class="py-32 reveal">
+<section id="projects" class="py-10 reveal">
 
     <div class="max-w-7xl mx-auto px-8">
 
@@ -9,17 +9,14 @@
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
 
             @foreach ($projects as $project)
-
                 <div class="project-card group relative rounded-xl overflow-hidden">
 
                     <!-- IMAGE -->
                     @if ($project->thumbnail)
-                        <img
-                            src="/storage/{{ $project->thumbnail }}"
-                            class="project-image"
-                        />
+                        <img src="/storage/{{ $project->thumbnail }}" class="project-image" />
                     @else
-                        <div class="project-image flex items-center justify-center bg-slate-200 dark:bg-zinc-800 text-slate-500">
+                        <div
+                            class="project-image flex items-center justify-center bg-slate-200 dark:bg-zinc-800 text-slate-500">
                             No Image
                         </div>
                     @endif
@@ -56,21 +53,13 @@
                             <div class="flex gap-3 pt-3">
 
                                 @if ($project->live_url)
-                                    <a
-                                        href="{{ $project->live_url }}"
-                                        target="_blank"
-                                        class="project-btn"
-                                    >
+                                    <a href="{{ $project->live_url }}" target="_blank" class="project-btn">
                                         Live
                                     </a>
                                 @endif
 
                                 @if ($project->repo_url)
-                                    <a
-                                        href="{{ $project->repo_url }}"
-                                        target="_blank"
-                                        class="project-btn-outline"
-                                    >
+                                    <a href="{{ $project->repo_url }}" target="_blank" class="project-btn-outline">
                                         Code
                                     </a>
                                 @endif
@@ -82,7 +71,6 @@
                     </div>
 
                 </div>
-
             @endforeach
 
         </div>
