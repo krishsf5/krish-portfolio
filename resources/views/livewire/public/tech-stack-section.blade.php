@@ -18,7 +18,7 @@
                     <div class="tech-list">
 
                         @foreach ($skills->where('category', $category) as $skill)
-                            <div class="tech-card">
+                            <div class="tech-card" data-skill-id="{{ $skill->id }}">
 
                                 <div class="tech-icon">
                                     <i class="{{ $skill->icon }}"></i>

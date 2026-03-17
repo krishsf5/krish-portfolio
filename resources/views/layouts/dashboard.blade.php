@@ -12,6 +12,7 @@
 >
     <head>
         @include('partials.head')
+        @livewireStyles
     </head>
     <body class="dashboard min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#080a14] dark:text-white">
         <div class="flex min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#080a14] dark:text-white">
@@ -107,6 +108,7 @@
             </div>
         </div>
 
+        @livewireScripts
         @fluxScripts
     </body>
 </html>
