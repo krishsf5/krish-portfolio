@@ -11,5 +11,13 @@ class Skill extends Model
         'category',
         'proficiency',
         'icon',
+        'is_visible',
+        'sort_order',
+    ];
+
+    protected $casts = [
+        'is_visible' => 'boolean',
+        'proficiency' => 'integer',
+        'sort_order' => 'integer',
     ];
 }
