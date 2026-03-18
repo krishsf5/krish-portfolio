@@ -75,6 +75,12 @@ class ProjectManager extends Component
         ];
 
         if ($this->thumbnail) {
+            if ($this->editingId) {
+                $old = Project::find($this->editingId)?->thumbnail;
+                if ($old) {
+                    \Storage::disk('public')->delete($old);
+                }
+            }
             $data['thumbnail'] = $this->thumbnail->store('projects', 'public');
         }
 

@@ -55,18 +55,18 @@ class AboutManager extends Component
         $about = About::first();
 
         if ($about) {
-            $this->aboutId          = $about->id;
-            $this->full_name        = $about->full_name;
-            $this->title            = $about->title;
-            $this->bio              = $about->bio ?? '';
-            $this->location         = $about->location ?? '';
-            $this->email            = $about->email ?? '';
-            $this->github_url       = $about->github_url ?? '';
-            $this->linkedin_url     = $about->linkedin_url ?? '';
-            $this->website_url      = $about->website_url ?? '';
+            $this->aboutId = $about->id;
+            $this->full_name = $about->full_name;
+            $this->title = $about->title;
+            $this->bio = $about->bio ?? '';
+            $this->location = $about->location ?? '';
+            $this->email = $about->email ?? '';
+            $this->github_url = $about->github_url ?? '';
+            $this->linkedin_url = $about->linkedin_url ?? '';
+            $this->website_url = $about->website_url ?? '';
             $this->years_experience = $about->years_experience ?? 0;
-            $this->availability     = $about->availability;
-            $this->existingAvatar   = $about->avatar;
+            $this->availability = $about->availability;
+            $this->existingAvatar = $about->avatar;
         }
     }
 
@@ -75,19 +75,22 @@ class AboutManager extends Component
         $this->validate();
 
         $data = [
-            'full_name'        => trim($this->full_name),
-            'title'            => trim($this->title),
-            'bio'              => trim($this->bio) ?: null,
-            'location'         => trim($this->location) ?: null,
-            'email'            => trim($this->email) ?: null,
-            'github_url'       => trim($this->github_url) ?: null,
-            'linkedin_url'     => trim($this->linkedin_url) ?: null,
-            'website_url'      => trim($this->website_url) ?: null,
+            'full_name' => trim($this->full_name),
+            'title' => trim($this->title),
+            'bio' => trim($this->bio) ?: null,
+            'location' => trim($this->location) ?: null,
+            'email' => trim($this->email) ?: null,
+            'github_url' => trim($this->github_url) ?: null,
+            'linkedin_url' => trim($this->linkedin_url) ?: null,
+            'website_url' => trim($this->website_url) ?: null,
             'years_experience' => $this->years_experience,
-            'availability'     => $this->availability,
+            'availability' => $this->availability,
         ];
 
         if ($this->avatar) {
+            if ($this->existingAvatar) {
+                \Storage::disk('public')->delete($this->existingAvatar);
+            }
             $data['avatar'] = $this->avatar->store('about', 'public');
         }
 
@@ -107,6 +110,6 @@ class AboutManager extends Component
     public function render()
     {
         return view('livewire.admin.about.about-manager')
-               ->layout('layouts.dashboard');
+            ->layout('layouts.dashboard');
     }
 }
