@@ -26,12 +26,22 @@ class Project extends Model
 
         static::creating(function ($project) {
             if (! $project->slug) {
-                $project->slug = Str::slug($project->title);
+                $base = Str::slug($project->title);
+
+                $slug = $base;
+                $i = 1;
+                while (static::where('slug', $slug)->exists()) {
+                    $slug = "{$base}-{$i}";
+                    $i++;
+                }
+                $project->slug = $slug;
             }
         });
     }
 
     protected $casts = [
         'tags' => 'array',
+        'is_visible' => 'boolean',
+        'sort_order' => 'integer',
     ];
 }
