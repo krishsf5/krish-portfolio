@@ -3,6 +3,7 @@
 namespace App\Livewire\Skills;
 
 use App\Models\Skill;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -11,9 +12,11 @@ use Livewire\Component;
 class SkillManager extends Component
 {
     public bool $showModal = false;
+
     public bool $showDelete = false;
 
     public ?int $editingId = null;
+
     public ?int $deletingId = null;
 
     #[Validate('required|string|max:100')]
@@ -40,12 +43,12 @@ class SkillManager extends Component
     {
         $skill = Skill::findOrFail($id);
 
-        $this->editingId    = $id;
-        $this->name         = $skill->name;
-        $this->category     = $skill->category;
-        $this->proficiency  = $skill->proficiency;
-        $this->icon         = $skill->icon ?? '';
-        $this->is_visible   = $skill->is_visible;
+        $this->editingId = $id;
+        $this->name = $skill->name;
+        $this->category = $skill->category;
+        $this->proficiency = $skill->proficiency;
+        $this->icon = $skill->icon ?? '';
+        $this->is_visible = $skill->is_visible;
 
         $this->showModal = true;
     }
@@ -55,11 +58,11 @@ class SkillManager extends Component
         $this->validate();
 
         $data = [
-            'name'        => trim($this->name),
-            'category'    => $this->category,
+            'name' => trim($this->name),
+            'category' => $this->category,
             'proficiency' => $this->proficiency,
-            'icon'        => trim($this->icon) ?: null,
-            'is_visible'  => $this->is_visible,
+            'icon' => trim($this->icon) ?: null,
+            'is_visible' => $this->is_visible,
         ];
 
         if ($this->editingId) {
@@ -83,30 +86,34 @@ class SkillManager extends Component
     public function moveUp(int $id): void
     {
         $skill = Skill::findOrFail($id);
-        $prev  = Skill::where('category', $skill->category)
-                      ->where('sort_order', '<', $skill->sort_order)
-                      ->orderByDesc('sort_order')
-                      ->first();
+        $prev = Skill::where('category', $skill->category)
+            ->where('sort_order', '<', $skill->sort_order)
+            ->orderByDesc('sort_order')
+            ->first();
 
         if ($prev) {
-            [$skill->sort_order, $prev->sort_order] = [$prev->sort_order, $skill->sort_order];
-            $skill->save();
-            $prev->save();
+            DB::transaction(function () use ($skill, $prev) {
+                [$skill->sort_order, $prev->sort_order] = [$prev->sort_order, $skill->sort_order];
+                $skill->save();
+                $prev->save();
+            });
         }
     }
 
     public function moveDown(int $id): void
     {
         $skill = Skill::findOrFail($id);
-        $next  = Skill::where('category', $skill->category)
-                      ->where('sort_order', '>', $skill->sort_order)
-                      ->orderBy('sort_order')
-                      ->first();
+        $next = Skill::where('category', $skill->category)
+            ->where('sort_order', '>', $skill->sort_order)
+            ->orderBy('sort_order')
+            ->first();
 
         if ($next) {
-            [$skill->sort_order, $next->sort_order] = [$next->sort_order, $skill->sort_order];
-            $skill->save();
-            $next->save();
+            DB::transaction(function () use ($skill, $next) {
+                [$skill->sort_order, $next->sort_order] = [$next->sort_order, $skill->sort_order];
+                $skill->save();
+                $next->save();
+            });
         }
     }
 
@@ -129,30 +136,30 @@ class SkillManager extends Component
 
     public function closeModal(): void
     {
-        $this->showModal  = false;
+        $this->showModal = false;
         $this->showDelete = false;
         $this->resetForm();
     }
 
     private function resetForm(): void
     {
-        $this->editingId   = null;
-        $this->name        = '';
-        $this->category    = 'Frontend';
+        $this->editingId = null;
+        $this->name = '';
+        $this->category = 'Frontend';
         $this->proficiency = 5;
-        $this->icon        = '';
-        $this->is_visible  = true;
+        $this->icon = '';
+        $this->is_visible = true;
         $this->resetValidation();
     }
 
     public function render()
     {
         $skills = Skill::orderBy('category')
-                       ->orderBy('sort_order')
-                       ->get()
-                       ->groupBy('category');
+            ->orderBy('sort_order')
+            ->get()
+            ->groupBy('category');
 
         return view('livewire.admin.skills.skill-manager', compact('skills'))
-               ->layout('layouts.dashboard');
+            ->layout('layouts.dashboard');
     }
 }
