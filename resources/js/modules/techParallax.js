@@ -1,23 +1,27 @@
 /* --------------------------------------------------
-   TECH STACK PARALLAX
+   TECH STACK PARALLAX — rAF throttled
 -------------------------------------------------- */
 
-export default function initTechParallax(){
+export default function initTechParallax() {
+    const columns = document.querySelectorAll(".tech-column");
 
-    const columns=document.querySelectorAll(".tech-column")
+    if (!columns.length) return;
 
-    window.addEventListener("scroll",()=>{
+    let ticking = false;
 
-        const scrollY=window.scrollY
+    window.addEventListener("scroll", () => {
+        if (ticking) return;
 
-        columns.forEach((col,index)=>{
+        ticking = true;
 
-            const speed=(index+1)*0.05
+        requestAnimationFrame(() => {
+            const scrollY = window.scrollY;
 
-            col.style.transform=`translateY(${scrollY*speed*0.2}px)`
+            columns.forEach((col, index) => {
+                col.style.transform = `translateY(${scrollY * (index + 1) * 0.01}px)`;
+            });
 
-        })
-
-    })
-
+            ticking = false;
+        });
+    });
 }

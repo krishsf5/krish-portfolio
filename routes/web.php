@@ -3,7 +3,6 @@
 use App\Livewire\About\AboutManager;
 use App\Livewire\Dashboard;
 use App\Livewire\HomePage;
-use App\Livewire\Projects\CreateProject;
 use App\Livewire\Public\ProjectShow;
 use App\Livewire\Resume\ResumeManager;
 use App\Livewire\Skills\SkillManager;
@@ -18,8 +17,6 @@ Route::get('/project/{slug}', ProjectShow::class)->name('project.show');
 // Dashboard CMS — protected
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
-    Route::get('/dashboard/projects/create', CreateProject::class)
-        ->name('projects.create');
 
     Route::get('/dashboard/skills', SkillManager::class)->name('skills');
     Route::get('/dashboard/about', AboutManager::class)->name('about');

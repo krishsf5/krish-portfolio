@@ -2,29 +2,35 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
+use App\Models\About;
 use App\Models\Project;
 use App\Models\Skill;
-use App\Models\About;
+use Illuminate\Support\Facades\Cache;
+use Livewire\Component;
 
 class HomePage extends Component
 {
     public $projects;
+
     public $skills;
+
     public $about;
 
-    public function mount()
+    public function mount(): void
     {
-        $this->projects = Project::where('is_visible', true)
-            ->where('status','!=','hidden')
+        $this->projects = Cache::remember('public.projects', 300, fn () => Project::where('is_visible', true)
+            ->where('status', '!=', 'hidden')
             ->orderBy('sort_order')
-            ->get();
+            ->get()
+        );
 
-        $this->skills = Skill::where('is_visible', true)
+        $this->skills = Cache::remember('public.skills', 300, fn () => Skill::where('is_visible', true)
             ->orderBy('sort_order')
-            ->get();
+            ->get()
+        );
 
-        $this->about = About::first();
+        $this->about = Cache::remember('public.about', 300, fn () => About::first()
+        );
     }
 
     public function render()

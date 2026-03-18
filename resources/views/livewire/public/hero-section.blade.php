@@ -11,7 +11,6 @@
             <div
                 class="absolute w-[800px] h-[800px] bg-cyan-400/30 blur-[180px] rounded-full top-[-250px] left-[-250px] animate-blob">
             </div>
-
             <div
                 class="absolute w-[700px] h-[700px] bg-blue-400/30 blur-[180px] rounded-full bottom-[-200px] right-[-200px] animate-blob animation-delay-2">
             </div>
@@ -57,9 +56,9 @@
                         View Projects
                     </a>
 
-                    <a href="https://github.com" target="_blank"
+                    <a href="https://gitlab.com/krishtbhojwani" target="_blank"
                         class="btn-ghost text-lg px-8 py-4 hover:scale-105 transition">
-                        GitHub
+                        GitLab
                     </a>
 
                 </div>

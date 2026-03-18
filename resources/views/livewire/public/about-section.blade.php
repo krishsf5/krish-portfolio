@@ -1,4 +1,4 @@
-<section id="about" class="relative py-10 overflow-hidden">
+<section id="about" class="relative py-10 overflow-hidden reveal">
 
     <!-- background glow -->
     <div class="absolute inset-0 -z-10 overflow-hidden">

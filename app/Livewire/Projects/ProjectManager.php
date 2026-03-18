@@ -3,6 +3,7 @@
 namespace App\Livewire\Projects;
 
 use App\Models\Project;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -101,6 +102,7 @@ class ProjectManager extends Component
         }
 
         $this->closeModal();
+        Cache::forget('public.projects');
     }
 
     public function toggleVisibility(int $id): void
@@ -125,6 +127,8 @@ class ProjectManager extends Component
 
         $this->showDelete = false;
         $this->deletingId = null;
+
+        Cache::forget('public.projects');
     }
 
     public function closeModal(): void

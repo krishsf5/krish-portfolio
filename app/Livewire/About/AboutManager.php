@@ -3,6 +3,7 @@
 namespace App\Livewire\About;
 
 use App\Models\About;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -102,6 +103,7 @@ class AboutManager extends Component
         }
 
         $this->existingAvatar = About::find($this->aboutId)?->avatar;
+        Cache::forget('public.about');
         $this->avatar = null;
 
         session()->flash('success', 'About section saved.');

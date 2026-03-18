@@ -11,23 +11,18 @@ class Dashboard extends Component
 {
     public function render()
     {
-        $totalProjects = Project::count();
-
-        $liveProjects = Project::where('status', 'live')
-            ->where('is_visible', true)
-            ->count();
-
-        $wipProjects = Project::where('status', 'wip')
-            ->count();
-
-        $hiddenProjects = Project::where('is_visible', false)
-            ->count();
+        $counts = Project::selectRaw("
+        COUNT(*) as total,
+        SUM(status = 'live' AND is_visible = 1) as live,
+        SUM(status = 'wip') as wip,
+        SUM(is_visible = 0) as hidden
+    ")->first();
 
         return view('pages.dashboard', [
-            'totalProjects' => $totalProjects,
-            'liveProjects' => $liveProjects,
-            'wipProjects' => $wipProjects,
-            'hiddenProjects' => $hiddenProjects,
+            'totalProjects' => $counts->total,
+            'liveProjects' => $counts->live,
+            'wipProjects' => $counts->wip,
+            'hiddenProjects' => $counts->hidden,
         ])->layout('layouts.dashboard');
     }
 }

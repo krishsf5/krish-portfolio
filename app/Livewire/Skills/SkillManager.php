@@ -3,6 +3,7 @@
 namespace App\Livewire\Skills;
 
 use App\Models\Skill;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -75,12 +76,15 @@ class SkillManager extends Component
         }
 
         $this->closeModal();
+        Cache::forget('public.skills');
     }
 
     public function toggleVisibility(int $id): void
     {
         $skill = Skill::findOrFail($id);
         $skill->update(['is_visible' => ! $skill->is_visible]);
+
+        Cache::forget('public.skills');
     }
 
     public function moveUp(int $id): void
@@ -132,6 +136,8 @@ class SkillManager extends Component
 
         $this->showDelete = false;
         $this->deletingId = null;
+
+        Cache::forget('public.skills');
     }
 
     public function closeModal(): void
