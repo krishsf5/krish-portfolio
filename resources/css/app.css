@@ -274,6 +274,15 @@
     flex-direction:column;
     gap:14px;
 }
+.tech-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #475569;
+}
+
+.dark .tech-name {
+    color: #cbd5e1;
+}
 
 /* card */
 
@@ -588,6 +597,17 @@
 }
 
 /* Admin - Dashboard */
+@utility stat-card {
+    background: linear-gradient(
+        180deg,
+        rgba(17, 24, 39, 0.9),
+        rgba(12, 17, 32, 0.9)
+    );
+    border: 1px solid rgba(71, 85, 105, 0.25);
+    border-radius: 14px;
+    transition: 0.25s;
+}
+
 @utility nav-link {
     display: block;
     width: 100%;
