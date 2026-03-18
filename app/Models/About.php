@@ -18,9 +18,11 @@ class About extends Model
         'years_experience',
         'availability',
         'avatar',
+        'stats',
     ];
 
     protected $casts = [
         'years_experience' => 'integer',
+        'stats' => 'array',
     ];
 }

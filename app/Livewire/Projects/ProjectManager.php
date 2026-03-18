@@ -103,6 +103,7 @@ class ProjectManager extends Component
 
         $this->closeModal();
         Cache::forget('public.projects');
+        Cache::forget('public.projects.live_count');
     }
 
     public function toggleVisibility(int $id): void
@@ -110,6 +111,7 @@ class ProjectManager extends Component
         Project::where('id', $id)->update([
             'is_visible' => \DB::raw('NOT is_visible'),
         ]);
+        Cache::forget('public.projects.live_count');
     }
 
     public function confirmDelete(int $id): void
@@ -129,6 +131,7 @@ class ProjectManager extends Component
         $this->deletingId = null;
 
         Cache::forget('public.projects');
+        Cache::forget('public.projects.live_count');
     }
 
     public function closeModal(): void
