@@ -25,10 +25,10 @@ class ProjectManager extends Component
     #[Validate('nullable|string')]
     public string $description = '';
 
-    #[Validate('nullable|max:255')]
+    #[Validate('nullable|url|max:255')]
     public string $live_url = '';
 
-    #[Validate('nullable|max:255')]
+    #[Validate('nullable|url|max:255')]
     public string $repo_url = '';
 
     #[Validate('nullable|string|max:500')]
@@ -105,8 +105,9 @@ class ProjectManager extends Component
 
     public function toggleVisibility(int $id): void
     {
-        $project = Project::findOrFail($id);
-        $project->update(['is_visible' => ! $project->is_visible]);
+        Project::where('id', $id)->update([
+            'is_visible' => \DB::raw('NOT is_visible'),
+        ]);
     }
 
     public function confirmDelete(int $id): void
