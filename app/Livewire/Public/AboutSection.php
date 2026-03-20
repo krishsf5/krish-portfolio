@@ -27,6 +27,19 @@ class AboutSection extends Component
 
     public function render()
     {
-        return view('livewire.public.about-section');
+        $about = Cache::remember('public.about', 300, fn () =>
+            About::first()
+        );
+
+        $liveProjectCount = Cache::remember('public.projects.live_count', 300, fn () =>
+            Project::where('status', 'live')
+                   ->where('is_visible', true)
+                   ->count()
+        );
+
+        return view('livewire.public.about-section', [
+            'about'            => $about,
+            'liveProjectCount' => $liveProjectCount,
+        ]);
     }
 }

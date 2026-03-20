@@ -1,55 +1,61 @@
-<section id="about" class="relative py-10 overflow-hidden reveal">
+<section id="about" class="relative py-32 overflow-hidden">
 
-    <!-- background glow -->
+    <!-- Background glows -->
     <div class="absolute inset-0 -z-10 overflow-hidden">
-        <div class="absolute w-[600px] h-[600px] bg-cyan-400/20 blur-[160px] rounded-full top-[-200px] right-[-200px]">
-        </div>
-        <div
-            class="absolute w-[500px] h-[500px] bg-purple-500/20 blur-[160px] rounded-full bottom-[-200px] left-[-200px]">
-        </div>
+        <div class="absolute w-[600px] h-[600px] bg-cyan-400/15 blur-[160px] rounded-full top-[-200px] right-[-100px]"></div>
+        <div class="absolute w-[500px] h-[500px] bg-purple-500/15 blur-[160px] rounded-full bottom-[-200px] left-[-100px]"></div>
     </div>
 
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
 
-        <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <!-- SECTION LABEL -->
+        <div class="flex items-center gap-4 mb-20" data-about-label>
+            <span class="text-xs font-mono tracking-[0.2em] uppercase text-cyan-400">02 — About</span>
+            <div class="flex-1 h-px bg-gradient-to-r from-cyan-400/40 to-transparent"></div>
+        </div>
 
-            <!-- PHOTO CARD -->
-            <div class="relative flex">
+        <div class="grid lg:grid-cols-2 gap-20 items-center">
+
+            <!-- PHOTO SIDE -->
+            <div class="relative flex justify-center lg:justify-start" data-about-photo>
+
+                <!-- Decorative rings -->
+                <div class="absolute w-[460px] h-[460px] rounded-full border border-cyan-400/10 animate-spin-slow top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block"></div>
+                <div class="absolute w-[380px] h-[380px] rounded-full border border-purple-400/10 animate-spin-slow-reverse top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block"></div>
+
                 <div class="relative group">
 
-                    <div
-                        class="absolute inset-0 rounded-3xl bg-gradient-to-r from-cyan-400 to-blue-500 blur-2xl opacity-30 group-hover:opacity-50 transition">
-                    </div>
+                    <!-- Glow -->
+                    <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-cyan-400/30 to-purple-500/30 blur-3xl opacity-60 group-hover:opacity-90 transition-opacity duration-700 scale-105"></div>
 
-                    <div class="relative bg-[#0c1120] border border-white/10 rounded-3xl p-8 backdrop-blur w-[420px]">
+                    <!-- Card -->
+                    <div class="relative bg-[#0c1120] border border-white/10 rounded-3xl p-7 backdrop-blur-sm overflow-hidden">
 
-                        @if ($about?->avatar)
-                            <img src="/storage/{{ $about->avatar }}" alt="{{ $about->full_name }}"
-                                class="w-[360px] h-[360px] object-cover rounded-2xl mx-auto" />
-                        @else
-                            <div
-                                class="w-[360px] h-[360px] rounded-2xl mx-auto bg-slate-800 flex items-center justify-center text-slate-500 text-sm">
-                                No photo
-                            </div>
-                        @endif
+                        <!-- Corner accents -->
+                        <div class="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-cyan-400/50 rounded-tl-3xl"></div>
+                        <div class="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-purple-400/50 rounded-br-3xl"></div>
 
-                        <!-- AVAILABILITY STATUS -->
-                        <div class="flex justify-center mt-6">
-                            @if ($about?->availability === 'available')
-                                <span
-                                    class="flex items-center gap-2 text-sm px-5 py-2 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
+                        <img
+                            src="{{ $about?->avatar ? '/storage/'.$about->avatar : '/storage/krish.jpeg' }}"
+                            alt="{{ $about?->full_name ?? 'Krish Bhojwani' }}"
+                            class="w-[320px] h-[320px] object-cover rounded-2xl mx-auto"
+                        />
+
+                        <!-- Availability badge -->
+                        <div class="flex justify-center mt-5">
+                            @php $availability = $about?->availability ?? 'available'; @endphp
+                            @if ($availability === 'available')
+                                <span class="flex items-center gap-2 text-sm px-5 py-2 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
                                     <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                                     Available for work
                                 </span>
-                            @elseif ($about?->availability === 'open')
-                                <span
-                                    class="flex items-center gap-2 text-sm px-5 py-2 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
+                            @elseif ($availability === 'open')
+                                <span class="flex items-center gap-2 text-sm px-5 py-2 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
                                     <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
                                     Open to opportunities
                                 </span>
                             @else
-                                <span
-                                    class="flex items-center gap-2 text-sm px-5 py-2 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
+                                <span class="flex items-center gap-2 text-sm px-5 py-2 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
                                     <span class="w-2 h-2 bg-red-400 rounded-full"></span>
                                     Not available
                                 </span>
@@ -62,83 +68,86 @@
 
 
             <!-- TEXT SIDE -->
-            <div>
+            <div class="space-y-8" data-about-text>
 
-                <p class="text-cyan-400 font-mono mb-3">About Me</p>
-
-                <h2 class="text-4xl lg:text-5xl font-bold mb-6">
-                    {{ $about?->title ?? 'Building systems,' }}
-                    <span class="text-cyan-400">
-                        {{ $about ? '' : 'not just websites' }}
-                    </span>
-                </h2>
-
-                @if ($about?->bio)
-                    <p class="text-gray-400 leading-relaxed mb-10">
-                        {{ $about->bio }}
+                <div>
+                    <h2 class="text-4xl lg:text-5xl font-bold leading-tight mb-4">
+                        {{ $about?->title ?? 'Building systems,' }}
+                        <span class="text-cyan-400">{{ $about ? '' : 'not just websites' }}</span>
+                    </h2>
+                    <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-lg">
+                        {{ $about?->bio ?? "I'm Krish, a computer engineering student focused on backend systems and full-stack development. I enjoy building tools that solve real problems — dashboards, CMS systems, automation tools and developer-focused software." }}
                     </p>
-                @endif
+                </div>
+
 
                 <!-- STATS -->
                 @php
-                    $allStats = collect([['label' => 'Projects Built', 'value' => $liveProjectCount]])->merge(
-                        $about?->stats ?? [],
-                    );
+                    $allStats = collect([['label' => 'Projects Built', 'value' => $liveProjectCount]])
+                        ->merge($about?->stats ?? [['label' => 'Technologies', 'value' => '5+']]);
                 @endphp
 
-                @if ($allStats->isNotEmpty())
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-10">
-                        @foreach ($allStats as $stat)
-                            <div
-                                class="text-center p-5 rounded-xl border border-white/10 bg-[#0c1120] hover:border-cyan-400/40 transition">
-                                <p class="text-3xl font-bold text-cyan-400">{{ $stat['value'] }}</p>
-                                <p class="text-sm text-gray-400 mt-1">{{ $stat['label'] }}</p>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    @foreach ($allStats as $stat)
+                        @php
+                            preg_match('/^(\d+)(.*)$/', $stat['value'], $matches);
+                            $numericVal = $matches[1] ?? null;
+                            $suffix     = $matches[2] ?? '';
+                        @endphp
+                        <div class="stat-counter-card group">
+                            <p class="text-3xl font-bold text-cyan-400 tabular-nums">
+                                @if ($numericVal !== null)
+                                    <span class="counter-val" data-count="{{ $numericVal }}" data-suffix="{{ $suffix }}">{{ $stat['value'] }}</span>
+                                @else
+                                    {{ $stat['value'] }}
+                                @endif
+                            </p>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">{{ $stat['label'] }}</p>
+                        </div>
+                    @endforeach
+                </div>
 
 
-                <!-- ACTION BUTTONS -->
-                <div class="flex flex-wrap gap-4">
-                    <a href="/storage/resume.pdf"
-                        class="px-6 py-3 rounded-lg bg-cyan-400 text-black font-medium hover:bg-cyan-300 transition">
+                <!-- BUTTONS -->
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="/storage/resume.pdf" target="_blank"
+                        class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-semibold hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300 hover:-translate-y-0.5">
                         Download Resume
                     </a>
                     <a href="#projects"
-                        class="px-6 py-3 rounded-lg border border-white/20 hover:border-cyan-400 hover:text-cyan-400 transition">
+                        class="px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-cyan-400 dark:hover:border-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 hover:-translate-y-0.5">
                         View Projects
                     </a>
                 </div>
 
 
                 <!-- SOCIALS -->
-                <div class="flex flex-wrap gap-5 mt-10 text-gray-400">
-
-                    @if ($about?->github_url)
-                        <a href="{{ $about->github_url }}" target="_blank" class="hover:text-cyan-400 transition">
-                            GitLab
-                        </a>
-                    @endif
-
-                    @if ($about?->linkedin_url)
-                        <a href="{{ $about->linkedin_url }}" target="_blank" class="hover:text-cyan-400 transition">
-                            LinkedIn
-                        </a>
-                    @endif
-
-                    @if ($about?->email)
-                        <a href="mailto:{{ $about->email }}" class="hover:text-cyan-400 transition">
-                            {{ $about->email }}
-                        </a>
-                    @endif
-
+                <div class="flex gap-6 pt-2">
+                    <a href="{{ $about?->github_url ?? 'https://gitlab.com/krishtbhojwani' }}" target="_blank"
+                        class="flex items-center gap-2 text-slate-500 hover:text-cyan-400 transition">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 01-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 014.82 2a.43.43 0 01.58 0 .42.42 0 01.11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0118.6 2a.43.43 0 01.58 0 .42.42 0 01.11.18l2.44 7.51L23 13.45a.84.84 0 01-.35.94z"/>
+                        </svg>
+                        GitLab
+                    </a>
+                    <a href="{{ $about?->linkedin_url ?? 'https://linkedin.com/in/krish-bhojwani' }}" target="_blank"
+                        class="flex items-center gap-2 text-slate-500 hover:text-cyan-400 transition">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                        LinkedIn
+                    </a>
+                    <a href="mailto:{{ $about?->email ?? 'krishtbhojwani@gmail.com' }}"
+                        class="flex items-center gap-2 text-slate-500 hover:text-cyan-400 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+                        </svg>
+                        Email
+                    </a>
                 </div>
 
             </div>
 
         </div>
-
     </div>
-
 </section>

@@ -15,6 +15,8 @@ class ProjectsSection extends Component
 
     public function render()
     {
-        return view('livewire.public.projects-section');
+        return view('livewire.public.projects-section', [
+            'projects' => $this->projects,
+        ]);
     }
 }
