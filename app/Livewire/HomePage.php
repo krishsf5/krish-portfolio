@@ -19,7 +19,7 @@ class HomePage extends Component
     public function mount(): void
     {
         $this->projects = Cache::remember('public.projects', 300, fn () => Project::where('is_visible', true)
-            ->where('status', '!=', 'hidden')
+            ->where('status', 'live')
             ->orderBy('sort_order')
             ->get()
         );

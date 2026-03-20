@@ -12,100 +12,148 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
-
 </head>
 
 <body class="bg-slate-50 text-slate-900 dark:bg-[#080a14] dark:text-slate-200 transition-colors duration-300">
-    <!-- SCROLL PROGRESS BAR -->
+
+    {{-- Scroll progress bar --}}
     <div id="scroll-progress"
         class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 z-[999]"
         style="width:0%"></div>
+
     <div class="min-h-screen flex flex-col">
 
+        {{-- NAV --}}
         <header id="main-nav"
             class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent">
             <div class="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
+
+                {{-- Logo --}}
                 <a href="/"
-                    class="text-cyan-600 dark:text-cyan-400 font-semibold text-lg tracking-tight hover:opacity-80 transition">Krish.dev</a>
+                    class="text-cyan-600 dark:text-cyan-400 font-semibold text-lg tracking-tight hover:opacity-80 transition">
+                    Krish.dev
+                </a>
+
+                {{-- Desktop nav links --}}
                 <nav class="hidden md:flex items-center gap-10 text-sm font-mono">
-                    <a href="#projects" data-nav-link="projects"
-                        class="nav-section-link text-slate-600 hover:text-cyan-600 dark:text-slate-300 dark:hover:text-cyan-400 transition-colors relative">
-                        Projects
-                        <span
-                            class="nav-underline absolute -bottom-0.5 left-0 h-px bg-cyan-400 w-0 transition-all duration-300"></span>
-                    </a>
-                    <a href="#skills" data-nav-link="skills"
-                        class="nav-section-link text-slate-600 hover:text-cyan-600 dark:text-slate-300 dark:hover:text-cyan-400 transition-colors relative">
-                        Skills
-                        <span
-                            class="nav-underline absolute -bottom-0.5 left-0 h-px bg-cyan-400 w-0 transition-all duration-300"></span>
-                    </a>
-                    <a href="#about" data-nav-link="about"
-                        class="nav-section-link text-slate-600 hover:text-cyan-600 dark:text-slate-300 dark:hover:text-cyan-400 transition-colors relative">
-                        About
-                        <span
-                            class="nav-underline absolute -bottom-0.5 left-0 h-px bg-cyan-400 w-0 transition-all duration-300"></span>
-                    </a>
+                    @foreach ([
+        'projects' => 'Projects',
+        'skills' => 'Skills',
+        'about' => 'About',
+    ] as $id => $label)
+                        <a href="#{{ $id }}" data-nav-link="{{ $id }}"
+                            class="nav-section-link relative text-slate-600 hover:text-cyan-600 dark:text-slate-300 dark:hover:text-cyan-400 transition-colors duration-200">
+                            {{ $label }}
+
+                        </a>
+                    @endforeach
                 </nav>
 
+                {{-- Mobile hamburger --}}
+                <button id="mobile-menu-btn"
+                    class="md:hidden flex flex-col gap-1.5 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                    aria-label="Toggle menu">
+                    <span
+                        class="mobile-bar block h-0.5 w-5 bg-slate-600 dark:bg-slate-300 transition-all duration-300"></span>
+                    <span
+                        class="mobile-bar block h-0.5 w-5 bg-slate-600 dark:bg-slate-300 transition-all duration-300"></span>
+                    <span
+                        class="mobile-bar block h-0.5 w-5 bg-slate-600 dark:bg-slate-300 transition-all duration-300"></span>
+                </button>
 
-                <div class="flex items-center gap-6">
-
+                {{-- Right side controls --}}
+                <div class="hidden md:flex items-center gap-6">
+                    {{-- Dark/light toggle --}}
                     <button
                         @click="
-theme = theme === 'dark' ? 'light' : 'dark';
-localStorage.setItem('theme', theme);
-document.documentElement.classList.toggle('dark', theme === 'dark');
-"
+                            theme = theme === 'dark' ? 'light' : 'dark';
+                            localStorage.setItem('theme', theme);
+                            document.documentElement.classList.toggle('dark', theme === 'dark');
+                        "
                         class="toggle-glow relative inline-flex h-9 w-16 items-center rounded-full border border-slate-300 bg-slate-200 transition-all duration-300 dark:border-slate-700 dark:bg-slate-800">
-
                         <span
                             class="absolute left-1 flex h-7 w-7 items-center justify-center rounded-full bg-white shadow-md transition-all duration-300 dark:bg-cyan-400"
                             :class="theme === 'dark' ? 'translate-x-7' : 'translate-x-0'">
-
                             <svg x-show="theme === 'light'" xmlns="http://www.w3.org/2000/svg"
                                 class="h-4 w-4 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.8">
-
                                 <circle cx="12" cy="12" r="4" />
                                 <path d="M12 2v2M12 20v2M4.93 4.93l1.4 1.4M17.66 17.66l1.4 1.4M2 12h2M20 12h2" />
-
                             </svg>
-
                             <svg x-show="theme === 'dark'" xmlns="http://www.w3.org/2000/svg"
                                 class="h-4 w-4 text-[#080a14]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.8">
-
                                 <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
-
                             </svg>
-
                         </span>
-
                     </button>
-
                 </div>
 
             </div>
 
+            {{-- Mobile dropdown menu --}}
+            <div id="mobile-menu"
+                class="md:hidden hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-[#080a14]/95 backdrop-blur-md">
+                <nav class="flex flex-col px-8 py-4 gap-1 font-mono text-sm">
+                    @foreach ([
+        'projects' => 'Projects',
+        'skills' => 'Skills',
+        'about' => 'About',
+        'resume' => 'Resume',
+    ] as $id => $label)
+                        <a href="#{{ $id }}" data-mobile-nav-link="{{ $id }}"
+                            class="mobile-nav-link py-3 px-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-cyan-500 dark:hover:text-cyan-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border-b border-slate-100 dark:border-slate-800/50 last:border-0">
+                            <span class="mr-2 text-cyan-400 opacity-60">—</span>{{ $label }}
+                        </a>
+                    @endforeach
+
+                    {{-- Mobile theme toggle --}}
+                    <div class="pt-3 flex items-center justify-between">
+                        <span class="text-slate-400 text-xs">Theme</span>
+                        <button
+                            @click="
+                                theme = theme === 'dark' ? 'light' : 'dark';
+                                localStorage.setItem('theme', theme);
+                                document.documentElement.classList.toggle('dark', theme === 'dark');
+                            "
+                            class="relative inline-flex h-8 w-14 items-center rounded-full border border-slate-300 bg-slate-200 dark:border-slate-700 dark:bg-slate-800 transition-all duration-300">
+                            <span
+                                class="absolute left-1 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow dark:bg-cyan-400 transition-all duration-300"
+                                :class="theme === 'dark' ? 'translate-x-6' : 'translate-x-0'">
+                                <svg x-show="theme === 'light'" xmlns="http://www.w3.org/2000/svg"
+                                    class="h-3.5 w-3.5 text-slate-700" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.8">
+                                    <circle cx="12" cy="12" r="4" />
+                                    <path d="M12 2v2M12 20v2M4.93 4.93l1.4 1.4M17.66 17.66l1.4 1.4M2 12h2M20 12h2" />
+                                </svg>
+                                <svg x-show="theme === 'dark'" xmlns="http://www.w3.org/2000/svg"
+                                    class="h-3.5 w-3.5 text-[#080a14]" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.8">
+                                    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
         </header>
 
-
+        {{-- Main content --}}
         <main class="pt-16">
-
             {{ $slot }}
-
         </main>
 
-
+        {{-- Footer --}}
         <footer class="border-t border-slate-200 dark:border-slate-800 py-12 mt-20">
             <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row items-center justify-between gap-4">
                 <p class="text-slate-500 dark:text-slate-400 text-sm font-mono">
                     © {{ date('Y') }} Krish Bhojwani — Built with Laravel + Livewire
                 </p>
                 <div class="flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
-                    <a href="https://gitlab.com/krishtbhojwani" target="_blank" class="hover:text-cyan-400 transition">GitLab</a>
-                    <a href="https://linkedin.com/in/krish-bhojwani" target="_blank" class="hover:text-cyan-400 transition">LinkedIn</a>
+                    <a href="https://gitlab.com/krishtbhojwani" target="_blank"
+                        class="hover:text-cyan-400 transition">GitLab</a>
+                    <a href="https://linkedin.com/in/krish-bhojwani" target="_blank"
+                        class="hover:text-cyan-400 transition">LinkedIn</a>
                     <a href="mailto:krishtbhojwani@gmail.com" class="hover:text-cyan-400 transition">Email</a>
                 </div>
             </div>
@@ -113,37 +161,84 @@ document.documentElement.classList.toggle('dark', theme === 'dark');
 
     </div>
 
-    <!-- GSAP -->
+    {{-- Scripts --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <!-- Swiper -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     @livewireScripts
+
     <script>
-        const nav = document.getElementById('main-nav')
-        const progressBar = document.getElementById('scroll-progress')
+        (() => {
+            const nav = document.getElementById('main-nav')
+            const progressBar = document.getElementById('scroll-progress')
+            const mobileBtn = document.getElementById('mobile-menu-btn')
+            const mobileMenu = document.getElementById('mobile-menu')
 
-        window.addEventListener('scroll', () => {
-            const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
-            progressBar.style.width = Math.min(pct, 100) + '%'
+            function updateProgress() {
+                const max = document.documentElement.scrollHeight - window.innerHeight
+                progressBar.style.width = max > 0 ?
+                    Math.min((window.scrollY / max) * 100, 100) + '%' :
+                    '0%'
+            }
 
-            nav.classList.toggle('nav-scrolled', window.scrollY > 40)
+            function updateNavBg() {
+                nav.classList.toggle('nav-scrolled', window.scrollY > 40)
+            }
 
-            let current = '';
-            ['projects', 'skills', 'about'].forEach(id => {
-                const el = document.getElementById(id)
-                if (el && window.scrollY >= el.offsetTop - 140) current = id
+            window.addEventListener('scroll', () => {
+                updateProgress()
+                updateNavBg()
+            }, {
+                passive: true
             })
-            document.querySelectorAll('[data-nav-link]').forEach(link => {
-                const underline = link.querySelector('.nav-underline')
-                const active = link.dataset.navLink === current
-                link.classList.toggle('!text-cyan-400', active)
-                if (underline) underline.style.width = active ? '100%' : '0'
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    updateProgress()
+                    updateNavBg()
+                })
+            } else {
+                updateProgress()
+                updateNavBg()
+            }
+
+            // ── Mobile menu ───────────────────────────────────────────
+            if (!mobileBtn || !mobileMenu) return
+
+            let mobileOpen = false
+
+            function closeMobile() {
+                mobileOpen = false
+                mobileMenu.classList.add('hidden')
+                const bars = mobileBtn.querySelectorAll('.mobile-bar')
+                bars[0].style.transform = ''
+                bars[1].style.opacity = ''
+                bars[2].style.transform = ''
+            }
+
+            function openMobile() {
+                mobileOpen = true
+                mobileMenu.classList.remove('hidden')
+                const bars = mobileBtn.querySelectorAll('.mobile-bar')
+                bars[0].style.transform = 'translateY(8px) rotate(45deg)'
+                bars[1].style.opacity = '0'
+                bars[2].style.transform = 'translateY(-8px) rotate(-45deg)'
+            }
+
+            mobileBtn.addEventListener('click', e => {
+                e.stopPropagation()
+                mobileOpen ? closeMobile() : openMobile()
             })
-        }, {
-            passive: true
-        })
+
+            document.querySelectorAll('[data-mobile-nav-link]').forEach(link => {
+                link.addEventListener('click', closeMobile)
+            })
+
+            document.addEventListener('click', e => {
+                if (mobileOpen && !nav.contains(e.target)) closeMobile()
+            })
+        })()
     </script>
 
 </body>

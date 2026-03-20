@@ -111,6 +111,7 @@ class ProjectManager extends Component
         Project::where('id', $id)->update([
             'is_visible' => \DB::raw('NOT is_visible'),
         ]);
+        Cache::forget('public.projects');
         Cache::forget('public.projects.live_count');
     }
 
