@@ -102,7 +102,7 @@
                                     {{ $stat['value'] }}
                                 @endif
                             </p>
-                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">{{ $stat['label'] }}</p>
+                            <p class="text-sm text-slate-700 dark:text-slate-400 mt-1">{{ $stat['label'] }}</p>
                         </div>
                     @endforeach
                 </div>
