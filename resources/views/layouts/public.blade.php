@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Krish Bhojwani' }}</title>
-    <link rel="icon" href="{{ Vite::asset('resources/images/profile.png') }}" type="image/png">
-    <link rel="apple-touch-icon" href="{{ Vite::asset('resources/images/profile.png') }}">
+    <link rel="icon" href="{{ asset('images/profile.png') }}" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('images/profile.png') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/devicon.min.css">
@@ -33,7 +33,7 @@
                 {{-- Logo --}}
                 <a href="/"
                     class="flex items-center gap-3 text-cyan-600 dark:text-cyan-400 font-semibold text-lg tracking-tight hover:opacity-80 transition">
-                    <img src="{{ Vite::asset('resources/images/profile.png') }}" alt="Krish Bhojwani"
+                    <img src="{{ asset('images/profile.png') }}" alt="Krish Bhojwani"
                         class="h-9 w-9 rounded-md object-cover">
                     Krish.dev
                 </a>
