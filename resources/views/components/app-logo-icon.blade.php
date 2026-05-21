@@ -3,7 +3,7 @@
 ])
 
 <img
-    src="{{ Vite::asset('resources/images/profile.png') }}"
+    src="{{ asset('images/profile.png') }}"
     alt="{{ $alt }}"
     {{ $attributes->merge(['class' => 'h-full w-full rounded-md object-cover']) }}
 >
