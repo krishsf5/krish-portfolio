@@ -45,6 +45,28 @@
                         Resume
                     </a>
 
+                    <a href="{{ route('inquiries') }}"
+                       class="nav-link {{ request()->routeIs('inquiries') ? 'bg-slate-200 text-cyan-400 dark:bg-slate-800' : '' }}">
+                        Inquiries
+                    </a>
+
+                    <div class="pt-6 mt-6 border-t border-slate-200 dark:border-slate-800">
+                        <a href="{{ route('profile.edit') }}"
+                           class="nav-link {{ request()->routeIs('profile.edit') ? 'bg-slate-200 text-cyan-400 dark:bg-slate-800' : '' }}">
+                            Profile
+                        </a>
+
+                        <a href="{{ route('security.edit') }}"
+                           class="nav-link {{ request()->routeIs('security.edit') ? 'bg-slate-200 text-cyan-400 dark:bg-slate-800' : '' }}">
+                            Security
+                        </a>
+
+                        <a href="{{ route('appearance.edit') }}"
+                           class="nav-link {{ request()->routeIs('appearance.edit') ? 'bg-slate-200 text-cyan-400 dark:bg-slate-800' : '' }}">
+                            Appearance
+                        </a>
+                    </div>
+
                 </nav>
             </aside>
 

@@ -40,6 +40,7 @@
         'projects' => 'Projects',
         'skills' => 'Skills',
         'about' => 'About',
+        'contact' => 'Contact',
     ] as $id => $label)
                         <a href="#{{ $id }}" data-nav-link="{{ $id }}"
                             class="nav-section-link relative text-slate-600 hover:text-cyan-600 dark:text-slate-300 dark:hover:text-cyan-400 transition-colors duration-200">
@@ -99,7 +100,7 @@
         'projects' => 'Projects',
         'skills' => 'Skills',
         'about' => 'About',
-        'resume' => 'Resume',
+        'contact' => 'Contact',
     ] as $id => $label)
                         <a href="#{{ $id }}" data-mobile-nav-link="{{ $id }}"
                             class="mobile-nav-link py-3 px-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-cyan-500 dark:hover:text-cyan-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border-b border-slate-100 dark:border-slate-800/50 last:border-0">

@@ -3,11 +3,13 @@
 use App\Livewire\About\AboutManager;
 use App\Livewire\Dashboard;
 use App\Livewire\HomePage;
+use App\Livewire\Inquiries\InquiryManager;
 use App\Livewire\Public\ProjectShow;
 use App\Livewire\Resume\ResumeManager;
 use App\Livewire\Skills\SkillManager;
 use App\Models\Skill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 // public routes
@@ -21,12 +23,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/skills', SkillManager::class)->name('skills');
     Route::get('/dashboard/about', AboutManager::class)->name('about');
     Route::get('/dashboard/resume', ResumeManager::class)->name('resume');
+    Route::get('/dashboard/inquiries', InquiryManager::class)->name('inquiries');
 
     Route::post('/dashboard/skills/reorder', function (Request $request) {
-        $ids = $request->input('ids', []);
+        $ids = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:skills,id'],
+        ])['ids'];
+
         foreach ($ids as $order => $id) {
             Skill::where('id', $id)->update(['sort_order' => $order]);
         }
+
+        Cache::forget('public.skills');
 
         return response()->json(['ok' => true]);
     })->name('skills.reorder');

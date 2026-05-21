@@ -12,4 +12,7 @@
     <!-- PROJECTS -->
     <livewire:public.projects-section :projects="$projects" />
 
+    <!-- CONTACT -->
+    <livewire:public.contact-section />
+
 </div>
