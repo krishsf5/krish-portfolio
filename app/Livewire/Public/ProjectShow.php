@@ -18,6 +18,7 @@ class ProjectShow extends Component
     {
         $project = Project::where('slug', $this->slug)
             ->where('is_visible', true)
+            ->where('status', '!=', 'hidden')
             ->firstOrFail();
 
         $related = Project::where('id', '!=', $project->id)
@@ -30,6 +31,6 @@ class ProjectShow extends Component
         return view('livewire.public.project-show', [
             'project' => $project,
             'related' => $related,
-        ])->layout('layouts.public', ['title' => $project->title . ' — Krish Bhojwani']);
+        ])->layout('layouts.public', ['title' => "{$project->title} - Krish Bhojwani"]);
     }
 }

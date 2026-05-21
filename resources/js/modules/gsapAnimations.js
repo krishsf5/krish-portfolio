@@ -194,9 +194,9 @@ export default function initGsapAnimations() {
     // --------------------------------------------------
     // PROJECTS SWIPER ENTRANCE
     // --------------------------------------------------
-    gsap.from('.projects-swiper', {
+    gsap.from('.proj-outer', {
         scrollTrigger: {
-            trigger: '.projects-swiper',
+            trigger: '.proj-outer',
             start: 'top 80%',
             once: true,
         },

@@ -4,6 +4,9 @@
 
 export default function initCursorGlow() {
 
+    if (document.querySelector('.cursor-glow')) return
+    if (!window.matchMedia('(pointer: fine)').matches) return
+
     const glow = document.createElement('div')
     glow.className = 'cursor-glow'
     document.body.appendChild(glow)
