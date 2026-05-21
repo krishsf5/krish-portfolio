@@ -1,4 +1,4 @@
-<section id="about" class="relative py-32 overflow-hidden">
+<section id="about" class="relative py-20 sm:py-24 lg:py-32 overflow-hidden">
 
     <!-- Background glows -->
     <div class="absolute inset-0 -z-10 overflow-hidden">
@@ -6,15 +6,15 @@
         <div class="absolute w-[500px] h-[500px] bg-purple-500/15 blur-[160px] rounded-full bottom-[-200px] left-[-100px]"></div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
 
         <!-- SECTION LABEL -->
-        <div class="flex items-center gap-4 mb-20" data-about-label>
+        <div class="flex items-center gap-4 mb-10 sm:mb-14 lg:mb-20" data-about-label>
             <span class="text-xs font-mono tracking-[0.2em] uppercase text-cyan-400">02 — About</span>
             <div class="flex-1 h-px bg-gradient-to-r from-cyan-400/40 to-transparent"></div>
         </div>
 
-        <div class="grid lg:grid-cols-2 gap-20 items-center">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
             <!-- PHOTO SIDE -->
             <div class="relative flex justify-center lg:justify-start" data-about-photo>
@@ -23,13 +23,13 @@
                 <div class="absolute w-[460px] h-[460px] rounded-full border border-cyan-400/10 animate-spin-slow top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block"></div>
                 <div class="absolute w-[380px] h-[380px] rounded-full border border-purple-400/10 animate-spin-slow-reverse top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block"></div>
 
-                <div class="relative group">
+                <div class="relative group w-full max-w-[360px] sm:max-w-[404px]">
 
                     <!-- Glow -->
                     <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-cyan-400/30 to-purple-500/30 blur-3xl opacity-60 group-hover:opacity-90 transition-opacity duration-700 scale-105"></div>
 
                     <!-- Card -->
-                    <div class="relative bg-[#0c1120] border border-white/10 rounded-3xl p-7 backdrop-blur-sm overflow-hidden">
+                    <div class="relative bg-[#0c1120] border border-white/10 rounded-3xl p-4 sm:p-7 backdrop-blur-sm overflow-hidden">
 
                         <!-- Corner accents -->
                         <div class="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-cyan-400/50 rounded-tl-3xl"></div>
@@ -38,7 +38,7 @@
                         <img
                             src="{{ $about?->avatar ? '/storage/'.$about->avatar : '/storage/krish.jpeg' }}"
                             alt="{{ $about?->full_name ?? 'Krish Bhojwani' }}"
-                            class="w-[320px] h-[320px] object-cover rounded-2xl mx-auto"
+                            class="w-full aspect-square object-cover rounded-2xl mx-auto"
                         />
 
                         <!-- Availability badge -->
@@ -68,14 +68,14 @@
 
 
             <!-- TEXT SIDE -->
-            <div class="space-y-8" data-about-text>
+            <div class="space-y-7 sm:space-y-8" data-about-text>
 
                 <div>
-                    <h2 class="text-4xl lg:text-5xl font-bold leading-tight mb-4">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4">
                         {{ $about?->title ?? 'Building systems,' }}
                         <span class="text-cyan-400">{{ $about ? '' : 'not just websites' }}</span>
                     </h2>
-                    <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-lg">
+                    <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-base sm:text-lg">
                         {{ $about?->bio ?? "I'm Krish, a computer engineering student focused on backend systems and full-stack development. I enjoy building tools that solve real problems — dashboards, CMS systems, automation tools and developer-focused software." }}
                     </p>
                 </div>
@@ -87,7 +87,7 @@
                         ->merge($about?->stats ?? [['label' => 'Technologies', 'value' => '5+']]);
                 @endphp
 
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                     @foreach ($allStats as $stat)
                         @php
                             preg_match('/^(\d+)(.*)$/', $stat['value'], $matches);
@@ -95,7 +95,7 @@
                             $suffix     = $matches[2] ?? '';
                         @endphp
                         <div class="stat-counter-card group">
-                            <p class="text-3xl font-bold text-cyan-400 tabular-nums">
+                            <p class="text-2xl sm:text-3xl font-bold text-cyan-400 tabular-nums">
                                 @if ($numericVal !== null)
                                     <span class="counter-val" data-count="{{ $numericVal }}" data-suffix="{{ $suffix }}">{{ $stat['value'] }}</span>
                                 @else
@@ -109,26 +109,26 @@
 
 
                 <!-- BUTTONS -->
-                <div class="flex flex-wrap gap-4 pt-2">
+                <div class="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 pt-2">
                     @if ($resumeUrl)
                         <a href="{{ $resumeUrl }}" target="_blank"
-                            class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-semibold hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300 hover:-translate-y-0.5">
+                            class="inline-flex justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-semibold hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300 hover:-translate-y-0.5">
                             Download Resume
                         </a>
                     @endif
                     <a href="#projects"
-                        class="px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-cyan-400 dark:hover:border-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 hover:-translate-y-0.5">
+                        class="inline-flex justify-center px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-cyan-400 dark:hover:border-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 hover:-translate-y-0.5">
                         View Projects
                     </a>
                     <a href="#contact"
-                        class="px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-cyan-400 dark:hover:border-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 hover:-translate-y-0.5">
+                        class="inline-flex justify-center px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-cyan-400 dark:hover:border-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 hover:-translate-y-0.5">
                         Contact Me
                     </a>
                 </div>
 
 
                 <!-- SOCIALS -->
-                <div class="flex gap-6 pt-2">
+                <div class="flex flex-wrap gap-x-6 gap-y-3 pt-2">
                     <a href="{{ $about?->github_url ?? 'https://gitlab.com/krishtbhojwani' }}" target="_blank"
                         class="flex items-center gap-2 text-slate-500 hover:text-cyan-400 transition">
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">

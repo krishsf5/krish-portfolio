@@ -1,15 +1,15 @@
-<section id="skills" class="py-32 relative overflow-hidden">
+<section id="skills" class="py-20 sm:py-24 lg:py-32 relative overflow-hidden">
 
     <div class="absolute inset-0 -z-10">
         <div class="absolute w-[400px] h-[400px] bg-cyan-400/10 blur-[140px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-8 mb-16">
+    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 mb-10 sm:mb-16">
         <div class="flex items-center gap-4 mb-6" data-section-label>
             <span class="text-xs font-mono tracking-[0.2em] uppercase text-cyan-400">03 — Tech Stack</span>
             <div class="flex-1 h-px bg-gradient-to-r from-cyan-400/40 to-transparent"></div>
         </div>
-        <h2 class="text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white" data-section-heading>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white" data-section-heading>
             Technologies I work with
         </h2>
     </div>
@@ -52,8 +52,8 @@
 
 
     <!-- CATEGORY BREAKDOWN -->
-    <div class="max-w-7xl mx-auto px-8 mt-20">
-        <div class="grid md:grid-cols-4 gap-8">
+    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 mt-12 sm:mt-20">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             @foreach (['Frontend', 'Backend', 'Database', 'Tools'] as $category)
                 @php $catSkills = $skills->where('category', $category); @endphp
                 @if ($catSkills->isNotEmpty())

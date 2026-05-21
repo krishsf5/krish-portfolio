@@ -237,9 +237,15 @@
 }
 
 .hero-title {
-    font-size: clamp(3.5rem, 8vw, 6.5rem);
+    font-size: clamp(2.65rem, 15vw, 6.5rem);
     font-weight: 800;
     line-height: 1.05;
+}
+
+@media (min-width: 768px) {
+    .hero-title {
+        font-size: clamp(3.5rem, 8vw, 6.5rem);
+    }
 }
 
 /* ----------------------------- */
@@ -722,6 +728,7 @@
 .hero-btn-primary {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     padding: 0.85rem 1.75rem;
     border-radius: 0.75rem;
@@ -741,6 +748,7 @@
 .hero-btn-ghost {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     padding: 0.85rem 1.5rem;
     border-radius: 0.75rem;
@@ -757,6 +765,14 @@
     border-color: #22d3ee;
     color: #22d3ee;
     transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+    .hero-btn-primary,
+    .hero-btn-ghost {
+        width: 100%;
+        padding-inline: 1rem;
+    }
 }
 
 /* Code card */
@@ -827,6 +843,13 @@
     transform: translateY(-4px);
 }
 
+@media (max-width: 640px) {
+    .stat-counter-card {
+        padding: 1rem 0.75rem;
+        border-radius: 0.85rem;
+    }
+}
+
 /* Slow spin rings */
 @keyframes spinSlow        { from { transform: translate(-50%,-50%) rotate(0deg); }   to { transform: translate(-50%,-50%) rotate(360deg); } }
 @keyframes spinSlowReverse { from { transform: translate(-50%,-50%) rotate(0deg); }   to { transform: translate(-50%,-50%) rotate(-360deg); } }
@@ -873,6 +896,13 @@
     border-color: #22d3ee;
     box-shadow: 0 0 16px rgba(34, 211, 238, 0.2);
     transform: scale(1.05);
+}
+
+@media (max-width: 640px) {
+    .marquee-chip {
+        padding: 8px 14px;
+        font-size: 0.875rem;
+    }
 }
 
 /* Category cards */
@@ -967,8 +997,17 @@
 }
 
 @media (max-width: 640px) {
-    .proj-slide { width: 90vw; max-width: 520px; }
-    .proj-track { padding-left: calc(50% - 45vw); padding-right: calc(50% - 45vw); }
+    .proj-slide { width: min(88vw, 360px); max-width: 520px; }
+    .proj-track {
+        gap: 18px;
+        padding-left: max(1.25rem, calc(50% - min(44vw, 180px)));
+        padding-right: max(1.25rem, calc(50% - min(44vw, 180px)));
+    }
+    .proj-outer {
+        padding-bottom: 2rem;
+        -webkit-mask: none;
+        mask: none;
+    }
 }
 
 /* ── CARD ─────────────────────────────────────── */
@@ -1014,6 +1053,12 @@
 }
 
 .dark .pcard__img { background: #070c18; }
+
+@media (max-width: 640px) {
+    .pcard__img {
+        height: 210px;
+    }
+}
 
 .pcard__thumb {
     width: 100%;
@@ -1115,6 +1160,12 @@
     flex: 1;
 }
 
+@media (max-width: 640px) {
+    .pcard__body {
+        padding: 18px;
+    }
+}
+
 /* Title link — ONLY this navigates to project */
 .pcard__title-link {
     text-decoration: none;
@@ -1200,6 +1251,18 @@
 }
 
 .dark .pcard__links { border-top-color: rgba(30,41,59,0.8); }
+
+@media (max-width: 640px) {
+    .pcard__links {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .pcard__sep {
+        display: none;
+    }
+}
 
 .pcard__link {
     display: inline-flex;

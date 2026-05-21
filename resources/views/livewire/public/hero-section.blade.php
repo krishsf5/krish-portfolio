@@ -1,4 +1,4 @@
-<div class="relative min-h-screen flex items-center overflow-hidden pt-16">
+<div class="relative min-h-[calc(100svh-4rem)] flex items-center overflow-hidden pt-16">
 
     <!-- BACKGROUND LAYERS -->
     <div class="absolute inset-0 -z-10">
@@ -7,9 +7,9 @@
         <div class="absolute inset-0 grid-pattern opacity-30"></div>
 
         <!-- Animated blobs -->
-        <div class="absolute w-[900px] h-[900px] bg-cyan-400/20 blur-[200px] rounded-full top-[-300px] left-[-300px] animate-blob"></div>
-        <div class="absolute w-[700px] h-[700px] bg-blue-500/20 blur-[180px] rounded-full bottom-[-200px] right-[-200px] animate-blob animation-delay-2"></div>
-        <div class="absolute w-[500px] h-[500px] bg-purple-500/15 blur-[160px] rounded-full top-[30%] left-[50%] animate-blob animation-delay-4"></div>
+        <div class="absolute w-[420px] h-[420px] md:w-[900px] md:h-[900px] bg-cyan-400/20 blur-[120px] md:blur-[200px] rounded-full top-[-180px] left-[-180px] md:top-[-300px] md:left-[-300px] animate-blob"></div>
+        <div class="absolute w-[360px] h-[360px] md:w-[700px] md:h-[700px] bg-blue-500/20 blur-[110px] md:blur-[180px] rounded-full bottom-[-140px] right-[-140px] md:bottom-[-200px] md:right-[-200px] animate-blob animation-delay-2"></div>
+        <div class="absolute w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-purple-500/15 blur-[100px] md:blur-[160px] rounded-full top-[35%] left-[35%] md:top-[30%] md:left-[50%] animate-blob animation-delay-4"></div>
 
         <!-- Floating particles -->
         @for ($i = 0; $i < 20; $i++)
@@ -26,10 +26,10 @@
     </div>
 
 
-    <div class="max-w-7xl mx-auto px-8 w-full grid md:grid-cols-2 gap-16 xl:gap-24 items-center py-20">
+    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full grid md:grid-cols-2 gap-10 md:gap-16 xl:gap-24 items-center py-14 sm:py-16 md:py-20">
 
         <!-- LEFT: TEXT -->
-        <div class="space-y-8">
+        <div class="space-y-6 sm:space-y-8">
 
             <div data-hero-badge class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-400/30 bg-cyan-400/5 backdrop-blur-sm">
                 <span class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
@@ -43,13 +43,13 @@
                 </span>
             </h1>
 
-            <p data-hero-sub class="text-lg text-slate-600 dark:text-slate-400 max-w-lg leading-relaxed">
+            <p data-hero-sub class="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-lg leading-relaxed">
                 I build scalable systems using
                 <span id="stack-typing" class="text-cyan-500 dark:text-cyan-400 font-semibold font-mono"></span>
                 <span class="inline-block w-[2px] h-5 bg-cyan-400 ml-0.5 align-middle animate-blink"></span>
             </p>
 
-            <div data-hero-btns class="flex flex-wrap gap-4 pt-2">
+            <div data-hero-btns class="flex flex-wrap gap-3 sm:gap-4 pt-2">
                 <a href="#projects" class="hero-btn-primary group relative overflow-hidden">
                     <span class="relative z-10 flex items-center gap-2">
                         View Projects
@@ -148,7 +148,7 @@
 
 
     <!-- SCROLL INDICATOR -->
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-400 dark:text-slate-600">
+    <div class="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2 text-slate-400 dark:text-slate-600">
         <span class="text-xs font-mono tracking-widest uppercase">Scroll</span>
         <div class="w-px h-12 bg-gradient-to-b from-slate-400 dark:from-slate-600 to-transparent scroll-line"></div>
     </div>

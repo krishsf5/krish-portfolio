@@ -1,10 +1,10 @@
-<section id="contact" class="relative py-28 overflow-hidden">
+<section id="contact" class="relative py-20 sm:py-24 lg:py-28 overflow-hidden">
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
         <div class="absolute left-[-160px] top-20 w-[520px] h-[520px] rounded-full bg-cyan-400/10 blur-[150px]"></div>
         <div class="absolute right-[-120px] bottom-[-120px] w-[420px] h-[420px] rounded-full bg-blue-500/10 blur-[140px]"></div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-6 md:px-10">
+    <div class="max-w-7xl mx-auto px-5 sm:px-6 md:px-10">
         <div class="flex items-center gap-4 mb-8">
             <span class="text-[11px] font-mono tracking-[0.25em] uppercase text-cyan-400">04 - Contact</span>
             <div class="flex-1 h-px bg-gradient-to-r from-cyan-400/30 to-transparent"></div>
@@ -12,10 +12,10 @@
 
         <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-20 items-start">
             <div class="space-y-6">
-                <h2 class="text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
                     Let&apos;s build something useful.
                 </h2>
-                <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-400 max-w-xl">
+                <p class="text-base sm:text-lg leading-relaxed text-slate-600 dark:text-slate-400 max-w-xl">
                     Have a project, role, collaboration, or product idea in mind? Send the short version and I&apos;ll get back to you.
                 </p>
 
@@ -67,7 +67,7 @@
                     @error('message') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                 </div>
 
-                <div class="flex justify-end">
+                <div class="flex">
                     <button type="submit" class="hero-btn-primary" wire:loading.attr="disabled">
                         <span wire:loading.remove>Send Message</span>
                         <span wire:loading>Sending...</span>
