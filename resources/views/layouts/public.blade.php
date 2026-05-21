@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Krish Bhojwani' }}</title>
+    <link rel="icon" href="{{ Vite::asset('resources/images/profile.png') }}" type="image/png">
+    <link rel="apple-touch-icon" href="{{ Vite::asset('resources/images/profile.png') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/devicon.min.css">
@@ -30,7 +32,9 @@
 
                 {{-- Logo --}}
                 <a href="/"
-                    class="text-cyan-600 dark:text-cyan-400 font-semibold text-lg tracking-tight hover:opacity-80 transition">
+                    class="flex items-center gap-3 text-cyan-600 dark:text-cyan-400 font-semibold text-lg tracking-tight hover:opacity-80 transition">
+                    <img src="{{ Vite::asset('resources/images/profile.png') }}" alt="Krish Bhojwani"
+                        class="h-9 w-9 rounded-md object-cover">
                     Krish.dev
                 </a>
 
@@ -146,11 +150,13 @@
 
         {{-- Footer --}}
         <footer class="border-t border-slate-200 dark:border-slate-800 py-12 mt-20">
-            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+            <div
+                class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
                 <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-mono">
                     © {{ date('Y') }} Krish Bhojwani — Built with Laravel + Livewire
                 </p>
-                <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
+                <div
+                    class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
                     <a href="https://gitlab.com/krishtbhojwani" target="_blank"
                         class="hover:text-cyan-400 transition">GitLab</a>
                     <a href="https://linkedin.com/in/krish-bhojwani" target="_blank"
