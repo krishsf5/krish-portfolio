@@ -1,4 +1,4 @@
-<section id="projects" class="py-28 relative overflow-hidden">
+<section id="projects" class="py-20 sm:py-24 lg:py-28 relative overflow-hidden">
 
     {{-- Background atmosphere --}}
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
@@ -15,7 +15,7 @@
             <div class="flex-1 h-px bg-gradient-to-r from-cyan-400/30 to-transparent"></div>
         </div>
         <div class="flex items-end justify-between">
-            <h2 class="text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
                 Things I've built
             </h2>
             @if ($projects->isNotEmpty())

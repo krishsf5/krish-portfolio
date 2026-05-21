@@ -26,7 +26,7 @@
         {{-- NAV --}}
         <header id="main-nav"
             class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent">
-            <div class="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
                 {{-- Logo --}}
                 <a href="/"
@@ -95,7 +95,7 @@
             {{-- Mobile dropdown menu --}}
             <div id="mobile-menu"
                 class="md:hidden hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-[#080a14]/95 backdrop-blur-md">
-                <nav class="flex flex-col px-8 py-4 gap-1 font-mono text-sm">
+                <nav class="flex flex-col px-5 sm:px-6 py-4 gap-1 font-mono text-sm">
                     @foreach ([
         'projects' => 'Projects',
         'skills' => 'Skills',
@@ -146,11 +146,11 @@
 
         {{-- Footer --}}
         <footer class="border-t border-slate-200 dark:border-slate-800 py-12 mt-20">
-            <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-                <p class="text-slate-500 dark:text-slate-400 text-sm font-mono">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+                <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-mono">
                     © {{ date('Y') }} Krish Bhojwani — Built with Laravel + Livewire
                 </p>
-                <div class="flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
+                <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
                     <a href="https://gitlab.com/krishtbhojwani" target="_blank"
                         class="hover:text-cyan-400 transition">GitLab</a>
                     <a href="https://linkedin.com/in/krish-bhojwani" target="_blank"
