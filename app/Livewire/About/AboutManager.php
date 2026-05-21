@@ -5,6 +5,7 @@ namespace App\Livewire\About;
 use App\Models\About;
 use App\Models\Project;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -60,19 +61,19 @@ class AboutManager extends Component
         $about = About::first();
 
         if ($about) {
-            $this->aboutId          = $about->id;
-            $this->full_name        = $about->full_name;
-            $this->title            = $about->title;
-            $this->bio              = $about->bio ?? '';
-            $this->location         = $about->location ?? '';
-            $this->email            = $about->email ?? '';
-            $this->github_url       = $about->github_url ?? '';
-            $this->linkedin_url     = $about->linkedin_url ?? '';
-            $this->website_url      = $about->website_url ?? '';
+            $this->aboutId = $about->id;
+            $this->full_name = $about->full_name;
+            $this->title = $about->title;
+            $this->bio = $about->bio ?? '';
+            $this->location = $about->location ?? '';
+            $this->email = $about->email ?? '';
+            $this->github_url = $about->github_url ?? '';
+            $this->linkedin_url = $about->linkedin_url ?? '';
+            $this->website_url = $about->website_url ?? '';
             $this->years_experience = $about->years_experience ?? 0;
-            $this->availability     = $about->availability;
-            $this->existingAvatar   = $about->avatar;
-            $this->stats            = $about->stats ?? [];
+            $this->availability = $about->availability;
+            $this->existingAvatar = $about->avatar;
+            $this->stats = $about->stats ?? [];
         }
     }
 
@@ -93,27 +94,31 @@ class AboutManager extends Component
 
         // Clean out any empty stat rows
         $cleanStats = collect($this->stats)
-            ->filter(fn ($s) => filled($s['label']) && filled($s['value']))
+            ->filter(fn ($s) => filled($s['label'] ?? null) && filled($s['value'] ?? null))
+            ->map(fn ($s) => [
+                'label' => trim($s['label']),
+                'value' => trim($s['value']),
+            ])
             ->values()
             ->toArray();
 
         $data = [
-            'full_name'        => trim($this->full_name),
-            'title'            => trim($this->title),
-            'bio'              => trim($this->bio) ?: null,
-            'location'         => trim($this->location) ?: null,
-            'email'            => trim($this->email) ?: null,
-            'github_url'       => trim($this->github_url) ?: null,
-            'linkedin_url'     => trim($this->linkedin_url) ?: null,
-            'website_url'      => trim($this->website_url) ?: null,
+            'full_name' => trim($this->full_name),
+            'title' => trim($this->title),
+            'bio' => trim($this->bio) ?: null,
+            'location' => trim($this->location) ?: null,
+            'email' => trim($this->email) ?: null,
+            'github_url' => trim($this->github_url) ?: null,
+            'linkedin_url' => trim($this->linkedin_url) ?: null,
+            'website_url' => trim($this->website_url) ?: null,
             'years_experience' => $this->years_experience,
-            'availability'     => $this->availability,
-            'stats'            => $cleanStats,
+            'availability' => $this->availability,
+            'stats' => $cleanStats,
         ];
 
         if ($this->avatar) {
             if ($this->existingAvatar) {
-                \Storage::disk('public')->delete($this->existingAvatar);
+                Storage::disk('public')->delete($this->existingAvatar);
             }
             $data['avatar'] = $this->avatar->store('about', 'public');
         }
@@ -121,13 +126,13 @@ class AboutManager extends Component
         if ($this->aboutId) {
             About::findOrFail($this->aboutId)->update($data);
         } else {
-            $about         = About::create($data);
+            $about = About::create($data);
             $this->aboutId = $about->id;
         }
 
-        $this->stats          = About::find($this->aboutId)?->stats ?? [];
+        $this->stats = About::find($this->aboutId)?->stats ?? [];
         $this->existingAvatar = About::find($this->aboutId)?->avatar;
-        $this->avatar         = null;
+        $this->avatar = null;
 
         Cache::forget('public.about');
 
@@ -138,8 +143,8 @@ class AboutManager extends Component
     {
         return view('livewire.admin.about.about-manager', [
             'liveProjectCount' => Project::where('status', 'live')
-                                         ->where('is_visible', true)
-                                         ->count(),
+                ->where('is_visible', true)
+                ->count(),
         ])->layout('layouts.dashboard');
     }
 }

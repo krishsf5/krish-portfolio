@@ -4,6 +4,7 @@ namespace App\Livewire\Projects;
 
 use App\Models\Project;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -79,7 +80,7 @@ class ProjectManager extends Component
             if ($this->editingId) {
                 $old = Project::find($this->editingId)?->thumbnail;
                 if ($old) {
-                    \Storage::disk('public')->delete($old);
+                    Storage::disk('public')->delete($old);
                 }
             }
             $data['thumbnail'] = $this->thumbnail->store('projects', 'public');
@@ -108,9 +109,11 @@ class ProjectManager extends Component
 
     public function toggleVisibility(int $id): void
     {
-        Project::where('id', $id)->update([
-            'is_visible' => \DB::raw('NOT is_visible'),
+        $project = Project::findOrFail($id);
+        $project->update([
+            'is_visible' => ! $project->is_visible,
         ]);
+
         Cache::forget('public.projects');
         Cache::forget('public.projects.live_count');
     }
@@ -124,7 +127,13 @@ class ProjectManager extends Component
     public function delete(): void
     {
         if ($this->deletingId) {
-            Project::findOrFail($this->deletingId)->delete();
+            $project = Project::findOrFail($this->deletingId);
+
+            if ($project->thumbnail) {
+                Storage::disk('public')->delete($project->thumbnail);
+            }
+
+            $project->delete();
             session()->flash('success', 'Project deleted.');
         }
 

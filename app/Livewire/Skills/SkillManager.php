@@ -101,6 +101,8 @@ class SkillManager extends Component
                 $skill->save();
                 $prev->save();
             });
+
+            Cache::forget('public.skills');
         }
     }
 
@@ -118,6 +120,8 @@ class SkillManager extends Component
                 $skill->save();
                 $next->save();
             });
+
+            Cache::forget('public.skills');
         }
     }
 

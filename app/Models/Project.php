@@ -26,7 +26,7 @@ class Project extends Model
 
         static::creating(function ($project) {
             if (! $project->slug) {
-                $base = Str::slug($project->title);
+                $base = Str::slug($project->title) ?: 'project';
 
                 $slug = $base;
                 $i = 1;

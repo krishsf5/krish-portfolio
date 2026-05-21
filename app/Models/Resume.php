@@ -15,6 +15,6 @@ class Resume extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
-        'size_kb'   => 'integer',
+        'size_kb' => 'integer',
     ];
 }

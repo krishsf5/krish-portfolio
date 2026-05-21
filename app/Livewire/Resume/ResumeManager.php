@@ -3,6 +3,8 @@
 namespace App\Livewire\Resume;
 
 use App\Models\Resume;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -26,13 +28,14 @@ class ResumeManager extends Component
         Resume::query()->update(['is_active' => false]);
 
         Resume::create([
-            'filename'  => $this->pdf->getClientOriginalName(),
-            'path'      => $path,
-            'size_kb'   => (int) round($this->pdf->getSize() / 1024),
+            'filename' => $this->pdf->getClientOriginalName(),
+            'path' => $path,
+            'size_kb' => (int) round($this->pdf->getSize() / 1024),
             'is_active' => true,
         ]);
 
         $this->pdf = null;
+        Cache::forget('public.resume_url');
         session()->flash('success', 'Resume uploaded and set as active.');
     }
 
@@ -40,13 +43,22 @@ class ResumeManager extends Component
     {
         Resume::query()->update(['is_active' => false]);
         Resume::findOrFail($id)->update(['is_active' => true]);
+        Cache::forget('public.resume_url');
     }
 
     public function delete(int $id): void
     {
         $resume = Resume::findOrFail($id);
-        \Storage::disk('public')->delete($resume->path);
+        $wasActive = $resume->is_active;
+
+        Storage::disk('public')->delete($resume->path);
         $resume->delete();
+
+        if ($wasActive) {
+            Resume::latest()->first()?->update(['is_active' => true]);
+            Cache::forget('public.resume_url');
+        }
+
         session()->flash('success', 'Resume deleted.');
     }
 
