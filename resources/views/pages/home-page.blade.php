@@ -4,7 +4,7 @@
     <livewire:public.hero-section />
 
     <!-- ABOUT -->
-    <livewire:public.about-section />
+    <livewire:public.about-section :avatar="$avatar" />
 
     <!-- TECH STACK -->
     <livewire:public.tech-stack-section :skills="$skills" />

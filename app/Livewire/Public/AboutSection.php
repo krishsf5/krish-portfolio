@@ -12,6 +12,7 @@ use Livewire\Component;
 class AboutSection extends Component
 {
     public $about;
+    public $avatar;
 
     public int $liveProjectCount;
 
@@ -39,6 +40,7 @@ class AboutSection extends Component
         return view('livewire.public.about-section', [
             'about' => $about,
             'liveProjectCount' => $liveProjectCount,
+            'avatar' => $this->avatar,
             'resumeUrl' => Cache::remember('public.resume_url', 300, function () {
                 $resume = Resume::where('is_active', true)->latest()->first();
 
