@@ -50,7 +50,7 @@
                         </a>
 
                         @if ($project->description)
-                            <p class="pcard__desc">{! $project->description !}</p>
+                            <p class="pcard__desc">{!! $project->description !!}</p>
                         @endif
 
                         @if ($project->tags && count($project->tags) > 0)

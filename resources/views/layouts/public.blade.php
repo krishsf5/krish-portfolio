@@ -1,3 +1,4 @@
+]
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ theme: localStorage.getItem('theme') || 'dark' }" x-init="document.documentElement.classList.toggle('dark', theme === 'dark')">
 
@@ -14,6 +15,44 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        section[id] {
+            scroll-margin-top: 72px;
+        }
+
+        /* Nav scrolled state */
+        .nav-scrolled {
+            background: rgba(248, 250, 252, 0.9) !important;
+            backdrop-filter: blur(12px);
+            border-color: rgba(148, 163, 184, 0.2) !important;
+        }
+
+        .dark .nav-scrolled {
+            background: rgba(8, 10, 20, 0.88) !important;
+            border-color: rgba(148, 163, 184, 0.1) !important;
+        }
+
+        /* Active nav link */
+        .nav-section-link.is-active {
+            color: #22d3ee !important;
+        }
+
+        .nav-section-link.is-active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+            height: 1.5px;
+            background: #22d3ee;
+            border-radius: 2px;
+        }
+    </style>
 </head>
 
 <body class="bg-slate-50 text-slate-900 dark:bg-[#080a14] dark:text-slate-200 transition-colors duration-300">
@@ -39,6 +78,11 @@
                 </a>
 
                 {{-- Desktop nav links --}}
+                {{--
+                    Smart links: on homepage use anchor (#projects),
+                    on any other page (e.g. project detail) go back to homepage first (/#projects).
+                --}}
+                @php $onHome = request()->is('/'); @endphp
                 <nav class="hidden md:flex items-center gap-10 text-sm font-mono">
                     @foreach ([
         'projects' => 'Projects',
@@ -46,10 +90,9 @@
         'about' => 'About',
         'contact' => 'Contact',
     ] as $id => $label)
-                        <a href="#{{ $id }}" data-nav-link="{{ $id }}"
+                        <a href="{{ $onHome ? '#' . $id : '/#' . $id }}" data-nav-link="{{ $id }}"
                             class="nav-section-link relative text-slate-600 hover:text-cyan-600 dark:text-slate-300 dark:hover:text-cyan-400 transition-colors duration-200">
                             {{ $label }}
-
                         </a>
                     @endforeach
                 </nav>
@@ -106,7 +149,7 @@
         'about' => 'About',
         'contact' => 'Contact',
     ] as $id => $label)
-                        <a href="#{{ $id }}" data-mobile-nav-link="{{ $id }}"
+                        <a href="{{ $onHome ? '#' . $id : '/#' . $id }}" data-mobile-nav-link="{{ $id }}"
                             class="mobile-nav-link py-3 px-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-cyan-500 dark:hover:text-cyan-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border-b border-slate-100 dark:border-slate-800/50 last:border-0">
                             <span class="mr-2 text-cyan-400 opacity-60">—</span>{{ $label }}
                         </a>
@@ -182,6 +225,7 @@
             const mobileBtn = document.getElementById('mobile-menu-btn')
             const mobileMenu = document.getElementById('mobile-menu')
 
+            // ── Scroll progress ───────────────────────────────────────
             function updateProgress() {
                 const max = document.documentElement.scrollHeight - window.innerHeight
                 progressBar.style.width = max > 0 ?
@@ -189,26 +233,41 @@
                     '0%'
             }
 
+            // ── Nav background on scroll ──────────────────────────────
             function updateNavBg() {
                 nav.classList.toggle('nav-scrolled', window.scrollY > 40)
+            }
+
+            // ── Scroll spy (homepage only) ────────────────────────────
+            // Only runs on homepage where the sections actually exist.
+            const isHomePage = window.location.pathname === '/'
+            const navLinks = document.querySelectorAll('[data-nav-link]')
+
+            function updateActiveNav() {
+                if (!isHomePage) return
+                const sections = document.querySelectorAll('section[id]')
+                let current = ''
+                sections.forEach(section => {
+                    if (window.scrollY >= section.offsetTop - 120) {
+                        current = section.id
+                    }
+                })
+                navLinks.forEach(link => {
+                    link.classList.toggle('is-active', link.dataset.navLink === current)
+                })
             }
 
             window.addEventListener('scroll', () => {
                 updateProgress()
                 updateNavBg()
+                updateActiveNav()
             }, {
                 passive: true
             })
 
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', () => {
-                    updateProgress()
-                    updateNavBg()
-                })
-            } else {
-                updateProgress()
-                updateNavBg()
-            }
+            updateProgress()
+            updateNavBg()
+            updateActiveNav()
 
             // ── Mobile menu ───────────────────────────────────────────
             if (!mobileBtn || !mobileMenu) return
