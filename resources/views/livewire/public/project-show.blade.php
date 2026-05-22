@@ -52,7 +52,7 @@
 
             @if ($project->description)
                 <p class="text-xl text-slate-500 dark:text-slate-400 leading-relaxed max-w-3xl">
-                    {{ $project->description }}
+                    {!! $project->description !!}
                 </p>
             @endif
 

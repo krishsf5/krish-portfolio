@@ -3,9 +3,9 @@
     {{-- Background atmosphere --}}
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
         <div class="absolute bottom-[-100px] right-[-150px] w-[600px] h-[600px] rounded-full"
-             style="background: radial-gradient(circle, rgba(34,211,238,0.055) 0%, transparent 65%);"></div>
+            style="background: radial-gradient(circle, rgba(34,211,238,0.055) 0%, transparent 65%);"></div>
         <div class="absolute top-[20%] left-[-100px] w-[400px] h-[400px] rounded-full"
-             style="background: radial-gradient(circle, rgba(99,102,241,0.04) 0%, transparent 65%);"></div>
+            style="background: radial-gradient(circle, rgba(99,102,241,0.04) 0%, transparent 65%);"></div>
     </div>
 
     {{-- Header --}}

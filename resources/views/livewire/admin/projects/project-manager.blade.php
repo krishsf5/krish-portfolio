@@ -697,8 +697,8 @@
                                     <trix-editor
                                         x-ref="trix"
                                         input="trix-description-input"
-                                        x-on:trix-change="$wire.set('description', $event.target.value)"
-                                        placeholder="What does this project do? Key features, tech choices, impact...">
+                                        x-on:trix-blur="$wire.set('description', $event.target.value)"
+                                        placeholder="What does this project do?...">
                                     </trix-editor>
                                 </div>
                                 @error('description') <p class="pm-error mt-1">{{ $message }}</p> @enderror
