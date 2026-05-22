@@ -106,10 +106,10 @@ class ProjectManager extends Component
             if ($this->editingId) {
                 $old = Project::find($this->editingId)?->thumbnail;
                 if ($old) {
-                    Storage::disk('public')->delete($old);
+                    Storage::disk('r2')->delete($old);
                 }
             }
-            $data['thumbnail'] = $this->thumbnail->store('projects', 'public');
+            $data['thumbnail'] = Storage::disk('r2')->putFile('projects', $this->thumbnail);
         }
 
         if ($this->editingId) {
@@ -153,7 +153,7 @@ class ProjectManager extends Component
             $project = Project::findOrFail($this->deletingId);
 
             if ($project->thumbnail) {
-                Storage::disk('public')->delete($project->thumbnail);
+                Storage::disk('r2')->delete($project->thumbnail);
             }
 
             $project->delete();

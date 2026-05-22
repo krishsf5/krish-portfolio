@@ -392,7 +392,7 @@
                         {{-- THUMBNAIL --}}
                         <div class="relative overflow-hidden">
                             @if ($project->thumbnail)
-                                <img src="/storage/{{ $project->thumbnail }}"
+                                <img src="{{ Storage::disk('r2')->url($project->thumbnail) }}"
                                     class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500">
                             @else
                                 <div
@@ -798,7 +798,7 @@
                                 @if ($existingThumb)
                                     <div
                                         class="mt-3 rounded-xl overflow-hidden border border-[#1a2d4a] relative group">
-                                        <img src="/storage/{{ $existingThumb }}"
+                                        <img src="{{ Storage::disk('r2')->url($project->thumbnail) }}"
                                             class="w-full max-h-56 object-cover opacity-70">
                                         <div class="absolute inset-0 bg-black/30 flex items-end">
                                             <span class="text-[10px] text-slate-400 px-3 py-2">
