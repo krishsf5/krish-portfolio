@@ -28,7 +28,7 @@
                 @if ($avatar)
                     <img src="{{ $avatar->temporaryUrl() }}" class="w-full h-full object-cover">
                 @elseif ($existingAvatar)
-                    <img src="{{ asset('storage/' . $existingAvatar) }}" class="w-full h-full object-cover">
+                    <img src="{{ Storage::disk('r2')->url($existingAvatar) }}" class="w-full h-full object-cover">
                 @else
                     <div class="w-full h-full flex items-center justify-center text-slate-600 text-xs">No photo</div>
                 @endif

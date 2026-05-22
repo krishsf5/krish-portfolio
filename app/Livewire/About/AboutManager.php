@@ -110,11 +110,10 @@ class AboutManager extends Component
             $user = auth()->user()->fresh();
 
             if ($user->avatar) {
-                Storage::disk('public')->delete($user->avatar);
+                Storage::disk('r2')->delete($user->avatar);  // ← was 'public'
             }
 
-            // Use storeAs or explicit disk method
-            $path = Storage::disk('public')->putFile('avatars', $this->avatar);
+            $path = Storage::disk('r2')->putFile('avatars', $this->avatar);  // ← was 'public'
 
             User::where('id', $user->id)->update(['avatar' => $path]);
 
