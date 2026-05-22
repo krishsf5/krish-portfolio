@@ -1323,69 +1323,27 @@
 }
 
 /* Add project */
-/* ─── Form helpers ─── */
-.form-label {
-    @apply text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1.5;
-}
-.form-input {
-    @apply w-full px-3 py-2 rounded-lg bg-[#080a14] border border-slate-700
-           text-slate-100 placeholder:text-slate-600
-           focus:border-cyan-400 focus:outline-none transition text-sm;
-}
-.form-error {
-    @apply text-xs text-red-400 mt-1;
-}
+@layer components {
+    .pm-label {
+       @apply text-xs font-semibold uppercase tracking-widest text-slate-500 block mb-2;
+    }
+    .pm-input {
+       @apply px-3 py-2.5 rounded-xl text-sm text-slate-100 placeholder:text-slate-700
+              border border-[#1e3050] transition;
+       background: #070d1a;
+    }
+    .pm-input:focus {
+       border-color: #22d3ee;
+       box-shadow: 0 0 0 3px rgba(34,211,238,0.08);
+       outline: none;
+    }
+    .pm-error {
+       @apply text-xs text-red-400 mt-1.5;
+    }
+    .pm-ai-btn {
+       @apply px-3 py-1.5 rounded-full text-xs border border-[#1e3050]
+              text-slate-500 hover:border-cyan-400/40 hover:text-cyan-400
+              hover:bg-cyan-400/5 transition cursor-pointer select-none;
+    }
+    }
 
-/* ─── AI action buttons ─── */
-.ai-action-btn {
-    @apply px-3 py-1 rounded-full text-xs border border-[#1e2d45]
-           text-slate-400 hover:border-cyan-400/50 hover:text-cyan-400
-           hover:bg-cyan-400/5 transition cursor-pointer;
-}
-
-/* ─── Trix overrides (dark theme) ─── */
-.trix-wrapper trix-toolbar {
-    background: #080a14;
-    border: 1px solid #334155;
-    border-bottom: none;
-    border-radius: 0.5rem 0.5rem 0 0;
-    padding: 6px 8px;
-}
-.trix-wrapper trix-toolbar .trix-button {
-    background: transparent;
-    border: none;
-    color: #94a3b8;
-    border-radius: 4px;
-}
-.trix-wrapper trix-toolbar .trix-button:hover,
-.trix-wrapper trix-toolbar .trix-button.trix-active {
-    background: #1e2d45;
-    color: #22d3ee;
-}
-.trix-wrapper trix-toolbar .trix-button-group {
-    border: 1px solid #1e2d45;
-    border-radius: 6px;
-}
-trix-editor.trix-editor-custom {
-    background: #080a14;
-    border: 1px solid #334155;
-    border-top: none;
-    border-radius: 0 0 0.5rem 0.5rem;
-    color: #e2e8f0;
-    min-height: 140px;
-    padding: 12px 14px;
-    font-size: 0.875rem;
-    line-height: 1.6;
-    outline: none;
-    transition: border-color 0.15s;
-}
-trix-editor.trix-editor-custom:focus {
-    border-color: #22d3ee;
-}
-trix-editor.trix-editor-custom::before {
-    color: #475569;
-}
-/* Hide Trix file attachment button (optional, cleaner look) */
-.trix-wrapper trix-toolbar .trix-button-group--file-tools {
-    display: none;
-}
