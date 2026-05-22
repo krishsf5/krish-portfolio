@@ -59,6 +59,12 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'tmp-for-tests' => [
+            'driver' => 'local',
+            'root' => storage_path('app/livewire-tmp'),
+            'visibility' => 'public',
+            'throw' => false,
+        ],
 
     ],
 

@@ -4,6 +4,7 @@ namespace App\Livewire\About;
 
 use App\Models\About;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
@@ -48,7 +49,7 @@ class AboutManager extends Component
     #[Validate('required|in:available,open,unavailable')]
     public string $availability = 'available';
 
-    #[Validate('nullable|image|max:2048')]
+    #[Validate('nullable|image|mimes:jpg,jpeg,png,webp|max:2048')]
     public $avatar = null;
 
     public ?string $existingAvatar = null;
@@ -72,33 +73,20 @@ class AboutManager extends Component
             $this->website_url = $about->website_url ?? '';
             $this->years_experience = $about->years_experience ?? 0;
             $this->availability = $about->availability;
-            $this->existingAvatar = $about->avatar;
             $this->stats = $about->stats ?? [];
         }
-    }
 
-    public function addStat(): void
-    {
-        $this->stats[] = ['label' => '', 'value' => ''];
-    }
-
-    public function removeStat(int $index): void
-    {
-        array_splice($this->stats, $index, 1);
-        $this->stats = array_values($this->stats);
+        // Avatar lives on the user now
+        $this->existingAvatar = auth()->user()?->avatar;
     }
 
     public function save(): void
     {
         $this->validate();
 
-        // Clean out any empty stat rows
         $cleanStats = collect($this->stats)
             ->filter(fn ($s) => filled($s['label'] ?? null) && filled($s['value'] ?? null))
-            ->map(fn ($s) => [
-                'label' => trim($s['label']),
-                'value' => trim($s['value']),
-            ])
+            ->map(fn ($s) => ['label' => trim($s['label']), 'value' => trim($s['value'])])
             ->values()
             ->toArray();
 
@@ -116,11 +104,22 @@ class AboutManager extends Component
             'stats' => $cleanStats,
         ];
 
+        // Handle avatar — store on users table
         if ($this->avatar) {
-            if ($this->existingAvatar) {
-                Storage::disk('public')->delete($this->existingAvatar);
+
+            $user = auth()->user()->fresh();
+
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
             }
-            $data['avatar'] = $this->avatar->store('about', 'public');
+
+            // Use storeAs or explicit disk method
+            $path = Storage::disk('public')->putFile('avatars', $this->avatar);
+
+            User::where('id', $user->id)->update(['avatar' => $path]);
+
+            $this->existingAvatar = $path;
+            $this->avatar = null;
         }
 
         if ($this->aboutId) {
@@ -131,12 +130,23 @@ class AboutManager extends Component
         }
 
         $this->stats = About::find($this->aboutId)?->stats ?? [];
-        $this->existingAvatar = About::find($this->aboutId)?->avatar;
-        $this->avatar = null;
 
         Cache::forget('public.about');
 
         session()->flash('success', 'About section saved.');
+
+        $this->dispatch('$refresh');
+    }
+
+    public function addStat(): void
+    {
+        $this->stats[] = ['label' => '', 'value' => ''];
+    }
+
+    public function removeStat(int $index): void
+    {
+        array_splice($this->stats, $index, 1);
+        $this->stats = array_values($this->stats);
     }
 
     public function render()
