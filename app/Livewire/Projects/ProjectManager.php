@@ -3,6 +3,7 @@
 namespace App\Livewire\Projects;
 
 use App\Models\Project;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Validate;
@@ -60,22 +61,22 @@ class ProjectManager extends Component
     {
         $project = Project::findOrFail($id);
 
-        $this->editingId    = $id;
-        $this->title        = $project->title;
-        $this->description  = $project->description ?? '';
-        $this->live_url     = $project->live_url ?? '';
-        $this->repo_url     = $project->repo_url ?? '';
-        $this->tags         = is_array($project->tags) ? implode(', ', $project->tags) : '';
-        $this->status       = $project->status;
+        $this->editingId = $id;
+        $this->title = $project->title;
+        $this->description = $project->description ?? '';
+        $this->live_url = $project->live_url ?? '';
+        $this->repo_url = $project->repo_url ?? '';
+        $this->tags = is_array($project->tags) ? implode(', ', $project->tags) : '';
+        $this->status = $project->status;
 
         // ── NEW ──────────────────────────────────────────
         // type="month" input expects YYYY-MM format
-        $this->start_date   = $project->start_date
-            ? \Carbon\Carbon::parse($project->start_date)->format('Y-m')
+        $this->start_date = $project->start_date
+            ? Carbon::parse($project->start_date)->format('Y-m')
             : '';
 
-        $this->end_date     = $project->end_date
-            ? \Carbon\Carbon::parse($project->end_date)->format('Y-m')
+        $this->end_date = $project->end_date
+            ? Carbon::parse($project->end_date)->format('Y-m')
             : '';
         // ─────────────────────────────────────────────────
 
@@ -87,18 +88,18 @@ class ProjectManager extends Component
         $this->validate();
 
         $data = [
-            'title'       => trim($this->title),
+            'title' => trim($this->title),
             'description' => trim($this->description) ?: null,
-            'live_url'    => trim($this->live_url) ?: null,
-            'repo_url'    => trim($this->repo_url) ?: null,
-            'tags'        => $this->parseTags($this->tags),
-            'status'      => $this->status,
-            'is_visible'  => $this->status !== 'hidden',
+            'live_url' => trim($this->live_url) ?: null,
+            'repo_url' => trim($this->repo_url) ?: null,
+            'tags' => $this->parseTags($this->tags),
+            'status' => $this->status,
+            'is_visible' => $this->status !== 'hidden',
 
             // ── NEW ──────────────────────────────────────────
             // Store as YYYY-MM-01 so DB date column is happy
-            'start_date'  => $this->start_date ? $this->start_date . '-01' : null,
-            'end_date'    => $this->end_date   ? $this->end_date   . '-01' : null,
+            'start_date' => $this->start_date ? $this->start_date.'-01' : null,
+            'end_date' => $this->end_date ? $this->end_date.'-01' : null,
             // ─────────────────────────────────────────────────
         ];
 
@@ -169,32 +170,54 @@ class ProjectManager extends Component
 
     public function closeModal(): void
     {
-        $this->showModal  = false;
+        $this->showModal = false;
         $this->showDelete = false;
         $this->resetForm();
     }
 
+    public function updateStatus(int $id, string $status): void
+    {
+        Project::findOrFail($id)->update([
+            'status' => $status,
+            'is_visible' => $status !== 'hidden',
+        ]);
+
+        Cache::forget('public.projects');
+        Cache::forget('public.projects.live_count');
+    }
+
     // ── NEW — AI action stubs, wire up to API later ──
-    public function improveWriting(): void  { /* TODO: call AI API, update $this->description */ }
-    public function suggestContent(): void  { /* TODO */ }
-    public function grammarCheck(): void    { /* TODO */ }
-    public function makeShorter(): void     { /* TODO */ }
+    public function improveWriting(): void
+    { /* TODO: call AI API, update $this->description */
+    }
+
+    public function suggestContent(): void
+    { /* TODO */
+    }
+
+    public function grammarCheck(): void
+    { /* TODO */
+    }
+
+    public function makeShorter(): void
+    { /* TODO */
+    }
     // ─────────────────────────────────────────────────
 
     private function resetForm(): void
     {
-        $this->thumbnail  = null;
-        $this->title      = '';
+        $this->thumbnail = null;
+        $this->title = '';
         $this->description = '';
-        $this->live_url   = '';
-        $this->repo_url   = '';
-        $this->tags       = '';
-        $this->status     = 'wip';
-        $this->editingId  = null;
+        $this->live_url = '';
+        $this->repo_url = '';
+        $this->tags = '';
+        $this->status = 'wip';
+        $this->editingId = null;
 
         // ── NEW ──────────────────────────────────────────
         $this->start_date = '';
-        $this->end_date   = '';
+        $this->end_date = '';
         // ─────────────────────────────────────────────────
 
         $this->resetValidation();
