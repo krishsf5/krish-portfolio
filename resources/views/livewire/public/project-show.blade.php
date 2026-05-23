@@ -94,7 +94,7 @@
                     class="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-400/20 to-purple-500/20 blur-xl -z-10 scale-105">
                 </div>
                 <div class="border border-white/10 rounded-2xl overflow-hidden">
-                    <img src="/storage/{{ $project->thumbnail }}" alt="{{ $project->title }}"
+                    <img src="{{ Storage::disk('r2')->url($project->thumbnail) }}" alt="{{ $project->title }}"
                         class="w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 </div>
             </div>
