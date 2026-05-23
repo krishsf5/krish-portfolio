@@ -149,8 +149,18 @@
     font-size: 15px; font-weight: 700; line-height: 1.3;
     color: #0f172a; margin: 0;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba(15,23,42,0.25);
+    transition: color .15s, text-decoration-color .15s;
 }
-.dark .pcard__title { color: #f1f5f9; }
+.pcard__title-link:hover .pcard__title {
+    color: #4f46e5;
+    text-decoration-color: rgba(79,70,229,0.5);
+}
+.dark .pcard__title { color: #f1f5f9; text-decoration-color: rgba(241,245,249,0.22); }
+.dark .pcard__title-link:hover .pcard__title { color: #a5b4fc; text-decoration-color: rgba(165,180,252,0.45); }
 
 /* ── LIVE / WIP badge ────────────────────────────────────────────────── */
 .pcard__badge {
@@ -201,16 +211,28 @@
     display: block; flex-shrink: 0; background: currentColor;
 }
 
-/* description: 3-line clamp */
+/* description */
 .pcard__desc {
-    font-size: 13px; line-height: 1.55; color: #64748b;
+    font-size: 13px; line-height: 1.6; color: #64748b;
     margin: 0 0 10px; flex-shrink: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 .dark .pcard__desc { color: #94a3b8; }
+.pcard__readmore {
+    display: inline;
+    font-size: 12px; font-weight: 600;
+    color: #6366f1;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgba(99,102,241,0.4);
+    transition: color .15s, text-decoration-color .15s;
+    white-space: nowrap;
+}
+.pcard__readmore:hover {
+    color: #4f46e5;
+    text-decoration-color: rgba(79,70,229,0.7);
+}
+.dark .pcard__readmore { color: #a5b4fc; text-decoration-color: rgba(165,180,252,0.35); }
+.dark .pcard__readmore:hover { color: #c7d2fe; text-decoration-color: rgba(199,210,254,0.6); }
 
 /* tags */
 .pcard__tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; flex-shrink:0; }
@@ -310,7 +332,24 @@
                             </div>
 
                             @if ($project->description)
-                                <p class="pcard__desc">{!! $project->description !!}</p>
+                                @php
+                                    $plain   = strip_tags($project->description);
+                                    $words   = str_word_count($plain, 1);
+                                    $count   = count($words);
+                                    $limit   = 20;
+                                    $trimmed = $count > $limit
+                                        ? implode(' ', array_slice($words, 0, $limit))
+                                        : $plain;
+                                    $needsMore = $count > $limit;
+                                @endphp
+                                <p class="pcard__desc">
+                                    {{ $trimmed }}{{ $needsMore ? '...' : '' }}
+                                    @if ($needsMore)
+                                        &ensp;<a href="{{ route('project.show', $project->slug) }}"
+                                               class="pcard__readmore"
+                                               onclick="event.stopPropagation()">Read more</a>
+                                    @endif
+                                </p>
                             @endif
 
                             @if ($project->tags && count($project->tags) > 0)

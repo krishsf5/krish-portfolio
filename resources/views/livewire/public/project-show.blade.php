@@ -95,7 +95,7 @@
                 </div>
                 <div class="border border-white/10 rounded-2xl overflow-hidden">
                     <img src="{{ Storage::disk('r2')->url($project->thumbnail) }}" alt="{{ $project->title }}"
-                        class="w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        class="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-105" />
                 </div>
             </div>
         @endif
