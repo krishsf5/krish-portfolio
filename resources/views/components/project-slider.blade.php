@@ -18,7 +18,7 @@
                         </div>
 
                         @if ($project->thumbnail)
-                            <img src="/storage/{{ $project->thumbnail }}" alt="{{ $project->title }}"
+                            <img src="{{ Storage::disk('r2')->url($project->thumbnail) }}" alt="{{ $project->title }}"
                                 class="pcard__thumb">
                         @else
                             <div class="pcard__placeholder">
