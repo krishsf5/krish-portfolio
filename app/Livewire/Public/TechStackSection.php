@@ -10,10 +10,7 @@ class TechStackSection extends Component
 {
     public function render()
     {
-        $skills = Cache::remember('public.skills', 300, fn () => Skill::where('is_visible', true)
-            ->orderBy('sort_order')
-            ->get()
-        );
+        $skills = \App\Services\BackendService::getSkills();
 
         $row1 = $skills->filter(fn ($s) => in_array($s->category, ['Frontend', 'Backend']))->values();
         $row2 = $skills->filter(fn ($s) => in_array($s->category, ['Database', 'Tools']))->values();

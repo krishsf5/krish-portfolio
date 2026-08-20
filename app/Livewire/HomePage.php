@@ -22,27 +22,12 @@ class HomePage extends Component
 
     public function mount(): void
     {
-        $this->projects = Cache::remember('public.projects', 300, fn () => Project::where('is_visible', true)
-            ->where('status', 'live')
-            ->orderBy('sort_order')
-            ->get()
-        );
+        $this->projects = \App\Services\BackendService::getProjects();
+        $this->skills = \App\Services\BackendService::getSkills();
 
-        $this->skills = Cache::remember('public.skills', 300, fn () => Skill::where('is_visible', true)
-            ->orderBy('sort_order')
-            ->get()
-        );
-
-        $this->about = Cache::remember('public.about', 300, fn () => About::first()
-        );
-
-        $this->avatar = Cache::remember('public.avatar', 300, function () {
-            $user = User::where('email', 'krishtbhojwani@gmail.com')->first();
-
-            return $user?->avatar
-            ? Storage::disk('r2')->url($user->avatar)
-            : null;
-        });
+        $aboutData = \App\Services\BackendService::getAbout();
+        $this->about = $aboutData?->about ?? null;
+        $this->avatar = $aboutData?->avatar_url ?? null;
     }
 
     public function render()

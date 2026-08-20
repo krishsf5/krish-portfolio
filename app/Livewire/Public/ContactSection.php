@@ -49,19 +49,25 @@ class ContactSection extends Component
 
         RateLimiter::hit($rateLimitKey, 600);
 
-        $inquiry = ContactInquiry::create([
+        $success = \App\Services\BackendService::submitInquiry([
             'name' => trim($validated['name']),
             'email' => Str::lower(trim($validated['email'])),
             'message' => trim($validated['message']),
-            'status' => ContactInquiry::STATUS_UNREAD,
-            'ip_hash' => $this->ipHash(),
-            'user_agent' => Str::limit((string) request()->userAgent(), 500, ''),
         ]);
 
-        $recipient = About::query()->whereNotNull('email')->value('email');
+        if ($success) {
+            $inquiry = new ContactInquiry([
+                'name' => trim($validated['name']),
+                'email' => Str::lower(trim($validated['email'])),
+                'message' => trim($validated['message']),
+            ]);
 
-        if (filled($recipient)) {
-            Mail::to($recipient)->send(new ContactInquiryReceived($inquiry));
+            $aboutData = \App\Services\BackendService::getAbout();
+            $recipient = $aboutData?->about?->email ?? null;
+
+            if (filled($recipient)) {
+                Mail::to($recipient)->send(new ContactInquiryReceived($inquiry));
+            }
         }
 
         $this->resetForm();

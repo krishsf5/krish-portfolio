@@ -16,17 +16,12 @@ class ProjectShow extends Component
 
     public function render()
     {
-        $project = Project::where('slug', $this->slug)
-            ->where('is_visible', true)
-            ->where('status', '!=', 'hidden')
-            ->firstOrFail();
+        $project = \App\Services\BackendService::getProject($this->slug);
 
-        $related = Project::where('id', '!=', $project->id)
-            ->where('is_visible', true)
-            ->where('status', '!=', 'hidden')
-            ->inRandomOrder()
-            ->limit(3)
-            ->get();
+        $allProjects = \App\Services\BackendService::getProjects();
+        $related = $allProjects->where('id', '!=', $project->id)
+            ->shuffle()
+            ->take(3);
 
         return view('livewire.public.project-show', [
             'project' => $project,

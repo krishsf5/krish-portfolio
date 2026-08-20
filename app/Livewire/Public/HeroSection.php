@@ -11,12 +11,10 @@ class HeroSection extends Component
 {
     public function render()
     {
-        return view('livewire.public.hero-section', [
-            'resumeUrl' => Cache::remember('public.resume_url', 300, function () {
-                $resume = Resume::where('is_active', true)->latest()->first();
+        $resumeData = \App\Services\BackendService::getResume();
 
-                return $resume ? Storage::url($resume->path) : null;
-            }),
+        return view('livewire.public.hero-section', [
+            'resumeUrl' => $resumeData?->resume_url ?? null,
         ]);
     }
 }
