@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'backend' => [
+        'url' => env('BACKEND_API_URL', 'https://krish-portfolio-backend-fpuf.onrender.com/api'),
+    ],
+
 ];
