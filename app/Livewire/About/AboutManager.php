@@ -2,11 +2,9 @@
 
 namespace App\Livewire\About;
 
-use App\Models\About;
-use App\Models\Project;
-use App\Models\User;
+use App\Services\ApiClient;
+use App\Services\AuthApiService;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -54,87 +52,65 @@ class AboutManager extends Component
 
     public ?string $existingAvatar = null;
 
-    // Stats: array of ['label' => '', 'value' => '']
     public array $stats = [];
+
+    public string $error = '';
 
     public function mount(): void
     {
-        $about = About::first();
+        $response = ApiClient::get('/about');
+        if ($response->successful()) {
+            $data = $response->json();
+            $about = $data['about'] ?? null;
+            $this->existingAvatar = $data['avatar_url'] ?? null;
 
-        if ($about) {
-            $this->aboutId = $about->id;
-            $this->full_name = $about->full_name;
-            $this->title = $about->title;
-            $this->bio = $about->bio ?? '';
-            $this->location = $about->location ?? '';
-            $this->email = $about->email ?? '';
-            $this->github_url = $about->github_url ?? '';
-            $this->linkedin_url = $about->linkedin_url ?? '';
-            $this->website_url = $about->website_url ?? '';
-            $this->years_experience = $about->years_experience ?? 0;
-            $this->availability = $about->availability;
-            $this->stats = $about->stats ?? [];
+            if ($about) {
+                $this->aboutId          = $about['id'] ?? null;
+                $this->full_name        = $about['full_name'] ?? '';
+                $this->title            = $about['title'] ?? '';
+                $this->bio              = $about['bio'] ?? '';
+                $this->location         = $about['location'] ?? '';
+                $this->email            = $about['email'] ?? '';
+                $this->github_url       = $about['github_url'] ?? '';
+                $this->linkedin_url     = $about['linkedin_url'] ?? '';
+                $this->website_url      = $about['website_url'] ?? '';
+                $this->years_experience = $about['years_experience'] ?? 0;
+                $this->availability     = $about['availability'] ?? 'available';
+                $this->stats            = $about['stats'] ?? [];
+            }
         }
-
-        // Avatar lives on the user now
-        $this->existingAvatar = auth()->user()?->avatar;
     }
 
     public function save(): void
     {
         $this->validate();
 
-        $cleanStats = collect($this->stats)
-            ->filter(fn ($s) => filled($s['label'] ?? null) && filled($s['value'] ?? null))
-            ->map(fn ($s) => ['label' => trim($s['label']), 'value' => trim($s['value'])])
-            ->values()
-            ->toArray();
-
         $data = [
-            'full_name' => trim($this->full_name),
-            'title' => trim($this->title),
-            'bio' => trim($this->bio) ?: null,
-            'location' => trim($this->location) ?: null,
-            'email' => trim($this->email) ?: null,
-            'github_url' => trim($this->github_url) ?: null,
-            'linkedin_url' => trim($this->linkedin_url) ?: null,
-            'website_url' => trim($this->website_url) ?: null,
+            'full_name'        => trim($this->full_name),
+            'title'            => trim($this->title),
+            'bio'              => trim($this->bio) ?: null,
+            'location'         => trim($this->location) ?: null,
+            'email'            => trim($this->email) ?: null,
+            'github_url'       => trim($this->github_url) ?: null,
+            'linkedin_url'     => trim($this->linkedin_url) ?: null,
+            'website_url'      => trim($this->website_url) ?: null,
             'years_experience' => $this->years_experience,
-            'availability' => $this->availability,
-            'stats' => $cleanStats,
+            'availability'     => $this->availability,
+            'stats'            => $this->stats,
         ];
 
-        // Handle avatar — store on users table
-        if ($this->avatar) {
+        $response = $this->avatar
+            ? ApiClient::putMultipart('/admin/about', array_merge($data, ['avatar' => $this->avatar]))
+            : ApiClient::put('/admin/about', $data);
 
-            $user = auth()->user()->fresh();
-
-            if ($user->avatar) {
-                Storage::disk('r2')->delete($user->avatar);  // ← was 'public'
-            }
-
-            $path = Storage::disk('r2')->putFile('avatars', $this->avatar);  // ← was 'public'
-
-            User::where('id', $user->id)->update(['avatar' => $path]);
-
-            $this->existingAvatar = $path;
+        if ($response->successful()) {
+            Cache::forget('public.about_data');
+            session()->flash('success', 'Profile updated.');
             $this->avatar = null;
-        }
-
-        if ($this->aboutId) {
-            About::findOrFail($this->aboutId)->update($data);
+            $this->mount(); // Reload fresh data
         } else {
-            $about = About::create($data);
-            $this->aboutId = $about->id;
+            $this->error = $response->json('message', 'Failed to update profile.');
         }
-
-        $this->stats = About::find($this->aboutId)?->stats ?? [];
-
-        Cache::forget('public.about');
-
-        session()->flash('success', 'About section saved.');
-
-        $this->dispatch('$refresh');
     }
 
     public function addStat(): void
@@ -144,16 +120,18 @@ class AboutManager extends Component
 
     public function removeStat(int $index): void
     {
-        array_splice($this->stats, $index, 1);
+        unset($this->stats[$index]);
         $this->stats = array_values($this->stats);
     }
 
     public function render()
     {
+        $user = AuthApiService::user();
+
         return view('livewire.admin.about.about-manager', [
-            'liveProjectCount' => Project::where('status', 'live')
-                ->where('is_visible', true)
-                ->count(),
+            'about'           => $this,
+            'existingAvatar'  => $this->existingAvatar,
+            'authUser'        => $user,
         ])->layout('layouts.dashboard');
     }
 }

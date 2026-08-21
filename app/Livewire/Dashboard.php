@@ -2,20 +2,28 @@
 
 namespace App\Livewire;
 
-use App\Models\Project;
+use App\Services\ApiClient;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Title('Dashboard - Projects')]
+#[Title('Dashboard')]
 class Dashboard extends Component
 {
     public function render()
     {
-        return view('pages.dashboard', [
-            'totalProjects' => Project::count(),
-            'liveProjects' => Project::where('status', 'live')->where('is_visible', true)->count(),
-            'wipProjects' => Project::where('status', 'wip')->count(),
-            'hiddenProjects' => Project::where('is_visible', false)->orWhere('status', 'hidden')->count(),
-        ])->layout('layouts.dashboard');
+        $response = ApiClient::get('/admin/projects');
+        $projects = $response->successful() ? collect($response->json()) : collect();
+
+        $totalProjects  = $projects->count();
+        $liveProjects   = $projects->where('status', 'live')->where('is_visible', true)->count();
+        $wipProjects    = $projects->where('status', 'wip')->count();
+        $hiddenProjects = $projects->filter(fn ($p) => ! $p['is_visible'] || $p['status'] === 'hidden')->count();
+
+        return view('pages.dashboard', compact(
+            'totalProjects',
+            'liveProjects',
+            'wipProjects',
+            'hiddenProjects',
+        ))->layout('layouts.dashboard');
     }
 }

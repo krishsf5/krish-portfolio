@@ -2,10 +2,9 @@
 
 namespace App\Livewire\Projects;
 
-use App\Models\Project;
+use App\Services\ApiClient;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -14,12 +13,10 @@ class ProjectManager extends Component
 {
     use WithFileUploads;
 
-    public bool $showModal = false;
-
+    public bool $showModal  = false;
     public bool $showDelete = false;
 
-    public ?int $editingId = null;
-
+    public ?int $editingId  = null;
     public ?int $deletingId = null;
 
     #[Validate('required|string|max:255')]
@@ -40,16 +37,18 @@ class ProjectManager extends Component
     #[Validate('required|in:live,wip,hidden')]
     public string $status = 'wip';
 
-    // ── NEW ──────────────────────────────────────────
     #[Validate('nullable|date')]
     public string $start_date = '';
 
     #[Validate('nullable|date')]
     public string $end_date = '';
-    // ─────────────────────────────────────────────────
 
     #[Validate('nullable|image|max:2048')]
     public $thumbnail;
+
+    public string $error = '';
+
+    // ─── Modal ────────────────────────────────────────────────────────────────
 
     public function create(): void
     {
@@ -59,28 +58,22 @@ class ProjectManager extends Component
 
     public function edit(int $id): void
     {
-        $project = Project::findOrFail($id);
-
-        $this->editingId = $id;
-        $this->title = $project->title;
-        $this->description = $project->description ?? '';
-        $this->live_url = $project->live_url ?? '';
-        $this->repo_url = $project->repo_url ?? '';
-        $this->tags = is_array($project->tags) ? implode(', ', $project->tags) : '';
-        $this->status = $project->status;
-
-        // ── NEW ──────────────────────────────────────────
-        // type="month" input expects YYYY-MM format
-        $this->start_date = $project->start_date
-            ? Carbon::parse($project->start_date)->format('Y-m')
-            : '';
-
-        $this->end_date = $project->end_date
-            ? Carbon::parse($project->end_date)->format('Y-m')
-            : '';
-        // ─────────────────────────────────────────────────
-
-        $this->showModal = true;
+        $response = ApiClient::get('/admin/projects');
+        if ($response->successful()) {
+            $project = collect($response->json())->firstWhere('id', $id);
+            if ($project) {
+                $this->editingId    = $id;
+                $this->title        = $project['title'];
+                $this->description  = $project['description'] ?? '';
+                $this->live_url     = $project['live_url'] ?? '';
+                $this->repo_url     = $project['repo_url'] ?? '';
+                $this->tags         = is_array($project['tags']) ? implode(', ', $project['tags']) : '';
+                $this->status       = $project['status'];
+                $this->start_date   = $project['start_date'] ? Carbon::parse($project['start_date'])->format('Y-m') : '';
+                $this->end_date     = $project['end_date']   ? Carbon::parse($project['end_date'])->format('Y-m')   : '';
+                $this->showModal    = true;
+            }
+        }
     }
 
     public function save(): void
@@ -88,58 +81,42 @@ class ProjectManager extends Component
         $this->validate();
 
         $data = [
-            'title' => trim($this->title),
+            'title'       => trim($this->title),
             'description' => trim($this->description) ?: null,
-            'live_url' => trim($this->live_url) ?: null,
-            'repo_url' => trim($this->repo_url) ?: null,
-            'tags' => $this->parseTags($this->tags),
-            'status' => $this->status,
-            'is_visible' => $this->status !== 'hidden',
-
-            // ── NEW ──────────────────────────────────────────
-            // Store as YYYY-MM-01 so DB date column is happy
-            'start_date' => $this->start_date ? $this->start_date.'-01' : null,
-            'end_date' => $this->end_date ? $this->end_date.'-01' : null,
-            // ─────────────────────────────────────────────────
+            'live_url'    => trim($this->live_url) ?: null,
+            'repo_url'    => trim($this->repo_url) ?: null,
+            'tags'        => $this->parseTags($this->tags),
+            'status'      => $this->status,
+            'is_visible'  => $this->status !== 'hidden',
+            'start_date'  => $this->start_date ? Carbon::parse($this->start_date . '-01')->format('Y-m-d') : null,
+            'end_date'    => $this->end_date   ? Carbon::parse($this->end_date   . '-01')->format('Y-m-d') : null,
         ];
 
         if ($this->thumbnail) {
-            if ($this->editingId) {
-                $old = Project::find($this->editingId)?->thumbnail;
-                if ($old) {
-                    Storage::disk('r2')->delete($old);
-                }
-            }
-            $data['thumbnail'] = Storage::disk('r2')->putFile('projects', $this->thumbnail);
+            $data['thumbnail'] = $this->thumbnail;
         }
+
+        $hasFile = (bool) $this->thumbnail;
 
         if ($this->editingId) {
-
-            Project::findOrFail($this->editingId)->update($data);
-            session()->flash('success', 'Project updated successfully.');
-
+            $response = $hasFile
+                ? ApiClient::putMultipart("/admin/projects/{$this->editingId}", $data)
+                : ApiClient::put("/admin/projects/{$this->editingId}", $data);
+            $msg = 'Project updated.';
         } else {
-
-            $data['sort_order'] = Project::max('sort_order') + 1;
-            Project::create($data);
-            session()->flash('success', 'Project created successfully.');
-
+            $response = $hasFile
+                ? ApiClient::postMultipart('/admin/projects', $data)
+                : ApiClient::post('/admin/projects', $data);
+            $msg = 'Project created.';
         }
 
-        $this->closeModal();
-        Cache::forget('public.projects');
-        Cache::forget('public.projects.live_count');
-    }
-
-    public function toggleVisibility(int $id): void
-    {
-        $project = Project::findOrFail($id);
-        $project->update([
-            'is_visible' => ! $project->is_visible,
-        ]);
-
-        Cache::forget('public.projects');
-        Cache::forget('public.projects.live_count');
+        if ($response->successful()) {
+            Cache::forget('public.projects');
+            session()->flash('success', $msg);
+            $this->closeModal();
+        } else {
+            $this->error = $response->json('message', 'Failed to save project.');
+        }
     }
 
     public function confirmDelete(int $id): void
@@ -151,95 +128,54 @@ class ProjectManager extends Component
     public function delete(): void
     {
         if ($this->deletingId) {
-            $project = Project::findOrFail($this->deletingId);
-
-            if ($project->thumbnail) {
-                Storage::disk('r2')->delete($project->thumbnail);
-            }
-
-            $project->delete();
+            ApiClient::delete("/admin/projects/{$this->deletingId}");
+            Cache::forget('public.projects');
             session()->flash('success', 'Project deleted.');
         }
-
         $this->showDelete = false;
         $this->deletingId = null;
-
-        Cache::forget('public.projects');
-        Cache::forget('public.projects.live_count');
     }
 
     public function closeModal(): void
     {
-        $this->showModal = false;
+        $this->showModal  = false;
         $this->showDelete = false;
         $this->resetForm();
     }
 
-    public function updateStatus(int $id, string $status): void
-    {
-        Project::findOrFail($id)->update([
-            'status' => $status,
-            'is_visible' => $status !== 'hidden',
-        ]);
-
-        Cache::forget('public.projects');
-        Cache::forget('public.projects.live_count');
-    }
-
-    // ── NEW — AI action stubs, wire up to API later ──
-    public function improveWriting(): void
-    { /* TODO: call AI API, update $this->description */
-    }
-
-    public function suggestContent(): void
-    { /* TODO */
-    }
-
-    public function grammarCheck(): void
-    { /* TODO */
-    }
-
-    public function makeShorter(): void
-    { /* TODO */
-    }
-    // ─────────────────────────────────────────────────
-
     private function resetForm(): void
     {
-        $this->thumbnail = null;
-        $this->title = '';
+        $this->editingId   = null;
+        $this->title       = '';
         $this->description = '';
-        $this->live_url = '';
-        $this->repo_url = '';
-        $this->tags = '';
-        $this->status = 'wip';
-        $this->editingId = null;
-
-        // ── NEW ──────────────────────────────────────────
-        $this->start_date = '';
-        $this->end_date = '';
-        // ─────────────────────────────────────────────────
-
+        $this->live_url    = '';
+        $this->repo_url    = '';
+        $this->tags        = '';
+        $this->status      = 'wip';
+        $this->start_date  = '';
+        $this->end_date    = '';
+        $this->thumbnail   = null;
+        $this->error       = '';
         $this->resetValidation();
     }
 
     private function parseTags(string $raw): array
     {
-        if (empty(trim($raw))) {
-            return [];
-        }
-
-        return array_values(
-            array_filter(
-                array_map('trim', explode(',', $raw))
-            )
-        );
+        return collect(explode(',', $raw))
+            ->map(fn($t) => trim($t))
+            ->filter()
+            ->values()
+            ->all();
     }
 
     public function render()
     {
-        return view('livewire.admin.projects.project-manager', [
-            'projects' => Project::orderBy('sort_order')->orderByDesc('created_at')->get(),
-        ]);
+        $response = ApiClient::get('/admin/projects');
+        $projects = $response->successful()
+            ? collect($response->json())
+            : collect();
+
+        return view('livewire.admin.projects.project-manager', compact('projects'))
+            ->layout('layouts.dashboard');
     }
 }

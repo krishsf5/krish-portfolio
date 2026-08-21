@@ -2,85 +2,73 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * Public-facing data service.
+ * All calls are HMAC-signed via ApiClient — no DB access on the frontend.
+ */
 class BackendService
 {
-    protected static function getBaseUrl(): string
-    {
-        return rtrim(config('services.backend.url', env('BACKEND_API_URL', 'http://localhost:8001/api')), '/');
-    }
-
-    public static function getAbout()
+    public static function getAbout(): mixed
     {
         return Cache::remember('public.about_data', 300, function () {
             try {
-                $response = Http::timeout(5)->get(self::getBaseUrl() . '/about');
+                $response = ApiClient::get('/about');
                 if ($response->successful()) {
                     return json_decode($response->body());
                 }
-            } catch (\Exception $e) {
-                // Fallback or log
-            }
+            } catch (\Exception) {}
             return null;
         });
     }
 
-    public static function getProjects()
+    public static function getProjects(): \Illuminate\Support\Collection
     {
         return Cache::remember('public.projects', 300, function () {
             try {
-                $response = Http::timeout(5)->get(self::getBaseUrl() . '/projects');
+                $response = ApiClient::get('/projects');
                 if ($response->successful()) {
                     return collect(json_decode($response->body()));
                 }
-            } catch (\Exception $e) {
-                // Fallback
-            }
+            } catch (\Exception) {}
             return collect();
         });
     }
 
-    public static function getProject(string $slug)
+    public static function getProject(string $slug): mixed
     {
         try {
-            $response = Http::timeout(5)->get(self::getBaseUrl() . "/projects/{$slug}");
+            $response = ApiClient::get("/projects/{$slug}");
             if ($response->successful()) {
                 return json_decode($response->body());
             }
-        } catch (\Exception $e) {
-            // Fallback
-        }
+        } catch (\Exception) {}
         abort(404);
     }
 
-    public static function getSkills()
+    public static function getSkills(): \Illuminate\Support\Collection
     {
         return Cache::remember('public.skills', 300, function () {
             try {
-                $response = Http::timeout(5)->get(self::getBaseUrl() . '/skills');
+                $response = ApiClient::get('/skills');
                 if ($response->successful()) {
                     return collect(json_decode($response->body()));
                 }
-            } catch (\Exception $e) {
-                // Fallback
-            }
+            } catch (\Exception) {}
             return collect();
         });
     }
 
-    public static function getResume()
+    public static function getResume(): mixed
     {
         return Cache::remember('public.resume_data', 300, function () {
             try {
-                $response = Http::timeout(5)->get(self::getBaseUrl() . '/resumes');
+                $response = ApiClient::get('/resumes');
                 if ($response->successful()) {
                     return json_decode($response->body());
                 }
-            } catch (\Exception $e) {
-                // Fallback
-            }
+            } catch (\Exception) {}
             return null;
         });
     }
@@ -88,9 +76,9 @@ class BackendService
     public static function submitInquiry(array $data): bool
     {
         try {
-            $response = Http::timeout(5)->post(self::getBaseUrl() . '/inquiries', $data);
+            $response = ApiClient::post('/inquiries', $data);
             return $response->successful();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return false;
         }
     }

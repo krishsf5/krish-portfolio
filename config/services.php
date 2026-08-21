@@ -39,4 +39,12 @@ return [
         'url' => env('BACKEND_API_URL', 'https://krish-portfolio-backend-fpuf.onrender.com/api'),
     ],
 
+    'hmac' => [
+        'secret' => env('FRONTEND_API_SECRET'),
+    ],
+
+    'encrypt' => [
+        'key' => env('FRONTEND_ENCRYPT_KEY'),
+    ],
+
 ];
