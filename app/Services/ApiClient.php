@@ -43,7 +43,15 @@ class ApiClient
     private static function buildSignature(string $method, string $path, string $rawBody, int $timestamp): string
     {
         $bodyHash  = hash('sha256', $rawBody);
-        $canonical = implode("\n", [$timestamp, strtoupper($method), '/' . ltrim($path, '/'), $bodyHash]);
+        
+        // Normalize path so it always has the /api/ prefix to match Laravel's $request->path()
+        $cleanPath = ltrim($path, '/');
+        if (! str_starts_with($cleanPath, 'api/')) {
+            $cleanPath = 'api/' . $cleanPath;
+        }
+        $canonicalPath = '/' . $cleanPath;
+
+        $canonical = implode("\n", [$timestamp, strtoupper($method), $canonicalPath, $bodyHash]);
 
         return hash_hmac('sha256', $canonical, self::hmacSecret());
     }
