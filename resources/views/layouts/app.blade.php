@@ -15,6 +15,7 @@
         @livewireStyles
     </head>
     <body class="dashboard min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#080a14] dark:text-white">
+        <x-global-loader />
         <div class="flex min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#080a14] dark:text-white">
             <aside class="w-64 border-r border-slate-200 bg-white/80 flex flex-col transition-colors duration-300 dark:border-slate-800 dark:bg-[#0c1120]">
                 <div class="h-16 flex items-center px-6 border-b border-slate-200 transition-colors duration-300 dark:border-slate-800">

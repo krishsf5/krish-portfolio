@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ theme: localStorage.getItem('theme') || 'dark' }" x-init="document.documentElement.classList.toggle('dark', theme === 'dark')">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" x-data="{ theme: localStorage.getItem('theme') || 'dark' }">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>
+        (function() {
+            function applyTheme() {
+                const theme = localStorage.getItem('theme') || 'dark';
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+            applyTheme();
+            document.addEventListener('livewire:navigated', applyTheme);
+        })();
+    </script>
     <title>{{ $title ?? 'Krish Bhojwani' }}</title>
     <link rel="icon" href="{{ asset('images/profile.png') }}" type="image/png">
     <link rel="apple-touch-icon" href="{{ asset('images/profile.png') }}">
@@ -21,19 +35,7 @@
         }
 
         section[id] {
-            scroll-margin-top: 72px;
-        }
-
-        /* Nav scrolled state */
-        .nav-scrolled {
-            background: rgba(248, 250, 252, 0.9) !important;
-            backdrop-filter: blur(12px);
-            border-color: rgba(148, 163, 184, 0.2) !important;
-        }
-
-        .dark .nav-scrolled {
-            background: rgba(8, 10, 20, 0.88) !important;
-            border-color: rgba(148, 163, 184, 0.1) !important;
+            scroll-margin-top: 80px;
         }
 
         /* Active nav link */
@@ -47,14 +49,17 @@
             bottom: -4px;
             left: 0;
             right: 0;
-            height: 1.5px;
+            height: 2px;
             background: #22d3ee;
             border-radius: 2px;
+            box-shadow: 0 0 8px rgba(34, 211, 238, 0.6);
         }
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-900 dark:bg-[#080a14] dark:text-slate-200 transition-colors duration-300">
+<body class="bg-slate-50 text-slate-900 dark:bg-[#080a14] dark:text-slate-200 transition-colors duration-300 antialiased selection:bg-cyan-500/20 selection:text-cyan-400">
+
+    <x-global-loader />
 
     {{-- Scroll progress bar --}}
     <div id="scroll-progress"
@@ -65,12 +70,12 @@
 
         {{-- NAV --}}
         <header id="main-nav"
-            class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent">
+            class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b bg-slate-50/90 dark:bg-[#080a14]/90 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/80 shadow-sm shadow-slate-900/5 dark:shadow-black/30">
             <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
                 {{-- Logo --}}
-                <a href="/"
-                    class="flex items-center gap-3 text-cyan-600 dark:text-cyan-400 font-semibold text-lg tracking-tight hover:opacity-80 transition">
+                <a href="/" wire:navigate
+                    class="flex items-center gap-3 text-cyan-600 dark:text-cyan-400 font-bold text-lg tracking-tight hover:opacity-80 transition">
                     <img src="{{ asset('images/profile.png') }}" alt="Krish Bhojwani"
                         class="h-9 w-9 rounded-md object-cover">
                     Krish.dev
@@ -90,7 +95,7 @@
         'contact' => 'Contact',
     ] as $id => $label)
                         <a href="{{ $onHome ? '#' . $id : '/#' . $id }}" data-nav-link="{{ $id }}"
-                            class="nav-section-link relative text-slate-600 hover:text-cyan-600 dark:text-slate-300 dark:hover:text-cyan-400 transition-colors duration-200">
+                            class="nav-section-link relative text-slate-600 hover:text-cyan-600 dark:text-slate-300 dark:hover:text-cyan-400 transition-colors duration-200 py-1">
                             {{ $label }}
                         </a>
                     @endforeach
@@ -256,17 +261,22 @@
                 })
             }
 
+            let ticking = false;
             window.addEventListener('scroll', () => {
-                updateProgress()
-                updateNavBg()
-                updateActiveNav()
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        updateProgress();
+                        updateActiveNav();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
             }, {
                 passive: true
-            })
+            });
 
-            updateProgress()
-            updateNavBg()
-            updateActiveNav()
+            updateProgress();
+            updateActiveNav();
 
             // ── Mobile menu ───────────────────────────────────────────
             if (!mobileBtn || !mobileMenu) return

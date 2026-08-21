@@ -18,20 +18,9 @@
                 <p class="text-base sm:text-lg leading-relaxed text-slate-600 dark:text-slate-400 max-w-xl">
                     Have a project, role, collaboration, or product idea in mind? Send the short version and I&apos;ll get back to you.
                 </p>
-
-                <div class="grid sm:grid-cols-2 gap-4 pt-4">
-                    <div class="rounded-lg border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 p-5">
-                        <p class="text-xs font-mono uppercase tracking-widest text-slate-400">Response</p>
-                        <p class="mt-2 text-slate-700 dark:text-slate-300">Usually within a day</p>
-                    </div>
-                    <div class="rounded-lg border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 p-5">
-                        <p class="text-xs font-mono uppercase tracking-widest text-slate-400">Best for</p>
-                        <p class="mt-2 text-slate-700 dark:text-slate-300">Backend, full-stack, CMS</p>
-                    </div>
-                </div>
             </div>
 
-            <form wire:submit="submit" class="rounded-lg border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-[#0c1120]/90 p-6 md:p-8 shadow-xl shadow-slate-900/5 dark:shadow-black/20 space-y-5">
+            <form wire:submit="submit" class="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-[#0c1120]/90 p-6 md:p-8 shadow-2xl shadow-indigo-500/10 dark:shadow-black/20 space-y-5">
                 @if ($successMessage)
                     <div class="rounded-lg border border-cyan-400/25 bg-cyan-400/10 px-4 py-3 text-sm text-cyan-700 dark:text-cyan-300">
                         {{ $successMessage }}
@@ -47,14 +36,14 @@
                     <div>
                         <label for="contact-name" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Name</label>
                         <input id="contact-name" wire:model="name" type="text" autocomplete="name"
-                            class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#080a14] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-cyan-400 focus:outline-none transition">
+                            class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-[#080a14] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:bg-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition">
                         @error('name') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
                         <label for="contact-email" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Email</label>
                         <input id="contact-email" wire:model="email" type="email" autocomplete="email"
-                            class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#080a14] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-cyan-400 focus:outline-none transition">
+                            class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-[#080a14] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:bg-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition">
                         @error('email') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -62,7 +51,7 @@
                 <div>
                     <label for="contact-message" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Message</label>
                     <textarea id="contact-message" wire:model="message" rows="6"
-                        class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#080a14] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-cyan-400 focus:outline-none transition resize-y"
+                        class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-[#080a14] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:bg-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition resize-y"
                         placeholder="Tell me what you are building, hiring for, or exploring."></textarea>
                     @error('message') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                 </div>

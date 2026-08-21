@@ -21,24 +21,24 @@
 
 /* slide width: responsive via CSS only — no JS needed */
 #swiper_{{ $uid }} .swiper-slide {
-    width: 300px;
+    width: 380px;
 }
 @media (max-width: 767px) {
     #swiper_{{ $uid }} .swiper-slide {
-        width: calc(100vw - 56px); /* ~28px peek on each side */
+        width: calc(100vw - 48px); /* ~24px peek on each side */
     }
 }
 @media (min-width: 768px) and (max-width: 1023px) {
     #swiper_{{ $uid }} .swiper-slide {
-        width: 310px;
+        width: 350px;
     }
 }
 
 /* adjacent slide effect — CSS-only, no JS transforms */
 #swiper_{{ $uid }} .swiper-slide {
     transition: transform 0.35s ease, opacity 0.35s ease;
-    transform: scale(0.91);
-    opacity: 0.45;
+    transform: scale(0.93);
+    opacity: 0.55;
 }
 #swiper_{{ $uid }} .swiper-slide-active {
     transform: scale(1);
@@ -46,8 +46,8 @@
 }
 #swiper_{{ $uid }} .swiper-slide-prev,
 #swiper_{{ $uid }} .swiper-slide-next {
-    transform: scale(0.95);
-    opacity: 0.7;
+    transform: scale(0.96);
+    opacity: 0.75;
 }
 
 /* ── Pagination dots ─────────────────────────────────────────────────── */
@@ -60,192 +60,253 @@
 /* Swiper injects .proj-dot via bulletClass */
 .proj-dot {
     display: inline-block;
-    width: 6px; height: 6px;
-    border-radius: 99px;
-    background: rgba(148,163,184,.3);
-    border: none; padding: 0; cursor: pointer;
-    transition: background .22s, width .22s;
-    opacity: 1 !important; /* override Swiper default */
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: rgba(148, 163, 184, 0.35);
+    cursor: pointer;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.3s ease;
 }
-.proj-dot.proj-dot--active {
+.proj-dot--active {
+    width: 22px;
     background: #6366f1;
-    width: 20px;
+}
+.dark .proj-dot--active {
+    background: #22d3ee;
 }
 
-/* ── Card: fixed height ──────────────────────────────────────────────── */
+/* ── Compact Card ─────────────────────────────────────────────────────── */
 .pcard {
     background: #ffffff;
-    border: 1px solid rgba(148,163,184,0.18);
+    border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 16px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    height: 400px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-    transition: box-shadow 0.2s ease;
+    height: 440px;
+    user-select: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .dark .pcard {
-    background: #0f172a;
-    border-color: rgba(148,163,184,0.10);
-    box-shadow: 0 2px 16px rgba(0,0,0,0.28);
+    background: #0d121f;
+    border-color: rgba(148, 163, 184, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+.swiper-slide-active .pcard {
+    border-color: rgba(99, 102, 241, 0.35);
+    box-shadow: 0 8px 24px -4px rgba(99, 102, 241, 0.12);
+}
+.dark .swiper-slide-active .pcard {
+    border-color: rgba(34, 211, 238, 0.3);
+    box-shadow: 0 8px 24px -4px rgba(34, 211, 238, 0.08);
 }
 
-/* ── Image zone ──────────────────────────────────────────────────────── */
+/* Image area — prominent 190px */
 .pcard__img {
+    height: 190px;
     position: relative;
-    height: 168px;
-    flex-shrink: 0;
     overflow: hidden;
-    background: #0f172a;
+    background: #f1f5f9;
+    flex-shrink: 0;
+}
+.dark .pcard__img {
+    background: #080c14;
 }
 .pcard__thumb {
-    width: 100%; height: 100%;
-    object-fit: cover; display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+.pcard:hover .pcard__thumb {
+    transform: scale(1.04);
 }
 .pcard__placeholder {
-    width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    color: rgba(148,163,184,0.3);
-    background: linear-gradient(135deg,#0f172a,#1e293b);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(148, 163, 184, 0.3);
 }
+
+/* Gradient line top of card */
+.pcard__accent {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    z-index: 2;
+}
+.pcard__accent--live {
+    background: linear-gradient(90deg, #10b981, #22d3ee);
+}
+.pcard__accent--wip {
+    background: linear-gradient(90deg, #f59e0b, #ef4444);
+}
+.pcard__accent--dim {
+    background: linear-gradient(90deg, #6366f1, #a855f7);
+}
+
+/* Fade at bottom of image */
 .pcard__img-fade {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    height: 48px;
-    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 32px;
+    background: linear-gradient(to top, #ffffff, transparent);
     pointer-events: none;
 }
-/* accent strip */
-.pcard__accent {
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 3px; z-index: 2;
+.dark .pcard__img-fade {
+    background: linear-gradient(to top, #0d121f, transparent);
 }
-.pcard__accent--live { background: linear-gradient(90deg,#22d3ee,#6366f1); }
-.pcard__accent--wip  { background: linear-gradient(90deg,#f59e0b,#ef4444); }
-.pcard__accent--dim  { background: rgba(148,163,184,0.18); }
 
-/* ── Body ────────────────────────────────────────────────────────────── */
+/* Card Body */
 .pcard__body {
-    flex: 1 1 0;
-    min-height: 0;
-    display: flex; flex-direction: column;
-    padding: 14px 16px;
+    padding: 16px 18px 16px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     overflow: hidden;
 }
 
-/* title row: title + badge */
+/* Title row: title left, badge right */
 .pcard__title-row {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
-    flex-shrink: 0;
-    min-width: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
 }
 .pcard__title-link {
-    text-decoration: none; display: block;
-    min-width: 0; flex: 1 1 0;
+    text-decoration: none;
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    z-index: 10;
+    cursor: pointer;
+    display: block;
 }
 .pcard__title {
-    font-size: 15px; font-weight: 700; line-height: 1.3;
-    color: #0f172a; margin: 0;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-thickness: 1px;
-    text-decoration-color: rgba(15,23,42,0.25);
-    transition: color .15s, text-decoration-color .15s;
-}
-.pcard__title-link:hover .pcard__title {
-    color: #4f46e5;
-    text-decoration-color: rgba(79,70,229,0.5);
-}
-.dark .pcard__title { color: #f1f5f9; text-decoration-color: rgba(241,245,249,0.22); }
-.dark .pcard__title-link:hover .pcard__title { color: #a5b4fc; text-decoration-color: rgba(165,180,252,0.45); }
-
-/* ── LIVE / WIP badge ────────────────────────────────────────────────── */
-.pcard__badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    flex-shrink: 0;
-    font-size: 9px; font-weight: 800; letter-spacing: .13em;
-    padding: 3px 7px 3px 6px; border-radius: 99px;
+    font-size: 15.5px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.3;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.15s;
+    cursor: pointer;
+}
+.dark .pcard__title { color: #f1f5f9; }
+.pcard:hover .pcard__title { color: #6366f1; }
+.dark .pcard:hover .pcard__title { color: #22d3ee; }
+
+/* Status badge */
+.pcard__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3.5px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    font-family: 'DM Mono', monospace;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    line-height: 1.2;
 }
 .pcard__badge--live {
-    background: linear-gradient(90deg, rgba(6,182,212,0.12), rgba(99,102,241,0.15));
-    color: #06b6d4;
-    box-shadow: 0 0 0 1px rgba(6,182,212,0.28), 0 0 7px rgba(6,182,212,0.12);
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.25);
 }
 .dark .pcard__badge--live {
-    background: linear-gradient(90deg, rgba(6,182,212,0.18), rgba(99,102,241,0.2));
-    color: #22d3ee;
-    box-shadow: 0 0 0 1px rgba(34,211,238,0.32), 0 0 9px rgba(34,211,238,0.16);
+    background: rgba(16, 185, 129, 0.12);
+    color: #34d399;
 }
 .pcard__badge--wip {
-    background: rgba(245,158,11,.1);
+    background: rgba(245, 158, 11, 0.1);
     color: #d97706;
-    box-shadow: 0 0 0 1px rgba(245,158,11,.26);
+    border: 1px solid rgba(245, 158, 11, 0.25);
 }
 .dark .pcard__badge--wip {
-    background: rgba(245,158,11,.13);
+    background: rgba(245, 158, 11, 0.12);
     color: #fbbf24;
-    box-shadow: 0 0 0 1px rgba(251,191,36,.3);
 }
-/* ping dot */
-.pcard__dot-wrap {
-    position: relative; width: 7px; height: 7px;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.pcard__dot-wrap::before {
-    content: '';
-    position: absolute; inset: -2px; border-radius: 50%;
-    background: currentColor; opacity: .5;
-    animation: liveping 1.8s ease-out infinite;
-}
-@keyframes liveping {
-    0%   { transform:scale(.6); opacity:.6; }
-    80%  { transform:scale(2.4); opacity:0; }
-    100% { transform:scale(2.4); opacity:0; }
-}
+.pcard__dot-wrap { position: relative; display: inline-flex; width: 5px; height: 5px; }
 .pcard__dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    display: block; flex-shrink: 0; background: currentColor;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor; display: block;
+}
+.pcard__dot--pulse {
+    position: absolute; inset: 0; border-radius: 50%;
+    background: currentColor; opacity: .75;
+    animation: pcard-ping 1.5s cubic-bezier(0,0,.2,1) infinite;
+}
+@keyframes pcard-ping {
+    75%, 100% { transform: scale(2.2); opacity: 0; }
 }
 
-/* description */
+/* Description — 2-line clamp */
 .pcard__desc {
-    font-size: 13px; line-height: 1.6; color: #64748b;
-    margin: 0 0 10px; flex-shrink: 0;
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: #64748b;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 .dark .pcard__desc { color: #94a3b8; }
 .pcard__readmore {
-    display: inline;
-    font-size: 12px; font-weight: 600;
     color: #6366f1;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    text-decoration-color: rgba(99,102,241,0.4);
-    transition: color .15s, text-decoration-color .15s;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.dark .pcard__readmore { color: #22d3ee; }
+
+/* Tags — horizontal scroll / wrap */
+.pcard__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+.pcard__tag {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    padding: 2px 6.5px;
+    border-radius: 4px;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid rgba(148, 163, 184, 0.25);
     white-space: nowrap;
 }
-.pcard__readmore:hover {
-    color: #4f46e5;
-    text-decoration-color: rgba(79,70,229,0.7);
+.dark .pcard__tag {
+    background: rgba(15, 23, 42, 0.8);
+    color: #94a3b8;
+    border-color: rgba(148, 163, 184, 0.12);
 }
-.dark .pcard__readmore { color: #a5b4fc; text-decoration-color: rgba(165,180,252,0.35); }
-.dark .pcard__readmore:hover { color: #c7d2fe; text-decoration-color: rgba(199,210,254,0.6); }
-
-/* tags */
-.pcard__tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; flex-shrink:0; }
-.pcard__tag {
-    font-size: 10px; font-weight: 600; letter-spacing:.05em;
-    padding: 2px 8px; border-radius: 99px;
-    background: rgba(99,102,241,.1); color: #6366f1; border: 1px solid rgba(99,102,241,.18);
+.pcard__tag--more {
+    background: transparent;
+    border-color: transparent;
+    color: #94a3b8;
+    padding: 2px 2px;
 }
-.dark .pcard__tag { background:rgba(99,102,241,.15); color:#a5b4fc; border-color:rgba(99,102,241,.22); }
-.pcard__tag--more { background:rgba(148,163,184,.1); color:#64748b; border-color:rgba(148,163,184,.18); }
 
-/* links */
-.pcard__links { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+/* Links row */
+.pcard__links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 6px;
+}
 .pcard__link {
     display:inline-flex; align-items:center; gap:4px;
     font-size:11px; font-weight:600; text-decoration:none;
@@ -289,35 +350,107 @@
                 <div class="swiper-slide">
                     <div class="pcard">
 
-                        {{-- Image --}}
-                        <div class="pcard__img">
-                            <div class="pcard__accent
-                                @if ($project->status === 'live') pcard__accent--live
-                                @elseif ($project->status === 'wip') pcard__accent--wip
-                                @else pcard__accent--dim @endif">
-                            </div>
+                        @php
+                            $mediaList = [];
+                            if (is_array($project->media ?? null) && count($project->media) > 0) {
+                                $mediaList = $project->media;
+                            } elseif (!empty($project->thumbnail)) {
+                                $mediaList = [['type' => 'image', 'url' => $project->thumbnail]];
+                            }
+                            $hasMulti = count($mediaList) > 1;
+                        @endphp
 
-                            @if ($project->thumbnail)
-                                <img src="{{ Storage::disk('r2')->url($project->thumbnail) }}"
-                                     alt="{{ $project->title }}" class="pcard__thumb">
-                            @else
-                                <div class="pcard__placeholder">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36"
-                                         fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                              d="M3 7l9-4 9 4-9 4-9-4zM3 17l9 4 9-4M3 12l9 4 9-4"/>
-                                    </svg>
+                        {{-- Media Area with Micro-Slideshow --}}
+                        <div class="pcard__img relative overflow-hidden"
+                            @if($hasMulti)
+                                x-data="{
+                                    active: 0,
+                                    total: {{ count($mediaList) }},
+                                    interval: null,
+                                    start() {
+                                        this.interval = setInterval(() => {
+                                            this.active = (this.active + 1) % this.total;
+                                        }, 3500);
+                                    },
+                                    stop() {
+                                        if (this.interval) {
+                                            clearInterval(this.interval);
+                                            this.interval = null;
+                                        }
+                                    }
+                                }"
+                                x-init="start()"
+                                @mouseenter="stop()"
+                                @mouseleave="start()"
+                            @endif
+                        >
+                            <a href="{{ route('project.show', $project->slug) }}" wire:navigate class="block w-full h-full relative z-10">
+                                <div class="pcard__accent
+                                    @if ($project->status === 'live') pcard__accent--live
+                                    @elseif ($project->status === 'wip') pcard__accent--wip
+                                    @else pcard__accent--dim @endif">
+                                </div>
+
+                                @if (!empty($mediaList))
+                                    @foreach ($mediaList as $mIdx => $mItem)
+                                        @php
+                                            $mType = $mItem['type'] ?? 'image';
+                                            $mPath = is_array($mItem) ? ($mItem['url'] ?? '') : ($mItem->url ?? '');
+                                            $isVid = $mType === 'video' || str_ends_with(strtolower($mPath), '.mp4') || str_ends_with(strtolower($mPath), '.webm');
+                                            $fullUrl = Storage::disk('r2')->url($mPath);
+                                        @endphp
+                                        <div class="absolute inset-0 transition-opacity duration-700 ease-in-out w-full h-full"
+                                            @if($hasMulti)
+                                                :class="active === {{ $mIdx }} ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'"
+                                            @endif
+                                        >
+                                            @if($isVid)
+                                                <video src="{{ $fullUrl }}" class="w-full h-full object-cover" autoplay muted loop playsinline></video>
+                                                <div class="absolute top-2.5 right-2.5 bg-black/70 backdrop-blur-sm px-2 py-0.5 rounded-md flex items-center gap-1 text-[9.5px] font-mono font-bold text-cyan-300 z-20">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path d="M6.3 2.841A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.269l9.344-5.89a1.5 1.5 0 0 0 0-2.538L6.3 2.84z" />
+                                                    </svg>
+                                                    VIDEO
+                                                </div>
+                                            @else
+                                                <img src="{{ $fullUrl }}" alt="{{ $project->title }}" class="pcard__thumb">
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="pcard__placeholder">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36"
+                                             fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="M3 7l9-4 9 4-9 4-9-4zM3 17l9 4 9-4M3 12l9 4 9-4"/>
+                                        </svg>
+                                    </div>
+                                @endif
+
+                                <div class="pcard__img-fade"></div>
+                            </a>
+
+                            {{-- In-Card Slideshow Dot Indicators --}}
+                            @if($hasMulti)
+                                <div class="absolute bottom-2.5 right-3 z-20 flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full pointer-events-none">
+                                    <span class="text-[9.5px] font-mono font-bold text-white/90">
+                                        <span x-text="active + 1"></span>/{{ count($mediaList) }}
+                                    </span>
+                                    <div class="flex items-center gap-1 ml-0.5">
+                                        @foreach($mediaList as $dotIdx => $dotItem)
+                                            <span class="inline-block h-1 rounded-full transition-all duration-300"
+                                                :class="active === {{ $dotIdx }} ? 'w-3 bg-cyan-400' : 'w-1 bg-white/40'"></span>
+                                        @endforeach
+                                    </div>
                                 </div>
                             @endif
-
-                            <div class="pcard__img-fade"></div>
                         </div>
 
                         {{-- Body --}}
                         <div class="pcard__body">
 
                             <div class="pcard__title-row">
-                                <a href="{{ route('project.show', $project->slug) }}" class="pcard__title-link">
+                                <a href="{{ route('project.show', $project->slug) }}" wire:navigate class="pcard__title-link">
                                     <h3 class="pcard__title">{{ $project->title }}</h3>
                                 </a>
                                 @if ($project->status === 'live')
@@ -345,9 +478,8 @@
                                 <p class="pcard__desc">
                                     {{ $trimmed }}{{ $needsMore ? '...' : '' }}
                                     @if ($needsMore)
-                                        &ensp;<a href="{{ route('project.show', $project->slug) }}"
-                                               class="pcard__readmore"
-                                               onclick="event.stopPropagation()">Read more</a>
+                                        &ensp;<a href="{{ route('project.show', $project->slug) }}" wire:navigate
+                                               class="pcard__readmore">Read more</a>
                                     @endif
                                 </p>
                             @endif
@@ -366,7 +498,6 @@
                             <div class="pcard__links">
                                 @if ($project->live_url)
                                     <a href="{{ $project->live_url }}" target="_blank"
-                                       onclick="event.stopPropagation()"
                                        class="pcard__link pcard__link--live">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none"
                                              viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -381,7 +512,6 @@
                                 @endif
                                 @if ($project->repo_url)
                                     <a href="{{ $project->repo_url }}" target="_blank"
-                                       onclick="event.stopPropagation()"
                                        class="pcard__link pcard__link--repo">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
                                              viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -396,8 +526,7 @@
                                 @endif
                             </div>
 
-                            <a href="{{ route('project.show', $project->slug) }}" class="pcard__cta"
-                               onclick="event.stopPropagation()">
+                            <a href="{{ route('project.show', $project->slug) }}" wire:navigate class="pcard__cta">
                                 <span class="pcard__cta-label">View project</span>
                                 <span class="pcard__cta-arrow">
                                     <svg fill="none" viewBox="0 0 12 12" stroke-width="2.5" stroke="currentColor">
@@ -421,25 +550,40 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 (function () {
+    let swiperInstance = null;
+
     function init() {
         if (typeof Swiper === 'undefined') {
-            setTimeout(init, 50)
-            return
+            setTimeout(init, 50);
+            return;
         }
 
-        new Swiper('#swiper_{{ $uid }}', {
+        const el = document.querySelector('#swiper_{{ $uid }}');
+        if (!el) return;
+
+        if (swiperInstance) {
+            try { swiperInstance.destroy(true, true); } catch(e) {}
+        }
+
+        const slideCount = el.querySelectorAll('.swiper-slide').length;
+
+        swiperInstance = new Swiper('#swiper_{{ $uid }}', {
             slidesPerView:  'auto',
             centeredSlides: true,
             spaceBetween:   20,
-            loop:           true,
+            loop:           false,
             grabCursor:     true,
-            speed:          420,          // transition speed in ms — feels snappy but not harsh
+            speed:          420,
+            threshold:      10,
+            touchStartPreventDefault: false,
+            preventClicks:  false,
+            preventClicksPropagation: false,
 
-            autoplay: {
+            autoplay: slideCount > 1 ? {
                 delay:                  4000,
                 disableOnInteraction:   false,
                 pauseOnMouseEnter:      true,
-            },
+            } : false,
 
             pagination: {
                 el:              '#dots_{{ $uid }}',
@@ -447,13 +591,15 @@
                 bulletClass:     'proj-dot',
                 bulletActiveClass: 'proj-dot--active',
             },
-        })
+        });
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init)
+        document.addEventListener('DOMContentLoaded', init);
     } else {
-        init()
+        init();
     }
-}())
+
+    document.addEventListener('livewire:navigated', init);
+})();
 </script>

@@ -1,28 +1,15 @@
 <div class="relative min-h-[calc(100svh-4rem)] flex items-center overflow-hidden pt-16">
 
     <!-- BACKGROUND LAYERS -->
-    <div class="absolute inset-0 -z-10">
-
+    <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <!-- Grid pattern -->
-        <div class="absolute inset-0 grid-pattern opacity-30"></div>
+        <div class="absolute inset-0 grid-pattern opacity-20"></div>
 
-        <!-- Animated blobs -->
-        <div class="absolute w-[420px] h-[420px] md:w-[900px] md:h-[900px] bg-cyan-400/20 blur-[120px] md:blur-[200px] rounded-full top-[-180px] left-[-180px] md:top-[-300px] md:left-[-300px] animate-blob"></div>
-        <div class="absolute w-[360px] h-[360px] md:w-[700px] md:h-[700px] bg-blue-500/20 blur-[110px] md:blur-[180px] rounded-full bottom-[-140px] right-[-140px] md:bottom-[-200px] md:right-[-200px] animate-blob animation-delay-2"></div>
-        <div class="absolute w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-purple-500/15 blur-[100px] md:blur-[160px] rounded-full top-[35%] left-[35%] md:top-[30%] md:left-[50%] animate-blob animation-delay-4"></div>
-
-        <!-- Floating particles -->
-        @for ($i = 0; $i < 20; $i++)
-            <div class="particle" style="
-                left: {{ rand(0, 100) }}%;
-                top: {{ rand(0, 100) }}%;
-                width: {{ rand(2, 5) }}px;
-                height: {{ rand(2, 5) }}px;
-                animation-delay: {{ rand(0, 8000) / 1000 }}s;
-                animation-duration: {{ rand(4000, 8000) / 1000 }}s;
-            "></div>
-        @endfor
-
+        <!-- Ambient static gradient lights (no flicker, smooth & performant) -->
+        <div class="absolute w-[650px] h-[650px] rounded-full top-[-150px] left-[-150px]"
+             style="background: radial-gradient(circle, rgba(34,211,238,0.12) 0%, transparent 70%);"></div>
+        <div class="absolute w-[600px] h-[600px] rounded-full bottom-[-100px] right-[-100px]"
+             style="background: radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%);"></div>
     </div>
 
 

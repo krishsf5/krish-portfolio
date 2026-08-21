@@ -3,6 +3,7 @@
 namespace App\Livewire\Inquiries;
 
 use App\Services\ApiClient;
+use Carbon\Carbon;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -40,9 +41,14 @@ class InquiryManager extends Component
     public function render()
     {
         $response    = ApiClient::get('/admin/inquiries', ['filter' => $this->filter]);
-        $data        = $response->successful() ? $response->json() : [];
-        $inquiries   = collect($data['inquiries'] ?? []);
-        $unreadCount = $data['unread_count'] ?? 0;
+        $data        = $response->successful() ? json_decode($response->body()) : null;
+        $inquiries   = collect($data->inquiries ?? [])->map(function ($item) {
+            if (isset($item->created_at)) {
+                $item->created_at = Carbon::parse($item->created_at);
+            }
+            return $item;
+        });
+        $unreadCount = $data->unread_count ?? 0;
 
         $selected = $this->selectedId
             ? $inquiries->firstWhere('id', $this->selectedId)

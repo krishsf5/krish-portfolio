@@ -34,14 +34,14 @@ class SkillManager extends Component
     {
         $response = ApiClient::get('/admin/skills');
         if ($response->successful()) {
-            $skill = collect($response->json())->firstWhere('id', $id);
+            $skill = collect(json_decode($response->body()))->firstWhere('id', $id);
             if ($skill) {
                 $this->editingId   = $id;
-                $this->name        = $skill['name'];
-                $this->category    = $skill['category'];
-                $this->proficiency = $skill['proficiency'];
-                $this->icon        = $skill['icon'] ?? '';
-                $this->is_visible  = $skill['is_visible'] ?? true;
+                $this->name        = $skill->name ?? '';
+                $this->category    = $skill->category ?? 'Frontend';
+                $this->proficiency = $skill->proficiency ?? 5;
+                $this->icon        = $skill->icon ?? '';
+                $this->is_visible  = $skill->is_visible ?? true;
                 $this->showModal   = true;
             }
         }
@@ -139,7 +139,7 @@ class SkillManager extends Component
     {
         $response = ApiClient::get('/admin/skills');
         $skills   = $response->successful()
-            ? collect($response->json())->groupBy('category')
+            ? collect(json_decode($response->body()))->groupBy('category')
             : collect();
 
         return view('livewire.admin.skills.skill-manager', compact('skills'))

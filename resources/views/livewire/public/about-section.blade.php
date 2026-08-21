@@ -29,7 +29,7 @@
                     <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-cyan-400/30 to-purple-500/30 blur-3xl opacity-60 group-hover:opacity-90 transition-opacity duration-700 scale-105"></div>
 
                     <!-- Card -->
-                    <div class="relative bg-[#0c1120] border border-white/10 rounded-3xl p-4 sm:p-7 backdrop-blur-sm overflow-hidden">
+                    <div class="relative bg-white dark:bg-[#0c1120] border border-slate-200/80 dark:border-white/10 rounded-3xl p-4 sm:p-7 shadow-2xl shadow-indigo-500/10 dark:shadow-none backdrop-blur-sm overflow-hidden">
 
                         <!-- Corner accents -->
                         <div class="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-cyan-400/50 rounded-tl-3xl"></div>
@@ -83,8 +83,9 @@
 
                 <!-- STATS -->
                 @php
+                    $customStats = is_array($about?->stats ?? null) ? $about->stats : [];
                     $allStats = collect([(object)['label' => 'Projects Built', 'value' => (string)$liveProjectCount]])
-                        ->merge(collect($about?->stats ?? [['label' => 'Technologies', 'value' => '5+']])->map(fn($item) => (object)$item));
+                        ->merge(collect($customStats)->map(fn($item) => (object)$item));
                 @endphp
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">

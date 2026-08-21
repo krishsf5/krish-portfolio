@@ -43,8 +43,15 @@ class ProjectManager extends Component
     #[Validate('nullable|date')]
     public string $end_date = '';
 
-    #[Validate('nullable|image|max:2048')]
+    #[Validate('nullable|image|max:5120')]
     public $thumbnail;
+
+    public ?string $existingThumbnail = null;
+
+    public array $existingMedia = [];
+
+    #[Validate(['newMedia.*' => 'file|mimes:jpg,jpeg,png,webp,mp4,webm,mov,ogg|max:25600'])]
+    public array $newMedia = [];
 
     public string $error = '';
 
@@ -58,19 +65,36 @@ class ProjectManager extends Component
     {
         $response = ApiClient::get('/admin/projects');
         if ($response->successful()) {
-            $project = collect($response->json())->firstWhere('id', $id);
+            $project = collect(json_decode($response->body()))->firstWhere('id', $id);
             if ($project) {
-                $this->editingId    = $id;
-                $this->title        = $project['title'];
-                $this->description  = $project['description'] ?? '';
-                $this->live_url     = $project['live_url'] ?? '';
-                $this->repo_url     = $project['repo_url'] ?? '';
-                $this->tags         = is_array($project['tags']) ? implode(', ', $project['tags']) : '';
-                $this->status       = $project['status'];
-                $this->start_date   = ! empty($project['start_date']) ? Carbon::parse($project['start_date'])->format('Y-m') : '';
-                $this->end_date     = ! empty($project['end_date'])   ? Carbon::parse($project['end_date'])->format('Y-m')   : '';
-                $this->showModal    = true;
+                $this->editingId         = $id;
+                $this->title             = $project->title ?? '';
+                $this->description       = $project->description ?? '';
+                $this->live_url          = $project->live_url ?? '';
+                $this->repo_url          = $project->repo_url ?? '';
+                $this->tags              = is_array($project->tags ?? null) ? implode(', ', $project->tags) : ($project->tags ?? '');
+                $this->status            = $project->status ?? 'wip';
+                $this->start_date        = ! empty($project->start_date) ? Carbon::parse($project->start_date)->format('Y-m') : '';
+                $this->end_date          = ! empty($project->end_date)   ? Carbon::parse($project->end_date)->format('Y-m')   : '';
+                $this->existingThumbnail = $project->thumbnail ?? null;
+                $this->existingMedia     = is_array($project->media ?? null) ? json_decode(json_encode($project->media), true) : [];
+                $this->newMedia          = [];
+                $this->showModal         = true;
             }
+        }
+    }
+
+    public function removeExistingMedia(int $index): void
+    {
+        if (isset($this->existingMedia[$index])) {
+            array_splice($this->existingMedia, $index, 1);
+        }
+    }
+
+    public function removeNewMedia(int $index): void
+    {
+        if (isset($this->newMedia[$index])) {
+            array_splice($this->newMedia, $index, 1);
         }
     }
 
@@ -79,30 +103,35 @@ class ProjectManager extends Component
         $this->validate();
 
         $data = [
-            'title'       => trim($this->title),
-            'description' => trim($this->description) ?: null,
-            'live_url'    => trim($this->live_url) ?: null,
-            'repo_url'    => trim($this->repo_url) ?: null,
-            'tags'        => $this->parseTags($this->tags),
-            'status'      => $this->status,
-            'is_visible'  => $this->status !== 'hidden',
-            'start_date'  => $this->start_date ? Carbon::parse($this->start_date . '-01')->format('Y-m-d') : null,
-            'end_date'    => $this->end_date   ? Carbon::parse($this->end_date   . '-01')->format('Y-m-d') : null,
+            'title'          => trim($this->title),
+            'description'    => trim($this->description) ?: null,
+            'live_url'       => trim($this->live_url) ?: null,
+            'repo_url'       => trim($this->repo_url) ?: null,
+            'tags'           => $this->parseTags($this->tags),
+            'status'         => $this->status,
+            'is_visible'     => $this->status !== 'hidden',
+            'start_date'     => $this->start_date ? Carbon::parse($this->start_date . '-01')->format('Y-m-d') : null,
+            'end_date'       => $this->end_date   ? Carbon::parse($this->end_date   . '-01')->format('Y-m-d') : null,
+            'existing_media' => $this->existingMedia,
         ];
 
         if ($this->thumbnail) {
             $data['thumbnail'] = $this->thumbnail;
         }
 
-        $hasFile = (bool) $this->thumbnail;
+        if (! empty($this->newMedia)) {
+            $data['media_files'] = $this->newMedia;
+        }
+
+        $hasFiles = (bool) $this->thumbnail || ! empty($this->newMedia);
 
         if ($this->editingId) {
-            $response = $hasFile
+            $response = $hasFiles
                 ? ApiClient::putMultipart("/admin/projects/{$this->editingId}", $data)
                 : ApiClient::put("/admin/projects/{$this->editingId}", $data);
             $msg = 'Project updated.';
         } else {
-            $response = $hasFile
+            $response = $hasFiles
                 ? ApiClient::postMultipart('/admin/projects', $data)
                 : ApiClient::post('/admin/projects', $data);
             $msg = 'Project created.';
@@ -143,17 +172,20 @@ class ProjectManager extends Component
 
     private function resetForm(): void
     {
-        $this->editingId   = null;
-        $this->title       = '';
-        $this->description = '';
-        $this->live_url    = '';
-        $this->repo_url    = '';
-        $this->tags        = '';
-        $this->status      = 'wip';
-        $this->start_date  = '';
-        $this->end_date    = '';
-        $this->thumbnail   = null;
-        $this->error       = '';
+        $this->editingId         = null;
+        $this->title             = '';
+        $this->description       = '';
+        $this->live_url          = '';
+        $this->repo_url          = '';
+        $this->tags              = '';
+        $this->status            = 'wip';
+        $this->start_date        = '';
+        $this->end_date          = '';
+        $this->thumbnail         = null;
+        $this->existingThumbnail = null;
+        $this->existingMedia     = [];
+        $this->newMedia          = [];
+        $this->error             = '';
         $this->resetValidation();
     }
 
@@ -170,7 +202,7 @@ class ProjectManager extends Component
     {
         $response = ApiClient::get('/admin/projects');
         $projects = $response->successful()
-            ? collect($response->json())
+            ? collect(json_decode($response->body()))
             : collect();
 
         return view('livewire.admin.projects.project-manager', compact('projects'))

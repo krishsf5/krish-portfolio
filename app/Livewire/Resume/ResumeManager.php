@@ -55,7 +55,7 @@ class ResumeManager extends Component
     {
         $response = ApiClient::get('/admin/resume');
         $resumes  = $response->successful()
-            ? collect($response->json())
+            ? collect(json_decode($response->body()))
             : collect();
 
         return view('livewire.admin.resume.resume-manager', compact('resumes'))

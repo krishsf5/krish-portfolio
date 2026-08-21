@@ -605,7 +605,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="pm-label"><span class="field-num">1</span> Project Title <span class="req">*</span></label>
-                                    <input wire:model.defer="title" type="text" placeholder="E-Commerce Platform" class="pm-input">
+                                    <input wire:model="title" type="text" placeholder="E-Commerce Platform" class="pm-input">
                                     @error('title') <p class="pm-error">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
@@ -637,20 +637,14 @@
                                 <div>
                                     <label class="pm-label"><span class="field-num">3</span> Live URL</label>
                                     <div class="relative">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color:var(--t1);" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/>
-                                        </svg>
-                                        <input wire:model.defer="live_url" type="text" placeholder="https://..." class="pm-input pl-9">
+                                        <input wire:model="live_url" type="text" placeholder="https://..." class="pm-input">
                                     </div>
                                     @error('live_url') <p class="pm-error">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="pm-label"><span class="field-num">4</span> Repo URL</label>
                                     <div class="relative">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color:var(--t1);" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/>
-                                        </svg>
-                                        <input wire:model.defer="repo_url" type="text" placeholder="https://github.com/..." class="pm-input pl-9">
+                                        <input wire:model="repo_url" type="text" placeholder="https://github.com/..." class="pm-input">
                                     </div>
                                     @error('repo_url') <p class="pm-error">{{ $message }}</p> @enderror
                                 </div>
@@ -662,18 +656,18 @@
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div class="sm:col-span-1">
                                     <label class="pm-label"><span class="field-num">5</span> Tags</label>
-                                    <input wire:model.defer="tags" type="text" placeholder="Laravel, Vue, MySQL" class="pm-input">
+                                    <input wire:model="tags" type="text" placeholder="Laravel, Vue, MySQL" class="pm-input">
                                     <p class="text-[10px] pm-mono mt-1.5" style="color:var(--t1);">Comma-separated</p>
                                     @error('tags') <p class="pm-error">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="pm-label"><span class="field-num">6</span> Start Date</label>
-                                    <input wire:model.defer="start_date" type="month" class="pm-input">
+                                    <input wire:model="start_date" type="month" class="pm-input">
                                     @error('start_date') <p class="pm-error">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="pm-label"><span class="field-num">7</span> End Date</label>
-                                    <input wire:model.defer="end_date" type="month" class="pm-input">
+                                    <input wire:model="end_date" type="month" class="pm-input">
                                     @error('end_date') <p class="pm-error">{{ $message }}</p> @enderror
                                 </div>
                             </div>
@@ -681,90 +675,150 @@
 
                         <div>
                             <p class="modal-section-label" style="color:var(--t1);">4. Description</p>
-                            <div x-data="{
-                                init() {
-                                    this.$nextTick(() => {
-                                        const editor = this.$refs.trix;
-                                        if (editor && @js($description)) {
-                                            editor.editor.loadHTML(@js($description));
-                                        }
-                                    });
-                                }
-                            }">
+                            <div>
                                 <label class="pm-label"><span class="field-num">8</span> Description</label>
-                                <input id="trix-description-input" type="hidden" value="{{ $description }}">
-                                <div wire:ignore>
-                                    <trix-editor
-                                        x-ref="trix"
-                                        input="trix-description-input"
-                                        x-on:trix-blur="$wire.set('description', $event.target.value)"
-                                        placeholder="What does this project do?...">
-                                    </trix-editor>
-                                </div>
+                                <textarea wire:model="description" rows="5" placeholder="What does this project do?..." class="pm-input resize-y"></textarea>
                                 @error('description') <p class="pm-error mt-1">{{ $message }}</p> @enderror
-
-                                {{-- AI quick actions --}}
-                                <div class="flex items-center gap-2 flex-wrap mt-2.5">
-                                    <span style="color:var(--t1);" class="text-xs select-none">✦</span>
-                                    <button type="button" wire:click="improveWriting" class="pm-ai-btn">✏ Improve Writing</button>
-                                    <button type="button" wire:click="suggestContent"  class="pm-ai-btn">💡 Suggest Content</button>
-                                    <button type="button" wire:click="grammarCheck"    class="pm-ai-btn">✔ Grammar Check</button>
-                                    <button type="button" wire:click="makeShorter"     class="pm-ai-btn">↓ Shorter</button>
-                                </div>
                             </div>
                         </div>
 
                         <div>
-                            <p class="modal-section-label" style="color:var(--t1);">5. Thumbnail</p>
-                            <label class="pm-label"><span class="field-num">9</span> Upload Image</label>
-
-                            <label class="pm-dropzone flex flex-col items-center justify-center gap-3 py-10 px-4 text-center">
-                                <div class="w-12 h-12 rounded-xl flex items-center justify-center"
-                                    style="background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.15);">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" style="color:rgba(34,211,238,.6);" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium" style="color:var(--t2);">Click to upload thumbnail</p>
-                                    <p class="text-[10px] pm-mono mt-1" style="color:var(--t1);">PNG · JPG · WEBP — max 2 MB</p>
-                                </div>
-                                <input wire:model="thumbnail" type="file" accept="image/*" class="sr-only">
-                            </label>
-
-                            @error('thumbnail') <p class="pm-error mt-1">{{ $message }}</p> @enderror
-
-                            <div wire:loading wire:target="thumbnail"
-                                class="flex items-center gap-2 mt-2 text-xs pm-mono" style="color:var(--cyan);">
-                                <svg class="w-3.5 h-3.5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
-                                </svg>
-                                Uploading…
-                            </div>
-
-                            @if($thumbnail)
-                                <div wire:loading.remove wire:target="thumbnail"
-                                    class="mt-3 rounded-xl overflow-hidden relative"
-                                    style="border:1px solid rgba(34,211,238,.3);">
-                                    <img src="{{ $thumbnail->temporaryUrl() }}" class="w-full max-h-52 object-cover">
-                                    <div class="absolute bottom-0 inset-x-0 px-3 py-2 text-[10px] pm-mono"
-                                        style="background:rgba(0,0,0,.6);color:var(--t2);">
-                                        New thumbnail — will be saved on submit
+                            <p class="modal-section-label" style="color:var(--t1);">5. Cover Thumbnail & Media Gallery</p>
+                            
+                            {{-- Primary Thumbnail --}}
+                            <div class="mb-5">
+                                <label class="pm-label"><span class="field-num">9</span> Cover Thumbnail (Main image)</label>
+                                <label class="pm-dropzone flex flex-col items-center justify-center gap-3 py-6 px-4 text-center cursor-pointer">
+                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                                        style="background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.15);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
+                                        </svg>
                                     </div>
-                                </div>
-                            @elseif($editingId)
-                                @php $existingThumb = \App\Models\Project::find($editingId)?->thumbnail; @endphp
-                                @if($existingThumb)
-                                    <div class="mt-3 rounded-xl overflow-hidden relative" style="border:1px solid var(--line2);">
-                                        <img src="{{ Storage::disk('r2')->url($existingThumb) }}" class="w-full max-h-52 object-cover opacity-60">
-                                        <div class="absolute bottom-0 inset-x-0 px-3 py-2 text-[10px] pm-mono"
-                                            style="background:rgba(0,0,0,.5);color:var(--t3);">
-                                            Current thumbnail — upload a new file to replace
+                                    <div>
+                                        <p class="text-xs font-semibold" style="color:var(--t2);">Click to upload main cover</p>
+                                        <p class="text-[10px] pm-mono mt-0.5" style="color:var(--t4);">PNG · JPG · WEBP</p>
+                                    </div>
+                                    <input wire:model="thumbnail" type="file" accept="image/*" class="sr-only">
+                                </label>
+                                @error('thumbnail') <p class="pm-error mt-1">{{ $message }}</p> @enderror
+
+                                @if($thumbnail)
+                                    <div class="mt-2.5 rounded-xl overflow-hidden relative border border-cyan-400/40">
+                                        <img src="{{ $thumbnail->temporaryUrl() }}" class="w-full max-h-40 object-cover">
+                                        <div class="absolute bottom-0 inset-x-0 px-3 py-1.5 text-[10px] pm-mono bg-black/70 text-cyan-300">
+                                            New Cover Thumbnail Preview
+                                        </div>
+                                    </div>
+                                @elseif($existingThumbnail)
+                                    <div class="mt-2.5 rounded-xl overflow-hidden relative border border-slate-700">
+                                        <img src="{{ Storage::disk('r2')->url($existingThumbnail) }}" class="w-full max-h-40 object-cover opacity-75">
+                                        <div class="absolute bottom-0 inset-x-0 px-3 py-1.5 text-[10px] pm-mono bg-black/70 text-slate-300">
+                                            Current Cover Thumbnail
                                         </div>
                                     </div>
                                 @endif
-                            @endif
+                            </div>
+
+                            {{-- Multiple Images & Videos Gallery --}}
+                            <div class="mt-6 pt-5 border-t border-slate-800">
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="pm-label mb-0"><span class="field-num">10</span> Slideshow Gallery (Images & Videos)</label>
+                                    <span class="text-[10px] pm-mono text-cyan-400">Card Slideshow</span>
+                                </div>
+                                <p class="text-xs text-slate-400 mb-3">Add multiple images or short video clips (.mp4, .webm). When more than 1 media file is attached, an interactive slideshow will automatically play inside the project card!</p>
+
+                                <label class="pm-dropzone flex flex-col items-center justify-center gap-2 py-6 px-4 text-center cursor-pointer border-dashed">
+                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-purple-500/10 border border-purple-500/20">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-semibold text-slate-200">Click or Drag to add Photos & Videos</p>
+                                        <p class="text-[10px] pm-mono text-slate-400 mt-0.5">MP4 · WEBM · JPG · PNG · WEBP (Max 25 MB)</p>
+                                    </div>
+                                    <input wire:model="newMedia" type="file" multiple accept="image/*,video/mp4,video/webm,video/ogg" class="sr-only">
+                                </label>
+                                @error('newMedia.*') <p class="pm-error mt-1">{{ $message }}</p> @enderror
+
+                                <div wire:loading wire:target="newMedia" class="flex items-center gap-2 mt-2 text-xs pm-mono text-cyan-400">
+                                    <svg class="w-3.5 h-3.5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                                    </svg>
+                                    Uploading media files…
+                                </div>
+
+                                {{-- Media List Gallery Preview --}}
+                                @if(!empty($existingMedia) || !empty($newMedia))
+                                    <div class="mt-4 space-y-2">
+                                        <p class="text-[11px] font-mono uppercase tracking-wider text-slate-400">Attached Media Items ({{ count($existingMedia) + count($newMedia) }})</p>
+                                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                                            
+                                            {{-- Existing Media --}}
+                                            @foreach($existingMedia as $idx => $item)
+                                                @php 
+                                                    $isVid = ($item['type'] ?? '') === 'video' || str_ends_with(strtolower($item['url'] ?? ''), '.mp4') || str_ends_with(strtolower($item['url'] ?? ''), '.webm');
+                                                    $mediaUrl = Storage::disk('r2')->url($item['url'] ?? '');
+                                                @endphp
+                                                <div class="relative group rounded-lg overflow-hidden border border-slate-700 bg-slate-900 aspect-video flex items-center justify-center">
+                                                    @if($isVid)
+                                                        <video src="{{ $mediaUrl }}" class="w-full h-full object-cover" muted preload="metadata"></video>
+                                                        <span class="absolute top-1 left-1 bg-purple-600/80 backdrop-blur-sm text-[9px] font-mono uppercase font-bold text-white px-1.5 py-0.5 rounded">
+                                                            VIDEO
+                                                        </span>
+                                                    @else
+                                                        <img src="{{ $mediaUrl }}" class="w-full h-full object-cover">
+                                                        <span class="absolute top-1 left-1 bg-cyan-600/80 backdrop-blur-sm text-[9px] font-mono uppercase font-bold text-white px-1.5 py-0.5 rounded">
+                                                            IMAGE
+                                                        </span>
+                                                    @endif
+
+                                                    <button type="button" wire:click="removeExistingMedia({{ $idx }})"
+                                                        class="absolute top-1 right-1 w-6 h-6 rounded-full bg-red-600/90 text-white flex items-center justify-center hover:bg-red-500 transition shadow-lg"
+                                                        title="Delete media">
+                                                        &times;
+                                                    </button>
+                                                </div>
+                                            @endforeach
+
+                                            {{-- New Uploads Preview --}}
+                                            @foreach($newMedia as $idx => $item)
+                                                @php
+                                                    $ext = strtolower($item->getClientOriginalExtension());
+                                                    $isVid = in_array($ext, ['mp4', 'webm', 'mov', 'ogg']);
+                                                @endphp
+                                                <div class="relative group rounded-lg overflow-hidden border border-cyan-400/50 bg-slate-900 aspect-video flex items-center justify-center">
+                                                    @if($isVid)
+                                                        <div class="flex flex-col items-center justify-center text-purple-400 p-2 text-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+                                                            </svg>
+                                                            <span class="text-[9px] font-mono truncate max-w-[90px]">{{ $item->getClientOriginalName() }}</span>
+                                                        </div>
+                                                        <span class="absolute top-1 left-1 bg-purple-600/90 text-[9px] font-mono font-bold text-white px-1.5 py-0.5 rounded">
+                                                            NEW VIDEO
+                                                        </span>
+                                                    @else
+                                                        <img src="{{ $item->temporaryUrl() }}" class="w-full h-full object-cover">
+                                                        <span class="absolute top-1 left-1 bg-cyan-500/90 text-[9px] font-mono font-bold text-white px-1.5 py-0.5 rounded">
+                                                            NEW IMAGE
+                                                        </span>
+                                                    @endif
+
+                                                    <button type="button" wire:click="removeNewMedia({{ $idx }})"
+                                                        class="absolute top-1 right-1 w-6 h-6 rounded-full bg-red-600/90 text-white flex items-center justify-center hover:bg-red-500 transition shadow-lg"
+                                                        title="Remove upload">
+                                                        &times;
+                                                    </button>
+                                                </div>
+                                            @endforeach
+
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
 
                     </div>

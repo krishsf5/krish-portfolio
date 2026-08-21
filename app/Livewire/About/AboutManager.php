@@ -76,7 +76,7 @@ class AboutManager extends Component
                 $this->website_url      = $about['website_url'] ?? '';
                 $this->years_experience = $about['years_experience'] ?? 0;
                 $this->availability     = $about['availability'] ?? 'available';
-                $this->stats            = $about['stats'] ?? [];
+                $this->stats            = is_array($about['stats'] ?? null) ? $about['stats'] : [];
             }
         }
     }
@@ -84,6 +84,10 @@ class AboutManager extends Component
     public function save(): void
     {
         $this->validate();
+
+        $cleanStats = array_values(array_filter($this->stats, function ($s) {
+            return ! empty(trim($s['label'] ?? '')) || ! empty(trim($s['value'] ?? ''));
+        }));
 
         $data = [
             'full_name'        => trim($this->full_name),
@@ -96,7 +100,7 @@ class AboutManager extends Component
             'website_url'      => trim($this->website_url) ?: null,
             'years_experience' => $this->years_experience,
             'availability'     => $this->availability,
-            'stats'            => $this->stats,
+            'stats'            => $cleanStats,
         ];
 
         $response = $this->avatar
@@ -105,9 +109,10 @@ class AboutManager extends Component
 
         if ($response->successful()) {
             Cache::forget('public.about_data');
-            session()->flash('success', 'Profile updated.');
+            $this->stats = $cleanStats;
             $this->avatar = null;
-            $this->mount();
+            $this->error = '';
+            session()->flash('success', 'Profile updated successfully.');
         } else {
             $this->error = $response->json('message', 'Failed to update profile.');
         }
@@ -128,10 +133,15 @@ class AboutManager extends Component
     {
         $user = AuthApiService::user();
 
+        $projectsResponse = ApiClient::get('/admin/projects');
+        $projects = $projectsResponse->successful() ? collect(json_decode($projectsResponse->body())) : collect();
+        $liveProjectCount = $projects->where('status', 'live')->where('is_visible', true)->count();
+
         return view('livewire.admin.about.about-manager', [
-            'about'           => $this,
-            'existingAvatar'  => $this->existingAvatar,
-            'authUser'        => $user,
+            'about'            => $this,
+            'existingAvatar'   => $this->existingAvatar,
+            'authUser'         => $user,
+            'liveProjectCount' => $liveProjectCount,
         ])->layout('layouts.dashboard');
     }
 }

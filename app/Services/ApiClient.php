@@ -135,13 +135,32 @@ class ApiClient
 
         // Send request
         if ($multipart) {
-            // File upload — attach each field individually
+            // File upload — attach each field individually with array support
             $pending = $http->asMultipart();
             foreach ($data as $key => $value) {
-                if ($value instanceof \Illuminate\Http\UploadedFile) {
+                if (is_array($value)) {
+                    foreach ($value as $subKey => $subValue) {
+                        $fieldName = is_int($subKey) ? "{$key}[]" : "{$key}[{$subKey}]";
+                        if ($subValue instanceof \Illuminate\Http\UploadedFile) {
+                            $pending = $pending->attach($fieldName, $subValue->get(), $subValue->getClientOriginalName());
+                        } elseif ($subValue instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                            $pending = $pending->attach($fieldName, file_get_contents($subValue->getRealPath()), $subValue->getClientOriginalName());
+                        } elseif (is_scalar($subValue)) {
+                            $pending = $pending->attach($fieldName, (string) $subValue);
+                        } else {
+                            $pending = $pending->attach($fieldName, json_encode($subValue));
+                        }
+                    }
+                } elseif ($value instanceof \Illuminate\Http\UploadedFile) {
                     $pending = $pending->attach($key, $value->get(), $value->getClientOriginalName());
-                } else {
+                } elseif ($value instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                    $pending = $pending->attach($key, file_get_contents($value->getRealPath()), $value->getClientOriginalName());
+                } elseif (is_scalar($value)) {
                     $pending = $pending->attach($key, (string) $value);
+                } elseif (is_null($value)) {
+                    // Skip null fields
+                } else {
+                    $pending = $pending->attach($key, json_encode($value));
                 }
             }
             return $pending->$method($url);
@@ -182,7 +201,8 @@ class ApiClient
 
     public static function putMultipart(string $path, array $data = []): Response
     {
-        return self::request('PUT', $path, $data, false, true);
+        $data['_method'] = 'PUT';
+        return self::request('POST', $path, $data, false, true);
     }
 
     public static function patch(string $path, array $data = []): Response

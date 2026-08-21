@@ -13,7 +13,7 @@
     <div class="max-w-5xl mx-auto px-6 lg:px-8">
 
         <!-- BACK BUTTON -->
-        <a href="{{ route('home') }}#projects"
+        <a href="{{ route('home') }}#projects" wire:navigate
             class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-cyan-400 transition mb-12 group font-mono">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"
                 fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -42,7 +42,7 @@
                     </span>
                 @endif
                 <span class="text-xs text-slate-500 font-mono">
-                    {{ $project->created_at->format('M Y') }}
+                    {{ \Carbon\Carbon::parse($project->created_at)->format('M Y') }}
                 </span>
             </div>
 
@@ -86,17 +86,70 @@
         </div>
 
 
-        <!-- HERO IMAGE -->
-        @if ($project->thumbnail)
-            <div class="relative rounded-2xl overflow-hidden mb-20 group">
-                <!-- Glow border -->
-                <div
-                    class="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-400/20 to-purple-500/20 blur-xl -z-10 scale-105">
+        @php
+            $showMedia = [];
+            if (is_array($project->media ?? null) && count($project->media) > 0) {
+                $showMedia = $project->media;
+            } elseif (!empty($project->thumbnail)) {
+                $showMedia = [['type' => 'image', 'url' => $project->thumbnail]];
+            }
+        @endphp
+
+        <!-- MEDIA GALLERY / HERO -->
+        @if (!empty($showMedia))
+            <div class="mb-20" x-data="{ activeIdx: 0 }">
+                <!-- Main Media Screen -->
+                <div class="relative rounded-2xl overflow-hidden group shadow-2xl border border-slate-200/80 dark:border-white/10 bg-slate-950 aspect-video flex items-center justify-center">
+                    @foreach ($showMedia as $gIdx => $gItem)
+                        @php
+                            $gType = $gItem['type'] ?? 'image';
+                            $gPath = is_array($gItem) ? ($gItem['url'] ?? '') : ($gItem->url ?? '');
+                            $isVid = $gType === 'video' || str_ends_with(strtolower($gPath), '.mp4') || str_ends_with(strtolower($gPath), '.webm');
+                            $gFullUrl = Storage::disk('r2')->url($gPath);
+                        @endphp
+                        <div class="absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-300"
+                            x-show="activeIdx === {{ $gIdx }}"
+                            x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0 scale-98"
+                            x-transition:enter-end="opacity-100 scale-100"
+                        >
+                            @if($isVid)
+                                <video src="{{ $gFullUrl }}" controls class="w-full h-full object-contain" playsinline></video>
+                            @else
+                                <img src="{{ $gFullUrl }}" alt="{{ $project->title }}" class="w-full h-full object-cover" />
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
-                <div class="border border-white/10 rounded-2xl overflow-hidden">
-                    <img src="{{ Storage::disk('r2')->url($project->thumbnail) }}" alt="{{ $project->title }}"
-                        class="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-105" />
-                </div>
+
+                {{-- Thumbnail Navigator Strip --}}
+                @if (count($showMedia) > 1)
+                    <div class="flex items-center gap-3 mt-4 overflow-x-auto pb-2">
+                        @foreach ($showMedia as $thumbIdx => $thumbItem)
+                            @php
+                                $tType = $thumbItem['type'] ?? 'image';
+                                $tPath = is_array($thumbItem) ? ($thumbItem['url'] ?? '') : ($thumbItem->url ?? '');
+                                $isVid = $tType === 'video' || str_ends_with(strtolower($tPath), '.mp4') || str_ends_with(strtolower($tPath), '.webm');
+                                $tFullUrl = Storage::disk('r2')->url($tPath);
+                            @endphp
+                            <button type="button" @click="activeIdx = {{ $thumbIdx }}"
+                                class="relative rounded-xl overflow-hidden flex-shrink-0 w-24 h-16 border-2 transition-all duration-200 cursor-pointer"
+                                :class="activeIdx === {{ $thumbIdx }} ? 'border-cyan-400 ring-2 ring-cyan-400/30 scale-105' : 'border-slate-300 dark:border-slate-800 opacity-60 hover:opacity-100'"
+                            >
+                                @if($isVid)
+                                    <video src="{{ $tFullUrl }}" class="w-full h-full object-cover" muted preload="metadata"></video>
+                                    <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-white">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M6.3 2.841A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.269l9.344-5.89a1.5 1.5 0 0 0 0-2.538L6.3 2.84z" />
+                                        </svg>
+                                    </span>
+                                @else
+                                    <img src="{{ $tFullUrl }}" class="w-full h-full object-cover">
+                                @endif
+                            </button>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         @endif
 
@@ -132,7 +185,7 @@
             <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40">
                 <p class="text-xs font-mono uppercase tracking-widest text-slate-400 mb-2">Built</p>
                 <p class="text-base font-semibold text-slate-900 dark:text-white">
-                    {{ $project->created_at->format('F Y') }}</p>
+                    {{ \Carbon\Carbon::parse($project->created_at)->format('F Y') }}</p>
             </div>
 
             <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40">
