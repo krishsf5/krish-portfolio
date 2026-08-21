@@ -83,26 +83,28 @@
 
                 <!-- STATS -->
                 @php
-                    $allStats = collect([['label' => 'Projects Built', 'value' => $liveProjectCount]])
-                        ->merge($about?->stats ?? [['label' => 'Technologies', 'value' => '5+']]);
+                    $allStats = collect([(object)['label' => 'Projects Built', 'value' => (string)$liveProjectCount]])
+                        ->merge(collect($about?->stats ?? [['label' => 'Technologies', 'value' => '5+']])->map(fn($item) => (object)$item));
                 @endphp
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                     @foreach ($allStats as $stat)
                         @php
-                            preg_match('/^(\d+)(.*)$/', $stat['value'], $matches);
+                            $statLabel = is_object($stat) ? ($stat->label ?? '') : ($stat['label'] ?? '');
+                            $statVal   = (string)(is_object($stat) ? ($stat->value ?? '') : ($stat['value'] ?? ''));
+                            preg_match('/^(\d+)(.*)$/', $statVal, $matches);
                             $numericVal = $matches[1] ?? null;
                             $suffix     = $matches[2] ?? '';
                         @endphp
                         <div class="stat-counter-card group">
                             <p class="text-2xl sm:text-3xl font-bold text-cyan-400 tabular-nums">
                                 @if ($numericVal !== null)
-                                    <span class="counter-val" data-count="{{ $numericVal }}" data-suffix="{{ $suffix }}">{{ $stat['value'] }}</span>
+                                    <span class="counter-val" data-count="{{ $numericVal }}" data-suffix="{{ $suffix }}">{{ $statVal }}</span>
                                 @else
-                                    {{ $stat['value'] }}
+                                    {{ $statVal }}
                                 @endif
                             </p>
-                            <p class="text-sm text-slate-700 dark:text-slate-400 mt-1">{{ $stat['label'] }}</p>
+                            <p class="text-sm text-slate-700 dark:text-slate-400 mt-1">{{ $statLabel }}</p>
                         </div>
                     @endforeach
                 </div>
