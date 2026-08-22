@@ -112,6 +112,14 @@ class AboutManager extends Component
             $this->stats = $cleanStats;
             $this->avatar = null;
             $this->error = '';
+
+            // Refresh about data and avatar_url from API
+            $aboutRes = ApiClient::get('/about');
+            if ($aboutRes->successful()) {
+                $aboutData = $aboutRes->json();
+                $this->existingAvatar = $aboutData['avatar_url'] ?? null;
+            }
+
             session()->flash('success', 'Profile updated successfully.');
         } else {
             $this->error = $response->json('message', 'Failed to update profile.');
