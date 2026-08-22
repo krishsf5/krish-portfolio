@@ -135,34 +135,53 @@ class ApiClient
 
         // Send request
         if ($multipart) {
-            // File upload — attach each field individually with array support
             $pending = $http->asMultipart();
-            foreach ($data as $key => $value) {
-                if (is_array($value)) {
-                    foreach ($value as $subKey => $subValue) {
-                        $fieldName = is_int($subKey) ? "{$key}[]" : "{$key}[{$subKey}]";
-                        if ($subValue instanceof \Illuminate\Http\UploadedFile) {
-                            $pending = $pending->attach($fieldName, $subValue->get(), $subValue->getClientOriginalName());
-                        } elseif ($subValue instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                            $pending = $pending->attach($fieldName, file_get_contents($subValue->getRealPath()), $subValue->getClientOriginalName());
-                        } elseif (is_scalar($subValue)) {
-                            $pending = $pending->attach($fieldName, (string) $subValue);
-                        } else {
-                            $pending = $pending->attach($fieldName, json_encode($subValue));
-                        }
-                    }
-                } elseif ($value instanceof \Illuminate\Http\UploadedFile) {
-                    $pending = $pending->attach($key, $value->get(), $value->getClientOriginalName());
-                } elseif ($value instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                    $pending = $pending->attach($key, file_get_contents($value->getRealPath()), $value->getClientOriginalName());
-                } elseif (is_scalar($value)) {
-                    $pending = $pending->attach($key, (string) $value);
-                } elseif (is_null($value)) {
-                    // Skip null fields
-                } else {
-                    $pending = $pending->attach($key, json_encode($value));
+
+            $attachField = function ($name, $val) use (&$pending, &$attachField) {
+                if (is_null($val)) {
+                    return;
                 }
+
+                if ($val instanceof \Illuminate\Http\UploadedFile) {
+                    $contents = $val->get();
+                    if ($contents !== false) {
+                        $pending = $pending->attach($name, $contents, $val->getClientOriginalName());
+                    }
+                    return;
+                }
+
+                if ($val instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                    $path = $val->getRealPath();
+                    if ($path && file_exists($path)) {
+                        $contents = file_get_contents($path);
+                        $pending = $pending->attach($name, $contents, $val->getClientOriginalName());
+                    }
+                    return;
+                }
+
+                if (is_array($val)) {
+                    foreach ($val as $subKey => $subVal) {
+                        $subName = is_int($subKey) ? "{$name}[]" : "{$name}[{$subKey}]";
+                        $attachField($subName, $subVal);
+                    }
+                    return;
+                }
+
+                if (is_bool($val)) {
+                    $pending = $pending->attach($name, $val ? '1' : '0');
+                    return;
+                }
+
+                $strVal = (string) $val;
+                if ($strVal !== '') {
+                    $pending = $pending->attach($name, $strVal);
+                }
+            };
+
+            foreach ($data as $key => $value) {
+                $attachField($key, $value);
             }
+
             return $pending->$method($url);
         }
 
