@@ -86,7 +86,7 @@ class AboutManager extends Component
         $this->validate();
 
         $cleanStats = array_values(array_filter($this->stats, function ($s) {
-            return ! empty(trim($s['label'] ?? '')) || ! empty(trim($s['value'] ?? ''));
+            return ! empty(trim($s['label'] ?? '')) && ! empty(trim($s['value'] ?? ''));
         }));
 
         $data = [
@@ -98,9 +98,9 @@ class AboutManager extends Component
             'github_url'       => trim($this->github_url) ?: null,
             'linkedin_url'     => trim($this->linkedin_url) ?: null,
             'website_url'      => trim($this->website_url) ?: null,
-            'years_experience' => $this->years_experience,
+            'years_experience' => (int) $this->years_experience,
             'availability'     => $this->availability,
-            'stats'            => $cleanStats,
+            'stats'            => ! empty($cleanStats) ? $cleanStats : null,
         ];
 
         $response = $this->avatar

@@ -167,7 +167,7 @@ class ApiClient
 
                 if (is_array($val)) {
                     foreach ($val as $subKey => $subVal) {
-                        $subName = is_int($subKey) ? "{$name}[]" : "{$name}[{$subKey}]";
+                        $subName = "{$name}[{$subKey}]";
                         $addMultipartElement($subName, $subVal);
                     }
                     return;

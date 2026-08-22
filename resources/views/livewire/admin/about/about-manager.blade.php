@@ -230,8 +230,15 @@
 
     {{-- SAVE --}}
     <div class="flex justify-end pb-8">
-        <button wire:click="save" class="btn-primary px-8 py-3 text-sm">
-            Save Changes
+        <button wire:click="save" wire:loading.attr="disabled" class="btn-primary px-8 py-3 text-sm flex items-center gap-2">
+            <span wire:loading.remove wire:target="save">Save Changes</span>
+            <span wire:loading wire:target="save" class="flex items-center gap-2">
+                <svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                </svg>
+                Saving Changes…
+            </span>
         </button>
     </div>
 
