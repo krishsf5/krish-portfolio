@@ -47,7 +47,7 @@ class AboutManager extends Component
     #[Validate('required|in:available,open,unavailable')]
     public string $availability = 'available';
 
-    #[Validate('nullable|image|mimes:jpg,jpeg,png,webp|max:2048')]
+    #[Validate('nullable|image|max:5120')]
     public $avatar = null;
 
     public ?string $existingAvatar = null;

@@ -6,15 +6,30 @@
             <h2 class="text-2xl font-bold text-white">About Me</h2>
             <p class="text-sm text-slate-400 mt-1">Your public profile shown on the portfolio</p>
         </div>
-        <button wire:click="save" class="btn-primary">Save Changes</button>
+        <button wire:click="save" wire:loading.attr="disabled" class="btn-primary flex items-center gap-2">
+            <span wire:loading.remove wire:target="save">Save Changes</span>
+            <span wire:loading wire:target="save" class="flex items-center gap-2">
+                <svg class="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                </svg>
+                Saving…
+            </span>
+        </button>
     </div>
 
 
-    {{-- FLASH --}}
+    {{-- FLASH & ERRORS --}}
     @if (session('success'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 4000)" x-show="show" x-transition
             class="px-4 py-3 rounded-lg text-xs font-mono border border-cyan-400/20 bg-cyan-400/10 text-cyan-300">
             {{ session('success') }}
+        </div>
+    @endif
+
+    @if ($error)
+        <div class="px-4 py-3 rounded-lg text-xs font-mono border border-red-400/20 bg-red-400/10 text-red-300">
+            {{ $error }}
         </div>
     @endif
 
