@@ -35,11 +35,13 @@
                         <div class="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-cyan-400/50 rounded-tl-3xl"></div>
                         <div class="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-purple-400/50 rounded-br-3xl"></div>
 
-                        <img
-                            src="{{ str_starts_with($avatar ?? '', 'http') ? $avatar : ($avatar ? Storage::disk('r2')->url($avatar) : '') }}"
-                            alt="{{ $about?->full_name ?? 'Krish Bhojwani' }}"
-                            class="w-full aspect-square object-cover rounded-2xl mx-auto"
-                        />
+                        <div class="w-full rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900/60 flex items-center justify-center">
+                            <img
+                                src="{{ str_starts_with($avatar ?? '', 'http') ? $avatar : ($avatar ? Storage::disk('r2')->url($avatar) : '') }}"
+                                alt="{{ $about?->full_name ?? 'Krish Bhojwani' }}"
+                                class="w-full h-auto object-contain rounded-2xl mx-auto transition-transform duration-500 group-hover:scale-[1.02]"
+                            />
+                        </div>
 
                         <!-- Availability badge -->
                         <div class="flex justify-center mt-5">
