@@ -36,7 +36,7 @@
                         <div class="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-purple-400/50 rounded-br-3xl"></div>
 
                         <img
-                            src="{{ $avatar }}"
+                            src="{{ str_starts_with($avatar ?? '', 'http') ? $avatar : ($avatar ? Storage::disk('r2')->url($avatar) : '') }}"
                             alt="{{ $about?->full_name ?? 'Krish Bhojwani' }}"
                             class="w-full aspect-square object-cover rounded-2xl mx-auto"
                         />
