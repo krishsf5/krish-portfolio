@@ -199,9 +199,14 @@ class ApiClient
             return $http->withBody($rawBody, 'application/json')->$method($url);
         }
 
+        if (! empty($data)) {
+            // Send exact raw JSON body so HMAC SHA256 byte-hash matches perfectly on backend
+            return $http->withBody($rawBody, 'application/json')->$method($url);
+        }
+
         return match ($method) {
             'GET', 'DELETE' => $http->$method($url, $data ?: null),
-            default         => $http->$method($url, empty($data) ? [] : json_decode($rawBody, true)),
+            default         => $http->$method($url),
         };
     }
 
