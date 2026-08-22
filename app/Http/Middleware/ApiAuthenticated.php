@@ -12,6 +12,11 @@ class ApiAuthenticated
     public function handle(Request $request, Closure $next): Response
     {
         if (! AuthApiService::check()) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Unauthenticated.'], 401);
+            }
+
+            session()->flash('error', 'Please log in to access the dashboard.');
             return redirect()->route('login');
         }
 
