@@ -135,54 +135,63 @@ class ApiClient
 
         // Send request
         if ($multipart) {
-            $pending = $http->asMultipart();
+            $multipartElements = [];
 
-            $attachField = function ($name, $val) use (&$pending, &$attachField) {
+            $addMultipartElement = function ($name, $val) use (&$multipartElements, &$addMultipartElement) {
                 if (is_null($val)) {
                     return;
                 }
 
-                if ($val instanceof \Illuminate\Http\UploadedFile) {
-                    $contents = $val->get();
-                    if ($contents !== false) {
-                        $pending = $pending->attach($name, $contents, $val->getClientOriginalName());
+                if ($val instanceof \Illuminate\Http\UploadedFile || $val instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                    $realPath = method_exists($val, 'getRealPath') ? $val->getRealPath() : null;
+                    if ($realPath && file_exists($realPath)) {
+                        $stream = fopen($realPath, 'r');
+                        if ($stream !== false) {
+                            $multipartElements[] = [
+                                'name'     => $name,
+                                'contents' => $stream,
+                                'filename' => $val->getClientOriginalName(),
+                            ];
+                            return;
+                        }
                     }
-                    return;
-                }
 
-                if ($val instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                    $path = $val->getRealPath();
-                    if ($path && file_exists($path)) {
-                        $contents = file_get_contents($path);
-                        $pending = $pending->attach($name, $contents, $val->getClientOriginalName());
-                    }
+                    $contents = method_exists($val, 'getContent') ? $val->getContent() : (method_exists($val, 'get') ? $val->get() : '');
+                    $multipartElements[] = [
+                        'name'     => $name,
+                        'contents' => ($contents !== false && $contents !== null) ? $contents : '',
+                        'filename' => $val->getClientOriginalName(),
+                    ];
                     return;
                 }
 
                 if (is_array($val)) {
                     foreach ($val as $subKey => $subVal) {
                         $subName = is_int($subKey) ? "{$name}[]" : "{$name}[{$subKey}]";
-                        $attachField($subName, $subVal);
+                        $addMultipartElement($subName, $subVal);
                     }
                     return;
                 }
 
                 if (is_bool($val)) {
-                    $pending = $pending->attach($name, $val ? '1' : '0');
+                    $multipartElements[] = [
+                        'name'     => $name,
+                        'contents' => $val ? '1' : '0',
+                    ];
                     return;
                 }
 
-                $strVal = (string) $val;
-                if ($strVal !== '') {
-                    $pending = $pending->attach($name, $strVal);
-                }
+                $multipartElements[] = [
+                    'name'     => $name,
+                    'contents' => (string) $val,
+                ];
             };
 
             foreach ($data as $key => $value) {
-                $attachField($key, $value);
+                $addMultipartElement($key, $value);
             }
 
-            return $pending->$method($url);
+            return $http->send($method, $url, ['multipart' => $multipartElements]);
         }
 
         if ($encrypt && ! empty($data)) {
