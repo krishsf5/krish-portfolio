@@ -125,7 +125,8 @@ class AboutManager extends Component
             if ($response->status() === 401) {
                 session()->forget(['api_token', 'api_user']);
                 session()->flash('error', 'Your session expired. Please log in again.');
-                return $this->redirect(route('login'), navigate: true);
+                $this->redirect(route('login'), navigate: true);
+                return;
             }
             $this->error = $response->json('message', 'Failed to update profile.');
         }
