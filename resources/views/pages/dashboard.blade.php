@@ -162,7 +162,7 @@
 
         <hr class="divider mb-6">
 
-        <livewire:projects.project-manager />
+        <livewire:projects.project-manager :key="'dashboard-project-manager'" />
 
     </div>
 

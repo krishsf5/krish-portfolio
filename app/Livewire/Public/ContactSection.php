@@ -94,6 +94,10 @@ class ContactSection extends Component
 
     public function render()
     {
-        return view('livewire.public.contact-section');
+        $aboutData = \App\Services\BackendService::getAbout();
+
+        return view('livewire.public.contact-section', [
+            'about' => $aboutData?->about ?? null,
+        ]);
     }
 }

@@ -1,4 +1,4 @@
-<section id="about" class="relative py-20 sm:py-24 lg:py-32 overflow-hidden">
+<section id="about" class="relative py-12 sm:py-16 lg:py-20 overflow-hidden">
 
     <!-- Background glows -->
     <div class="absolute inset-0 -z-10 overflow-hidden">
@@ -9,7 +9,7 @@
     <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
 
         <!-- SECTION LABEL -->
-        <div class="flex items-center gap-4 mb-10 sm:mb-14 lg:mb-20" data-about-label>
+        <div class="flex items-center gap-4 mb-6 sm:mb-8 lg:mb-10" data-about-label>
             <span class="text-xs font-mono tracking-[0.2em] uppercase text-cyan-400">02 — About</span>
             <div class="flex-1 h-px bg-gradient-to-r from-cyan-400/40 to-transparent"></div>
         </div>

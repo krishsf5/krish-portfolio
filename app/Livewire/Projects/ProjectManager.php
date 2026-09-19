@@ -139,10 +139,55 @@ class ProjectManager extends Component
 
         if ($response->successful()) {
             Cache::forget('public.projects');
+            $this->dispatch('project-status-updated');
             session()->flash('success', $msg);
             $this->closeModal();
         } else {
             $this->error = $response->json('message', 'Failed to save project.');
+        }
+    }
+
+    public function updateStatus(int $id, string $status): void
+    {
+        if (! in_array($status, ['live', 'wip', 'hidden'])) {
+            return;
+        }
+
+        $response = ApiClient::put("/admin/projects/{$id}", [
+            'status'     => $status,
+            'is_visible' => $status !== 'hidden',
+        ]);
+
+        if ($response->successful()) {
+            Cache::forget('public.projects');
+            $this->dispatch('project-status-updated');
+        } else {
+            $this->error = $response->json('message', 'Failed to update project status.');
+        }
+    }
+
+    public function toggleVisibility(int $id): void
+    {
+        $response = ApiClient::get('/admin/projects');
+        if (! $response->successful()) {
+            return;
+        }
+
+        $project = collect(json_decode($response->body()))->firstWhere('id', $id);
+        if (! $project) {
+            return;
+        }
+
+        $newVisible = ! ($project->is_visible ?? true);
+        $putResponse = ApiClient::put("/admin/projects/{$id}", [
+            'is_visible' => $newVisible,
+        ]);
+
+        if ($putResponse->successful()) {
+            Cache::forget('public.projects');
+            $this->dispatch('project-status-updated');
+        } else {
+            $this->error = $putResponse->json('message', 'Failed to update project visibility.');
         }
     }
 
@@ -157,6 +202,7 @@ class ProjectManager extends Component
         if ($this->deletingId) {
             ApiClient::delete("/admin/projects/{$this->deletingId}");
             Cache::forget('public.projects');
+            $this->dispatch('project-status-updated');
             session()->flash('success', 'Project deleted.');
         }
         $this->showDelete = false;

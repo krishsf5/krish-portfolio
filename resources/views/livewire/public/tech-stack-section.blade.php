@@ -1,11 +1,11 @@
-<section id="skills" class="py-20 sm:py-24 lg:py-32 relative overflow-hidden">
+<section id="skills" class="py-12 sm:py-16 lg:py-20 relative overflow-hidden">
 
     <div class="absolute inset-0 -z-10">
         <div class="absolute w-[400px] h-[400px] bg-cyan-400/10 blur-[140px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 mb-10 sm:mb-16">
-        <div class="flex items-center gap-4 mb-6" data-section-label>
+    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 mb-6 sm:mb-8">
+        <div class="flex items-center gap-4 mb-4" data-section-label>
             <span class="text-xs font-mono tracking-[0.2em] uppercase text-cyan-400">03 — Tech Stack</span>
             <div class="flex-1 h-px bg-gradient-to-r from-cyan-400/40 to-transparent"></div>
         </div>

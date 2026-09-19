@@ -31,7 +31,7 @@
 
     <style>
         section[id] {
-            scroll-margin-top: 80px;
+            scroll-margin-top: 68px;
         }
 
         /* Active nav link */
@@ -85,9 +85,9 @@
                 @php $onHome = request()->is('/'); @endphp
                 <nav class="hidden md:flex items-center gap-10 text-sm font-mono">
                     @foreach ([
-        'projects' => 'Projects',
-        'skills' => 'Skills',
         'about' => 'About',
+        'skills' => 'Skills',
+        'projects' => 'Projects',
         'contact' => 'Contact',
     ] as $id => $label)
                         <a href="{{ $onHome ? '#' . $id : '/#' . $id }}" data-nav-link="{{ $id }}"
@@ -144,9 +144,9 @@
                 class="md:hidden hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-[#080a14]/95 backdrop-blur-md">
                 <nav class="flex flex-col px-5 sm:px-6 py-4 gap-1 font-mono text-sm">
                     @foreach ([
-        'projects' => 'Projects',
-        'skills' => 'Skills',
         'about' => 'About',
+        'skills' => 'Skills',
+        'projects' => 'Projects',
         'contact' => 'Contact',
     ] as $id => $label)
                         <a href="{{ $onHome ? '#' . $id : '/#' . $id }}" data-mobile-nav-link="{{ $id }}"
@@ -192,7 +192,7 @@
         </main>
 
         {{-- Footer --}}
-        <footer class="border-t border-slate-200 dark:border-slate-800 py-12 mt-20">
+        <footer class="border-t border-slate-200 dark:border-slate-800 py-8 sm:py-10 mt-10 sm:mt-14">
             <div
                 class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
                 <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-mono">

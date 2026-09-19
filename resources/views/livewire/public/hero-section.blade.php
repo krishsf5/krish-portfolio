@@ -1,4 +1,4 @@
-<div class="relative min-h-[calc(100svh-4rem)] flex items-start overflow-hidden pt-20 sm:pt-24 pb-14 sm:pb-20">
+<div class="relative min-h-[calc(100svh-4rem)] flex items-start overflow-hidden pt-12 sm:pt-16 md:pt-20 pb-8 sm:pb-10">
 
     <!-- BACKGROUND LAYERS -->
     <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
@@ -13,7 +13,7 @@
     </div>
 
 
-    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full grid md:grid-cols-2 gap-10 md:gap-16 xl:gap-24 items-center pt-2 sm:pt-4 md:pt-6 pb-12 sm:pb-16">
+    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full grid md:grid-cols-2 gap-10 md:gap-16 xl:gap-24 items-center pt-2 sm:pt-4 pb-4 sm:pb-6">
 
         <!-- LEFT: TEXT -->
         <div class="space-y-6 sm:space-y-8">
@@ -135,7 +135,7 @@
 
 
     <!-- SCROLL INDICATOR -->
-    <div class="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2 text-slate-400 dark:text-slate-600">
+    <div class="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2 text-slate-400 dark:text-slate-600">
         <span class="text-xs font-mono tracking-widest uppercase">Scroll</span>
         <div class="w-px h-12 bg-gradient-to-b from-slate-400 dark:from-slate-600 to-transparent scroll-line"></div>
     </div>

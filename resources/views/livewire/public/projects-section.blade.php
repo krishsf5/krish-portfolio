@@ -1,4 +1,4 @@
-<section id="projects" class="py-20 sm:py-24 lg:py-28 relative overflow-hidden">
+<section id="projects" class="py-12 sm:py-16 lg:py-20 relative overflow-hidden">
 
     {{-- Background atmosphere --}}
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
@@ -9,8 +9,8 @@
     </div>
 
     {{-- Header --}}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 mb-10 sm:mb-14">
-        <div class="flex items-center gap-4 mb-5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 mb-6 sm:mb-8">
+        <div class="flex items-center gap-4 mb-3 sm:mb-4">
             <span class="text-[11px] font-mono tracking-[0.25em] uppercase text-cyan-400">01 — Projects</span>
             <div class="flex-1 h-px bg-gradient-to-r from-cyan-400/30 to-transparent"></div>
         </div>

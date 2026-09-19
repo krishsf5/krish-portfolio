@@ -60,8 +60,8 @@ export default function initSmoothScroll() {
         if (target) {
             e.preventDefault()
             lenis.scrollTo(target, {
-                offset: -75,
-                duration: 1.6,
+                offset: 0,
+                duration: 1.2,
                 easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             })
 
@@ -74,9 +74,27 @@ export default function initSmoothScroll() {
     document.removeEventListener('click', handleAnchorClick)
     document.addEventListener('click', handleAnchorClick)
 
+    // Handle initial hash if page is opened with anchor
+    if (window.location.hash) {
+        const initialTarget = document.querySelector(window.location.hash)
+        if (initialTarget) {
+            setTimeout(() => {
+                lenis.scrollTo(initialTarget, { offset: 0, immediate: true })
+            }, 100)
+        }
+    }
+
     // Handle Livewire page navigations
     document.addEventListener('livewire:navigated', () => {
         lenis.resize()
+        if (window.location.hash) {
+            const initialTarget = document.querySelector(window.location.hash)
+            if (initialTarget) {
+                setTimeout(() => {
+                    lenis.scrollTo(initialTarget, { offset: 0, immediate: true })
+                }, 100)
+            }
+        }
     })
 
     return lenis
