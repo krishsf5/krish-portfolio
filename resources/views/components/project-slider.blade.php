@@ -397,7 +397,7 @@
                                             $mType = $mItem['type'] ?? 'image';
                                             $mPath = is_array($mItem) ? ($mItem['url'] ?? '') : ($mItem->url ?? '');
                                             $isVid = $mType === 'video' || str_ends_with(strtolower($mPath), '.mp4') || str_ends_with(strtolower($mPath), '.webm');
-                                            $fullUrl = Storage::disk('r2')->url($mPath);
+                                            $fullUrl = str_starts_with($mPath, 'http') ? $mPath : Storage::disk('r2')->url($mPath);
                                         @endphp
                                         <div class="absolute inset-0 transition-opacity duration-700 ease-in-out w-full h-full"
                                             @if($hasMulti)

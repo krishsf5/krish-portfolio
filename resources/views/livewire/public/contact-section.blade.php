@@ -20,7 +20,7 @@
                 </p>
             </div>
 
-            <form wire:submit="submit" class="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-[#0c1120]/90 p-6 md:p-8 shadow-2xl shadow-indigo-500/10 dark:shadow-black/20 space-y-5">
+            <form wire:submit="submit" class="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-[#0c1120]/90 p-5 sm:p-6 md:p-8 shadow-2xl shadow-indigo-500/10 dark:shadow-black/20 space-y-5">
                 @if ($successMessage)
                     <div class="rounded-lg border border-cyan-400/25 bg-cyan-400/10 px-4 py-3 text-sm text-cyan-700 dark:text-cyan-300">
                         {{ $successMessage }}
@@ -57,7 +57,7 @@
                 </div>
 
                 <div class="flex">
-                    <button type="submit" class="hero-btn-primary" wire:loading.attr="disabled">
+                    <button type="submit" class="hero-btn-primary w-full sm:w-auto" wire:loading.attr="disabled">
                         <span wire:loading.remove>Send Message</span>
                         <span wire:loading>Sending...</span>
                     </button>

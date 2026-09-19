@@ -1,4 +1,4 @@
-<div class="relative min-h-[calc(100svh-4rem)] flex items-center overflow-hidden pt-16">
+<div class="relative min-h-[calc(100svh-4rem)] flex items-start overflow-hidden pt-20 sm:pt-24 pb-14 sm:pb-20">
 
     <!-- BACKGROUND LAYERS -->
     <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
@@ -13,14 +13,14 @@
     </div>
 
 
-    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full grid md:grid-cols-2 gap-10 md:gap-16 xl:gap-24 items-center py-14 sm:py-16 md:py-20">
+    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full grid md:grid-cols-2 gap-10 md:gap-16 xl:gap-24 items-center pt-2 sm:pt-4 md:pt-6 pb-12 sm:pb-16">
 
         <!-- LEFT: TEXT -->
         <div class="space-y-6 sm:space-y-8">
 
-            <div data-hero-badge class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-400/30 bg-cyan-400/5 backdrop-blur-sm">
-                <span class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></span>
-                <span class="text-cyan-400 font-mono text-xs tracking-[0.25em] uppercase">Software Engineer</span>
+            <div data-hero-badge class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-300/80 dark:border-slate-800 bg-slate-200/60 dark:bg-slate-900/80 shadow-sm backdrop-blur-sm">
+                <span class="w-2 h-2 bg-slate-800 dark:bg-cyan-400 rounded-full animate-pulse"></span>
+                <span class="text-slate-900 dark:text-slate-200 font-mono text-xs font-semibold tracking-[0.25em] uppercase">Software Engineer</span>
             </div>
 
             <h1 data-hero-title class="hero-title text-slate-900 dark:text-white">

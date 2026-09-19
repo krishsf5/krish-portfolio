@@ -10,11 +10,11 @@
         <div class="absolute inset-0 grid-pattern opacity-20"></div>
     </div>
 
-    <div class="max-w-5xl mx-auto px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <!-- BACK BUTTON -->
         <a href="{{ route('home') }}#projects" wire:navigate
-            class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-cyan-400 transition mb-12 group font-mono">
+            class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-cyan-400 transition mb-6 sm:mb-10 group font-mono">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"
                 fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -24,7 +24,7 @@
 
 
         <!-- HEADER -->
-        <div class="mb-12">
+        <div class="mb-8 sm:mb-12">
 
             <!-- Status + date -->
             <div class="flex items-center gap-3 mb-6">
@@ -46,12 +46,12 @@
                 </span>
             </div>
 
-            <h1 class="text-4xl md:text-6xl font-bold text-slate-900 dark:text-white leading-tight mb-6">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white leading-tight mb-4 sm:mb-6">
                 {{ $project->title }}
             </h1>
 
             @if ($project->description)
-                <p class="text-xl text-slate-500 dark:text-slate-400 leading-relaxed max-w-3xl">
+                <p class="text-base sm:text-lg md:text-xl text-slate-500 dark:text-slate-400 leading-relaxed max-w-3xl">
                     {!! $project->description !!}
                 </p>
             @endif
@@ -60,7 +60,7 @@
 
 
         <!-- ACTION BUTTONS -->
-        <div class="flex flex-wrap gap-4 mb-16">
+        <div class="flex flex-wrap gap-3 sm:gap-4 mb-10 sm:mb-16">
             @if ($project->live_url)
                 <a href="{{ $project->live_url }}" target="_blank"
                     class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold text-sm hover:shadow-[0_0_24px_rgba(34,211,238,0.4)] transition-all duration-300 hover:-translate-y-0.5">
@@ -97,7 +97,7 @@
 
         <!-- MEDIA GALLERY / HERO -->
         @if (!empty($showMedia))
-            <div class="mb-20" x-data="{ activeIdx: 0 }">
+            <div class="mb-10 sm:mb-16 md:mb-20" x-data="{ activeIdx: 0 }">
                 <!-- Main Media Screen -->
                 <div class="relative rounded-2xl overflow-hidden group shadow-2xl border border-slate-200/80 dark:border-white/10 bg-slate-950 aspect-video flex items-center justify-center">
                     @foreach ($showMedia as $gIdx => $gItem)
@@ -105,7 +105,7 @@
                             $gType = $gItem['type'] ?? 'image';
                             $gPath = is_array($gItem) ? ($gItem['url'] ?? '') : ($gItem->url ?? '');
                             $isVid = $gType === 'video' || str_ends_with(strtolower($gPath), '.mp4') || str_ends_with(strtolower($gPath), '.webm');
-                            $gFullUrl = Storage::disk('r2')->url($gPath);
+                            $gFullUrl = str_starts_with($gPath, 'http') ? $gPath : Storage::disk('r2')->url($gPath);
                         @endphp
                         <div class="absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-300"
                             x-show="activeIdx === {{ $gIdx }}"
@@ -156,7 +156,7 @@
 
         <!-- TECH STACK -->
         @if ($project->tags && count($project->tags) > 0)
-            <div class="mb-20">
+            <div class="mb-10 sm:mb-16 md:mb-20">
                 <div class="flex items-center gap-4 mb-8">
                     <span class="text-xs font-mono tracking-[0.2em] uppercase text-cyan-400">Tech Stack</span>
                     <div class="flex-1 h-px bg-gradient-to-r from-cyan-400/40 to-transparent"></div>
@@ -171,31 +171,6 @@
                 </div>
             </div>
         @endif
-
-
-        <!-- PROJECT META CARDS -->
-        <div class="grid sm:grid-cols-3 gap-4 mb-20">
-
-            <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40">
-                <p class="text-xs font-mono uppercase tracking-widest text-slate-400 mb-2">Status</p>
-                <p class="text-base font-semibold text-slate-900 dark:text-white capitalize">
-                    {{ $project->status === 'wip' ? 'Work in Progress' : ucfirst($project->status) }}</p>
-            </div>
-
-            <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40">
-                <p class="text-xs font-mono uppercase tracking-widest text-slate-400 mb-2">Built</p>
-                <p class="text-base font-semibold text-slate-900 dark:text-white">
-                    {{ \Carbon\Carbon::parse($project->created_at)->format('F Y') }}</p>
-            </div>
-
-            <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40">
-                <p class="text-xs font-mono uppercase tracking-widest text-slate-400 mb-2">Technologies</p>
-                <p class="text-base font-semibold text-slate-900 dark:text-white">
-                    {{ $project->tags ? count($project->tags) : 0 }} used</p>
-            </div>
-
-        </div>
-
 
         {{-- RELATED PROJECTS --}}
         @if ($related->isNotEmpty())

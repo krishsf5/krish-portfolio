@@ -21,7 +21,11 @@ class ApiClient
 
     private static function baseUrl(): string
     {
-        return rtrim(config('services.backend.url', env('BACKEND_API_URL', 'http://localhost:8001/api')), '/');
+        $url = rtrim(config('services.backend.url', env('BACKEND_API_URL', 'http://localhost:8001/api')), '/');
+        if (! str_ends_with($url, '/api')) {
+            $url .= '/api';
+        }
+        return $url;
     }
 
     private static function hmacSecret(): string
@@ -118,7 +122,7 @@ class ApiClient
         $signature = self::buildSignature($method, $path, $rawBody, $timestamp);
 
         // Build the pending request
-        $http = Http::timeout(15)
+        $http = Http::timeout(45)
             ->withHeaders([
                 'X-Signature' => $signature,
                 'X-Timestamp' => (string) $timestamp,
@@ -131,7 +135,11 @@ class ApiClient
             $http = $http->withToken($token);
         }
 
-        $url = self::baseUrl() . '/' . ltrim($path, '/');
+        $cleanPath = ltrim($path, '/');
+        if (str_starts_with($cleanPath, 'api/')) {
+            $cleanPath = substr($cleanPath, 4);
+        }
+        $url = self::baseUrl() . '/' . $cleanPath;
 
         // Send request
         if ($multipart) {

@@ -117,16 +117,16 @@
                 <div class="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 pt-2">
                     @if ($resumeUrl)
                         <a href="{{ $resumeUrl }}" target="_blank"
-                            class="inline-flex justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-semibold hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300 hover:-translate-y-0.5">
+                            class="inline-flex w-full sm:w-auto justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-semibold hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300 hover:-translate-y-0.5">
                             Download Resume
                         </a>
                     @endif
                     <a href="#projects"
-                        class="inline-flex justify-center px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-cyan-400 dark:hover:border-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 hover:-translate-y-0.5">
+                        class="inline-flex w-full sm:w-auto justify-center px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-cyan-400 dark:hover:border-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 hover:-translate-y-0.5">
                         View Projects
                     </a>
                     <a href="#contact"
-                        class="inline-flex justify-center px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-cyan-400 dark:hover:border-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 hover:-translate-y-0.5">
+                        class="inline-flex w-full sm:w-auto justify-center px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-cyan-400 dark:hover:border-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 hover:-translate-y-0.5">
                         Contact Me
                     </a>
                 </div>

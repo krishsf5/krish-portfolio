@@ -25,7 +25,6 @@
 @layer base {
     html {
         font-family: var(--font-sans);
-        scroll-behavior: smooth;
     }
 
     body {
@@ -779,6 +778,13 @@
 }
 .animate-blink { animation: blink 1s step-end infinite; }
 
+/* Hero scroll-line (bounce indicator) */
+@keyframes scrollBounce {
+    0%, 100% { transform: scaleY(1);   opacity: 1; }
+    50%       { transform: scaleY(0.3); opacity: 0.3; }
+}
+.scroll-line { animation: scrollBounce 1.8s ease-in-out infinite; transform-origin: top; }
+
 /* Hero buttons */
 .hero-btn-primary {
     display: inline-flex;
@@ -841,7 +847,7 @@
     background: transparent;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 639px) {
     .hero-btn-primary,
     .hero-btn-ghost {
         width: 100%;

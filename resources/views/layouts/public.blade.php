@@ -30,10 +30,6 @@
     @livewireStyles
 
     <style>
-        html {
-            scroll-behavior: smooth;
-        }
-
         section[id] {
             scroll-margin-top: 80px;
         }
@@ -200,7 +196,7 @@
             <div
                 class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
                 <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-mono">
-                    © {{ date('Y') }} Krish Bhojwani — Built with Laravel + Livewire
+                    © {{ date('Y') }} Krish Bhojwani
                 </p>
                 <div
                     class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
