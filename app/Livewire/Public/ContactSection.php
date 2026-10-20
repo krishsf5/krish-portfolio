@@ -3,8 +3,8 @@
 namespace App\Livewire\Public;
 
 use App\Mail\ContactInquiryReceived;
-use App\Models\About;
 use App\Models\ContactInquiry;
+use App\Services\BackendService;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -49,7 +49,7 @@ class ContactSection extends Component
 
         RateLimiter::hit($rateLimitKey, 600);
 
-        $success = \App\Services\BackendService::submitInquiry([
+        $success = BackendService::submitInquiry([
             'name' => trim($validated['name']),
             'email' => Str::lower(trim($validated['email'])),
             'message' => trim($validated['message']),
@@ -62,11 +62,15 @@ class ContactSection extends Component
                 'message' => trim($validated['message']),
             ]);
 
-            $aboutData = \App\Services\BackendService::getAbout();
-            $recipient = $aboutData?->about?->email ?? null;
+            $aboutData = BackendService::getAbout();
+            $recipient = $aboutData?->about?->email ?? config('mail.admin_recipient', 'krishtbhojwani@gmail.com');
 
             if (filled($recipient)) {
-                Mail::to($recipient)->send(new ContactInquiryReceived($inquiry));
+                try {
+                    Mail::to($recipient)->send(new ContactInquiryReceived($inquiry));
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error('Failed to send contact inquiry notification email: '.$e->getMessage());
+                }
             }
         }
 
@@ -94,7 +98,7 @@ class ContactSection extends Component
 
     public function render()
     {
-        $aboutData = \App\Services\BackendService::getAbout();
+        $aboutData = BackendService::getAbout();
 
         return view('livewire.public.contact-section', [
             'about' => $aboutData?->about ?? null,

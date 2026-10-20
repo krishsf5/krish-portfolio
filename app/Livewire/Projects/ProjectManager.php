@@ -13,10 +13,12 @@ class ProjectManager extends Component
 {
     use WithFileUploads;
 
-    public bool $showModal  = false;
+    public bool $showModal = false;
+
     public bool $showDelete = false;
 
-    public ?int $editingId  = null;
+    public ?int $editingId = null;
+
     public ?int $deletingId = null;
 
     #[Validate('required|string|max:255')]
@@ -67,19 +69,19 @@ class ProjectManager extends Component
         if ($response->successful()) {
             $project = collect(json_decode($response->body()))->firstWhere('id', $id);
             if ($project) {
-                $this->editingId         = $id;
-                $this->title             = $project->title ?? '';
-                $this->description       = $project->description ?? '';
-                $this->live_url          = $project->live_url ?? '';
-                $this->repo_url          = $project->repo_url ?? '';
-                $this->tags              = is_array($project->tags ?? null) ? implode(', ', $project->tags) : ($project->tags ?? '');
-                $this->status            = $project->status ?? 'wip';
-                $this->start_date        = ! empty($project->start_date) ? Carbon::parse($project->start_date)->format('Y-m') : '';
-                $this->end_date          = ! empty($project->end_date)   ? Carbon::parse($project->end_date)->format('Y-m')   : '';
+                $this->editingId = $id;
+                $this->title = $project->title ?? '';
+                $this->description = $project->description ?? '';
+                $this->live_url = $project->live_url ?? '';
+                $this->repo_url = $project->repo_url ?? '';
+                $this->tags = is_array($project->tags ?? null) ? implode(', ', $project->tags) : ($project->tags ?? '');
+                $this->status = $project->status ?? 'wip';
+                $this->start_date = ! empty($project->start_date) ? Carbon::parse($project->start_date)->format('Y-m') : '';
+                $this->end_date = ! empty($project->end_date) ? Carbon::parse($project->end_date)->format('Y-m') : '';
                 $this->existingThumbnail = $project->thumbnail ?? null;
-                $this->existingMedia     = is_array($project->media ?? null) ? json_decode(json_encode($project->media), true) : [];
-                $this->newMedia          = [];
-                $this->showModal         = true;
+                $this->existingMedia = is_array($project->media ?? null) ? json_decode(json_encode($project->media), true) : [];
+                $this->newMedia = [];
+                $this->showModal = true;
             }
         }
     }
@@ -103,15 +105,15 @@ class ProjectManager extends Component
         $this->validate();
 
         $data = [
-            'title'          => trim($this->title),
-            'description'    => trim($this->description) ?: null,
-            'live_url'       => trim($this->live_url) ?: null,
-            'repo_url'       => trim($this->repo_url) ?: null,
-            'tags'           => $this->parseTags($this->tags),
-            'status'         => $this->status,
-            'is_visible'     => $this->status !== 'hidden',
-            'start_date'     => $this->start_date ? Carbon::parse($this->start_date . '-01')->format('Y-m-d') : null,
-            'end_date'       => $this->end_date   ? Carbon::parse($this->end_date   . '-01')->format('Y-m-d') : null,
+            'title' => trim($this->title),
+            'description' => trim($this->description) ?: null,
+            'live_url' => trim($this->live_url) ?: null,
+            'repo_url' => trim($this->repo_url) ?: null,
+            'tags' => $this->parseTags($this->tags),
+            'status' => $this->status,
+            'is_visible' => $this->status !== 'hidden',
+            'start_date' => $this->start_date ? Carbon::parse($this->start_date.'-01')->format('Y-m-d') : null,
+            'end_date' => $this->end_date ? Carbon::parse($this->end_date.'-01')->format('Y-m-d') : null,
             'existing_media' => $this->existingMedia,
         ];
 
@@ -140,9 +142,17 @@ class ProjectManager extends Component
         if ($response->successful()) {
             Cache::forget('public.projects');
             $this->dispatch('project-status-updated');
+            $this->error = '';
             session()->flash('success', $msg);
             $this->closeModal();
         } else {
+            if ($response->status() === 401) {
+                session()->forget(['api_token', 'api_user', 'api_login_at']);
+                session()->flash('error', 'Your session has expired. Please log in again.');
+                $this->redirect(route('login'), navigate: true);
+
+                return;
+            }
             $this->error = $response->json('message', 'Failed to save project.');
         }
     }
@@ -154,14 +164,22 @@ class ProjectManager extends Component
         }
 
         $response = ApiClient::put("/admin/projects/{$id}", [
-            'status'     => $status,
+            'status' => $status,
             'is_visible' => $status !== 'hidden',
         ]);
 
         if ($response->successful()) {
             Cache::forget('public.projects');
             $this->dispatch('project-status-updated');
+            $this->error = '';
         } else {
+            if ($response->status() === 401) {
+                session()->forget(['api_token', 'api_user', 'api_login_at']);
+                session()->flash('error', 'Your session has expired. Please log in again.');
+                $this->redirect(route('login'), navigate: true);
+
+                return;
+            }
             $this->error = $response->json('message', 'Failed to update project status.');
         }
     }
@@ -170,6 +188,12 @@ class ProjectManager extends Component
     {
         $response = ApiClient::get('/admin/projects');
         if (! $response->successful()) {
+            if ($response->status() === 401) {
+                session()->forget(['api_token', 'api_user', 'api_login_at']);
+                session()->flash('error', 'Your session has expired. Please log in again.');
+                $this->redirect(route('login'), navigate: true);
+            }
+
             return;
         }
 
@@ -186,7 +210,15 @@ class ProjectManager extends Component
         if ($putResponse->successful()) {
             Cache::forget('public.projects');
             $this->dispatch('project-status-updated');
+            $this->error = '';
         } else {
+            if ($putResponse->status() === 401) {
+                session()->forget(['api_token', 'api_user', 'api_login_at']);
+                session()->flash('error', 'Your session has expired. Please log in again.');
+                $this->redirect(route('login'), navigate: true);
+
+                return;
+            }
             $this->error = $putResponse->json('message', 'Failed to update project visibility.');
         }
     }
@@ -200,10 +232,22 @@ class ProjectManager extends Component
     public function delete(): void
     {
         if ($this->deletingId) {
-            ApiClient::delete("/admin/projects/{$this->deletingId}");
-            Cache::forget('public.projects');
-            $this->dispatch('project-status-updated');
-            session()->flash('success', 'Project deleted.');
+            $response = ApiClient::delete("/admin/projects/{$this->deletingId}");
+            if ($response->successful()) {
+                Cache::forget('public.projects');
+                $this->dispatch('project-status-updated');
+                $this->error = '';
+                session()->flash('success', 'Project deleted.');
+            } else {
+                if ($response->status() === 401) {
+                    session()->forget(['api_token', 'api_user', 'api_login_at']);
+                    session()->flash('error', 'Your session has expired. Please log in again.');
+                    $this->redirect(route('login'), navigate: true);
+
+                    return;
+                }
+                $this->error = $response->json('message', 'Failed to delete project.');
+            }
         }
         $this->showDelete = false;
         $this->deletingId = null;
@@ -211,34 +255,34 @@ class ProjectManager extends Component
 
     public function closeModal(): void
     {
-        $this->showModal  = false;
+        $this->showModal = false;
         $this->showDelete = false;
         $this->resetForm();
     }
 
     private function resetForm(): void
     {
-        $this->editingId         = null;
-        $this->title             = '';
-        $this->description       = '';
-        $this->live_url          = '';
-        $this->repo_url          = '';
-        $this->tags              = '';
-        $this->status            = 'wip';
-        $this->start_date        = '';
-        $this->end_date          = '';
-        $this->thumbnail         = null;
+        $this->editingId = null;
+        $this->title = '';
+        $this->description = '';
+        $this->live_url = '';
+        $this->repo_url = '';
+        $this->tags = '';
+        $this->status = 'wip';
+        $this->start_date = '';
+        $this->end_date = '';
+        $this->thumbnail = null;
         $this->existingThumbnail = null;
-        $this->existingMedia     = [];
-        $this->newMedia          = [];
-        $this->error             = '';
+        $this->existingMedia = [];
+        $this->newMedia = [];
+        $this->error = '';
         $this->resetValidation();
     }
 
     private function parseTags(string $raw): array
     {
         return collect(explode(',', $raw))
-            ->map(fn($t) => trim($t))
+            ->map(fn ($t) => trim($t))
             ->filter()
             ->values()
             ->all();
@@ -247,8 +291,32 @@ class ProjectManager extends Component
     public function render()
     {
         $response = ApiClient::get('/admin/projects');
+
+        if ($response->status() === 401) {
+            session()->forget(['api_token', 'api_user', 'api_login_at']);
+            session()->flash('error', 'Your session has expired. Please log in again.');
+            $this->redirect(route('login'), navigate: true);
+
+            return view('livewire.admin.projects.project-manager', ['projects' => collect()])
+                ->layout('layouts.dashboard');
+        }
+
         $projects = $response->successful()
-            ? collect(json_decode($response->body()))
+            ? collect(json_decode($response->body()))->map(function ($p) {
+                $p->id = $p->id ?? 0;
+                $p->title = $p->title ?? 'Untitled';
+                $p->thumbnail = $p->thumbnail ?? null;
+                $p->live_url = $p->live_url ?? null;
+                $p->repo_url = $p->repo_url ?? null;
+                $p->status = $p->status ?? 'wip';
+                $p->is_visible = $p->is_visible ?? true;
+                $p->description = $p->description ?? null;
+                $p->tags = is_array($p->tags ?? null) ? $p->tags : [];
+                $p->start_date = $p->start_date ?? null;
+                $p->end_date = $p->end_date ?? null;
+
+                return $p;
+            })
             : collect();
 
         return view('livewire.admin.projects.project-manager', compact('projects'))

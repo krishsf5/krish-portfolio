@@ -383,7 +383,7 @@
 
                         {{-- THUMBNAIL --}}
                         <div class="relative overflow-hidden" style="height:180px;">
-                            @if($project->thumbnail)
+                            @if(!empty($project->thumbnail))
                                 <img src="{{ Storage::disk('r2')->url($project->thumbnail) }}"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                             @else
@@ -402,14 +402,14 @@
 
                             {{-- Top accent bar --}}
                             <div class="absolute inset-x-0 top-0 h-[3px]
-                                @if($project->status==='live') bg-gradient-to-r from-green-400 to-emerald-300
-                                @elseif($project->status==='wip') bg-gradient-to-r from-orange-400 to-amber-300
+                                @if(($project->status ?? '') === 'live') bg-gradient-to-r from-green-400 to-emerald-300
+                                @elseif(($project->status ?? '') === 'wip') bg-gradient-to-r from-orange-400 to-amber-300
                                 @else bg-gradient-to-r from-red-400 to-rose-300 @endif"></div>
 
                             {{-- External link icons --}}
-                            @if($project->live_url || $project->repo_url)
+                            @if(!empty($project->live_url) || !empty($project->repo_url))
                                 <div class="absolute top-3 right-3 flex gap-1.5">
-                                    @if($project->live_url)
+                                    @if(!empty($project->live_url))
                                         <a href="{{ $project->live_url }}" target="_blank"
                                             class="p-1.5 rounded-lg transition"
                                             style="background:rgba(0,0,0,.55);backdrop-filter:blur(6px);color:var(--t2);"
@@ -420,7 +420,7 @@
                                             </svg>
                                         </a>
                                     @endif
-                                    @if($project->repo_url)
+                                    @if(!empty($project->repo_url))
                                         <a href="{{ $project->repo_url }}" target="_blank"
                                             class="p-1.5 rounded-lg transition"
                                             style="background:rgba(0,0,0,.55);backdrop-filter:blur(6px);color:var(--t2);"
@@ -440,14 +440,15 @@
 
                             <div class="flex items-start justify-between gap-2">
                                 <h3 class="text-sm font-semibold leading-snug line-clamp-1" style="color:var(--t1);">
-                                    {{ $project->title }}
+                                    {{ $project->title ?? 'Untitled' }}
                                 </h3>
                                 {{-- visibility eye --}}
+                                @php $isVisible = $project->is_visible ?? true; @endphp
                                 <button wire:click="toggleVisibility({{ $project->id }})"
-                                    title="{{ $project->is_visible ? 'Hide' : 'Show' }}"
+                                    title="{{ $isVisible ? 'Hide' : 'Show' }}"
                                     class="flex-shrink-0 p-1 rounded-md transition"
-                                    style="color:{{ $project->is_visible ? 'var(--cyan)' : 'var(--t1)' }};">
-                                    @if($project->is_visible)
+                                    style="color:{{ $isVisible ? 'var(--cyan)' : 'var(--t1)' }};">
+                                    @if($isVisible)
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -460,13 +461,13 @@
                                 </button>
                             </div>
 
-                            @if($project->description)
+                            @if(!empty($project->description))
                                 <p class="text-xs line-clamp-2 leading-relaxed" style="color:var(--t3);">
                                     {!! strip_tags($project->description) !!}
                                 </p>
                             @endif
 
-                            @if($project->tags)
+                            @if(!empty($project->tags) && is_array($project->tags))
                                 <div class="flex flex-wrap gap-1.5">
                                     @foreach($project->tags as $tag)
                                         <span class="px-2 py-0.5 text-[10px] rounded-md pm-mono"
@@ -477,30 +478,31 @@
                                 </div>
                             @endif
 
-                            @if($project->start_date)
+                            @if(!empty($project->start_date))
                                 <p class="text-[10px] pm-mono flex items-center gap-1.5 mt-auto" style="color:var(--t1);">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5"/>
                                     </svg>
                                     {{ \Carbon\Carbon::parse($project->start_date)->format('M Y') }}
                                     →
-                                    {{ $project->end_date ? \Carbon\Carbon::parse($project->end_date)->format('M Y') : 'Present' }}
+                                    {{ !empty($project->end_date) ? \Carbon\Carbon::parse($project->end_date)->format('M Y') : 'Present' }}
                                 </p>
                             @endif
 
                             {{-- STATUS TOGGLE ──────────── --}}
+                            @php $projStatus = $project->status ?? 'wip'; @endphp
                             <div class="status-toggle mt-auto">
                                 <button wire:click="updateStatus({{ $project->id }}, 'live')"
-                                    class="{{ $project->status === 'live' ? 'active-live' : '' }}">
+                                    class="{{ $projStatus === 'live' ? 'active-live' : '' }}">
                                     LIVE
                                 </button>
                                 <button wire:click="updateStatus({{ $project->id }}, 'wip')"
-                                    class="{{ $project->status === 'wip' ? 'active-wip' : '' }}"
+                                    class="{{ $projStatus === 'wip' ? 'active-wip' : '' }}"
                                     style="border-left:1px solid var(--line);border-right:1px solid var(--line);">
                                     WIP
                                 </button>
                                 <button wire:click="updateStatus({{ $project->id }}, 'hidden')"
-                                    class="{{ $project->status === 'hidden' ? 'active-hidden' : '' }}">
+                                    class="{{ $projStatus === 'hidden' ? 'active-hidden' : '' }}">
                                     HIDDEN
                                 </button>
                             </div>

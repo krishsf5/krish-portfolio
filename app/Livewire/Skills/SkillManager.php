@@ -10,17 +10,23 @@ use Livewire\Component;
 #[Title('Dashboard — Skills')]
 class SkillManager extends Component
 {
-    public bool $showModal  = false;
+    public bool $showModal = false;
+
     public bool $showDelete = false;
 
-    public ?int $editingId  = null;
+    public ?int $editingId = null;
+
     public ?int $deletingId = null;
 
-    public string $name        = '';
-    public string $category    = 'Frontend';
-    public int    $proficiency = 5;
-    public string $icon        = '';
-    public bool   $is_visible  = true;
+    public string $name = '';
+
+    public string $category = 'Frontend';
+
+    public int $proficiency = 5;
+
+    public string $icon = '';
+
+    public bool $is_visible = true;
 
     public string $error = '';
 
@@ -36,13 +42,13 @@ class SkillManager extends Component
         if ($response->successful()) {
             $skill = collect(json_decode($response->body()))->firstWhere('id', $id);
             if ($skill) {
-                $this->editingId   = $id;
-                $this->name        = $skill->name ?? '';
-                $this->category    = $skill->category ?? 'Frontend';
+                $this->editingId = $id;
+                $this->name = $skill->name ?? '';
+                $this->category = $skill->category ?? 'Frontend';
                 $this->proficiency = $skill->proficiency ?? 5;
-                $this->icon        = $skill->icon ?? '';
-                $this->is_visible  = $skill->is_visible ?? true;
-                $this->showModal   = true;
+                $this->icon = $skill->icon ?? '';
+                $this->is_visible = $skill->is_visible ?? true;
+                $this->showModal = true;
             }
         }
     }
@@ -50,18 +56,18 @@ class SkillManager extends Component
     public function save(): void
     {
         $this->validate([
-            'name'        => ['required', 'string', 'max:100'],
-            'category'    => ['required', 'in:Frontend,Backend,Database,Tools'],
+            'name' => ['required', 'string', 'max:100'],
+            'category' => ['required', 'in:Frontend,Backend,Database,Tools'],
             'proficiency' => ['required', 'integer', 'min:1', 'max:100'],
-            'icon'        => ['nullable', 'string', 'max:100'],
+            'icon' => ['nullable', 'string', 'max:100'],
         ]);
 
         $data = [
-            'name'        => trim($this->name),
-            'category'    => $this->category,
+            'name' => trim($this->name),
+            'category' => $this->category,
             'proficiency' => $this->proficiency,
-            'icon'        => trim($this->icon) ?: null,
-            'is_visible'  => $this->is_visible,
+            'icon' => trim($this->icon) ?: null,
+            'is_visible' => $this->is_visible,
         ];
 
         if ($this->editingId) {
@@ -74,29 +80,55 @@ class SkillManager extends Component
 
         if ($response->successful()) {
             Cache::forget('public.skills');
+            $this->error = '';
             session()->flash('success', $msg);
             $this->closeModal();
         } else {
+            if ($response->status() === 401) {
+                session()->forget(['api_token', 'api_user', 'api_login_at']);
+                session()->flash('error', 'Your session has expired. Please log in again.');
+                $this->redirect(route('login'), navigate: true);
+
+                return;
+            }
             $this->error = $response->json('message', 'Failed to save skill.');
         }
     }
 
     public function toggleVisibility(int $id): void
     {
-        ApiClient::patch("/admin/skills/{$id}/toggle");
-        Cache::forget('public.skills');
+        $response = ApiClient::patch("/admin/skills/{$id}/toggle");
+        if ($response->successful()) {
+            Cache::forget('public.skills');
+        } elseif ($response->status() === 401) {
+            session()->forget(['api_token', 'api_user', 'api_login_at']);
+            session()->flash('error', 'Your session has expired. Please log in again.');
+            $this->redirect(route('login'), navigate: true);
+        }
     }
 
     public function moveUp(int $id): void
     {
-        ApiClient::patch("/admin/skills/{$id}/move-up");
-        Cache::forget('public.skills');
+        $response = ApiClient::patch("/admin/skills/{$id}/move-up");
+        if ($response->successful()) {
+            Cache::forget('public.skills');
+        } elseif ($response->status() === 401) {
+            session()->forget(['api_token', 'api_user', 'api_login_at']);
+            session()->flash('error', 'Your session has expired. Please log in again.');
+            $this->redirect(route('login'), navigate: true);
+        }
     }
 
     public function moveDown(int $id): void
     {
-        ApiClient::patch("/admin/skills/{$id}/move-down");
-        Cache::forget('public.skills');
+        $response = ApiClient::patch("/admin/skills/{$id}/move-down");
+        if ($response->successful()) {
+            Cache::forget('public.skills');
+        } elseif ($response->status() === 401) {
+            session()->forget(['api_token', 'api_user', 'api_login_at']);
+            session()->flash('error', 'Your session has expired. Please log in again.');
+            $this->redirect(route('login'), navigate: true);
+        }
     }
 
     public function confirmDelete(int $id): void
@@ -108,9 +140,20 @@ class SkillManager extends Component
     public function delete(): void
     {
         if ($this->deletingId) {
-            ApiClient::delete("/admin/skills/{$this->deletingId}");
-            Cache::forget('public.skills');
-            session()->flash('success', 'Skill deleted.');
+            $response = ApiClient::delete("/admin/skills/{$this->deletingId}");
+            if ($response->successful()) {
+                Cache::forget('public.skills');
+                session()->flash('success', 'Skill deleted.');
+            } else {
+                if ($response->status() === 401) {
+                    session()->forget(['api_token', 'api_user', 'api_login_at']);
+                    session()->flash('error', 'Your session has expired. Please log in again.');
+                    $this->redirect(route('login'), navigate: true);
+
+                    return;
+                }
+                $this->error = $response->json('message', 'Failed to delete skill.');
+            }
         }
         $this->showDelete = false;
         $this->deletingId = null;
@@ -118,27 +161,37 @@ class SkillManager extends Component
 
     public function closeModal(): void
     {
-        $this->showModal  = false;
+        $this->showModal = false;
         $this->showDelete = false;
         $this->resetForm();
     }
 
     private function resetForm(): void
     {
-        $this->editingId   = null;
-        $this->name        = '';
-        $this->category    = 'Frontend';
+        $this->editingId = null;
+        $this->name = '';
+        $this->category = 'Frontend';
         $this->proficiency = 5;
-        $this->icon        = '';
-        $this->is_visible  = true;
-        $this->error       = '';
+        $this->icon = '';
+        $this->is_visible = true;
+        $this->error = '';
         $this->resetValidation();
     }
 
     public function render()
     {
         $response = ApiClient::get('/admin/skills');
-        $skills   = $response->successful()
+
+        if ($response->status() === 401) {
+            session()->forget(['api_token', 'api_user', 'api_login_at']);
+            session()->flash('error', 'Your session has expired. Please log in again.');
+            $this->redirect(route('login'), navigate: true);
+
+            return view('livewire.admin.skills.skill-manager', ['skills' => collect()])
+                ->layout('layouts.dashboard');
+        }
+
+        $skills = $response->successful()
             ? collect(json_decode($response->body()))->groupBy('category')
             : collect();
 

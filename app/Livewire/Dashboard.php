@@ -24,9 +24,17 @@ class Dashboard extends Component
         }
 
         $response = ApiClient::put("/admin/projects/{$id}", [
-            'status'     => $status,
+            'status' => $status,
             'is_visible' => $status !== 'hidden',
         ]);
+
+        if ($response->status() === 401) {
+            session()->forget(['api_token', 'api_user', 'api_token_expires_at']);
+            session()->flash('error', 'Your session has expired. Please log in again.');
+            $this->redirect(route('login'), navigate: true);
+
+            return;
+        }
 
         if ($response->successful()) {
             Cache::forget('public.projects');
@@ -37,6 +45,14 @@ class Dashboard extends Component
     public function toggleVisibility(int $id): void
     {
         $response = ApiClient::get('/admin/projects');
+        if ($response->status() === 401) {
+            session()->forget(['api_token', 'api_user', 'api_token_expires_at']);
+            session()->flash('error', 'Your session has expired. Please log in again.');
+            $this->redirect(route('login'), navigate: true);
+
+            return;
+        }
+
         if (! $response->successful()) {
             return;
         }
@@ -51,6 +67,14 @@ class Dashboard extends Component
             'is_visible' => $newVisible,
         ]);
 
+        if ($putResponse->status() === 401) {
+            session()->forget(['api_token', 'api_user', 'api_token_expires_at']);
+            session()->flash('error', 'Your session has expired. Please log in again.');
+            $this->redirect(route('login'), navigate: true);
+
+            return;
+        }
+
         if ($putResponse->successful()) {
             Cache::forget('public.projects');
             $this->dispatch('project-status-updated');
@@ -60,11 +84,25 @@ class Dashboard extends Component
     public function render()
     {
         $response = ApiClient::get('/admin/projects');
+
+        if ($response->status() === 401) {
+            session()->forget(['api_token', 'api_user', 'api_token_expires_at']);
+            session()->flash('error', 'Your session has expired. Please log in again.');
+            $this->redirect(route('login'), navigate: true);
+
+            return view('pages.dashboard', [
+                'totalProjects' => 0,
+                'liveProjects' => 0,
+                'wipProjects' => 0,
+                'hiddenProjects' => 0,
+            ])->layout('layouts.dashboard');
+        }
+
         $projects = $response->successful() ? collect(json_decode($response->body())) : collect();
 
-        $totalProjects  = $projects->count();
-        $liveProjects   = $projects->where('status', 'live')->where('is_visible', true)->count();
-        $wipProjects    = $projects->where('status', 'wip')->count();
+        $totalProjects = $projects->count();
+        $liveProjects = $projects->where('status', 'live')->where('is_visible', true)->count();
+        $wipProjects = $projects->where('status', 'wip')->count();
         $hiddenProjects = $projects->filter(fn ($p) => ! ($p->is_visible ?? true) || ($p->status ?? '') === 'hidden')->count();
 
         return view('pages.dashboard', compact(

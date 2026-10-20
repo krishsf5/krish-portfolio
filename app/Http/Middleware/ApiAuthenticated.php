@@ -17,6 +17,7 @@ class ApiAuthenticated
             }
 
             session()->flash('error', 'Please log in to access the dashboard.');
+
             return redirect()->route('login');
         }
 

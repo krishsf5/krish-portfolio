@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['api.auth'])->group(function () {
-    Route::redirect('settings', 'settings/profile');
-    Route::livewire('settings/profile', 'pages::settings.profile')->name('profile.edit');
-    Route::livewire('settings/appearance', 'pages::settings.appearance')->name('appearance.edit');
-    Route::livewire('settings/security', 'pages::settings.security')->name('security.edit');
+    Route::redirect('settings', '/dashboard/about');
+    Route::redirect('settings/profile', '/dashboard/about')->name('profile.edit');
+    Route::redirect('settings/appearance', '/dashboard')->name('appearance.edit');
+    Route::redirect('settings/security', '/dashboard')->name('security.edit');
 });

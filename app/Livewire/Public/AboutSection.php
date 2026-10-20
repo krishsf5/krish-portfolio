@@ -2,35 +2,32 @@
 
 namespace App\Livewire\Public;
 
-use App\Models\About;
-use App\Models\Project;
-use App\Models\Resume;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
+use App\Services\BackendService;
 use Livewire\Component;
 
 class AboutSection extends Component
 {
     public $about;
+
     public $avatar;
 
     public int $liveProjectCount;
 
     public function mount(): void
     {
-        $aboutData = \App\Services\BackendService::getAbout();
+        $aboutData = BackendService::getAbout();
         $this->about = $aboutData?->about ?? null;
         if (is_null($this->avatar) && $aboutData) {
             $this->avatar = $aboutData->avatar_url;
         }
 
-        $projects = \App\Services\BackendService::getProjects();
+        $projects = BackendService::getProjects();
         $this->liveProjectCount = $projects->count();
     }
 
     public function render()
     {
-        $resumeData = \App\Services\BackendService::getResume();
+        $resumeData = BackendService::getResume();
 
         return view('livewire.public.about-section', [
             'about' => $this->about,

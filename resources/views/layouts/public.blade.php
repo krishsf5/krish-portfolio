@@ -86,8 +86,9 @@
                 <nav class="hidden md:flex items-center gap-10 text-sm font-mono">
                     @foreach ([
         'about' => 'About',
-        'skills' => 'Skills',
+        'experience' => 'Experience',
         'projects' => 'Projects',
+        'skills' => 'Skills',
         'contact' => 'Contact',
     ] as $id => $label)
                         <a href="{{ $onHome ? '#' . $id : '/#' . $id }}" data-nav-link="{{ $id }}"
@@ -145,8 +146,9 @@
                 <nav class="flex flex-col px-5 sm:px-6 py-4 gap-1 font-mono text-sm">
                     @foreach ([
         'about' => 'About',
-        'skills' => 'Skills',
+        'experience' => 'Experience',
         'projects' => 'Projects',
+        'skills' => 'Skills',
         'contact' => 'Contact',
     ] as $id => $label)
                         <a href="{{ $onHome ? '#' . $id : '/#' . $id }}" data-mobile-nav-link="{{ $id }}"

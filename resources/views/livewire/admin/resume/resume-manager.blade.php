@@ -7,11 +7,17 @@
     </div>
 
 
-    {{-- FLASH --}}
+    {{-- FLASH / ERRORS --}}
     @if (session('success'))
         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition
             class="px-4 py-3 rounded-lg text-xs font-mono border border-cyan-400/20 bg-cyan-400/10 text-cyan-300">
             {{ session('success') }}
+        </div>
+    @endif
+
+    @if ($error)
+        <div class="px-4 py-3 rounded-lg text-xs font-mono border border-red-500/20 bg-red-500/10 text-red-400">
+            {{ $error }}
         </div>
     @endif
 
@@ -64,7 +70,7 @@
                             </svg>
                             <div class="min-w-0">
                                 <p class="text-sm text-slate-200 truncate">{{ $resume->filename }}</p>
-                                <p class="text-xs text-slate-500">{{ $resume->size_kb }} KB · {{ $resume->created_at->format('M d, Y') }}</p>
+                                <p class="text-xs text-slate-500">{{ $resume->size_kb }} KB · {{ $resume->created_at ? (\Carbon\Carbon::parse($resume->created_at)->format('M d, Y')) : '' }}</p>
                             </div>
                         </div>
 
@@ -81,7 +87,7 @@
                                 </button>
                             @endif
 
-                            <a href="/storage/{{ $resume->path }}" target="_blank"
+                            <a href="{{ str_starts_with($resume->path, 'http') ? $resume->path : Storage::disk('r2')->url($resume->path) }}" target="_blank"
                                 class="p-1.5 text-slate-400 hover:text-cyan-400 transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/>

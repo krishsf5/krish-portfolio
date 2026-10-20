@@ -86,8 +86,15 @@
                 <!-- STATS -->
                 @php
                     $customStats = is_array($about?->stats ?? null) ? $about->stats : [];
+                    $filteredCustom = collect($customStats)
+                        ->reject(function($item) {
+                            $label = is_object($item) ? ($item->label ?? '') : ($item['label'] ?? '');
+                            return (bool) preg_match('/project/i', $label);
+                        })
+                        ->map(fn($item) => (object)$item);
+
                     $allStats = collect([(object)['label' => 'Projects Built', 'value' => (string)$liveProjectCount]])
-                        ->merge(collect($customStats)->map(fn($item) => (object)$item));
+                        ->merge($filteredCustom);
                 @endphp
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">

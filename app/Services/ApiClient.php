@@ -3,8 +3,9 @@
 namespace App\Services;
 
 use Illuminate\Http\Client\Response;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 /**
  * Central HTTP client for all backend API communication.
@@ -25,6 +26,7 @@ class ApiClient
         if (! str_ends_with($url, '/api')) {
             $url .= '/api';
         }
+
         return $url;
     }
 
@@ -46,14 +48,14 @@ class ApiClient
      */
     private static function buildSignature(string $method, string $path, string $rawBody, int $timestamp): string
     {
-        $bodyHash  = hash('sha256', $rawBody);
-        
+        $bodyHash = hash('sha256', $rawBody);
+
         // Normalize path so it always has the /api/ prefix to match Laravel's $request->path()
         $cleanPath = ltrim($path, '/');
         if (! str_starts_with($cleanPath, 'api/')) {
-            $cleanPath = 'api/' . $cleanPath;
+            $cleanPath = 'api/'.$cleanPath;
         }
-        $canonicalPath = '/' . $cleanPath;
+        $canonicalPath = '/'.$cleanPath;
 
         $canonical = implode("\n", [$timestamp, strtoupper($method), $canonicalPath, $bodyHash]);
 
@@ -69,8 +71,8 @@ class ApiClient
      */
     public static function encrypt(array $payload): string
     {
-        $key    = hex2bin(self::encryptKey());
-        $iv     = random_bytes(12);              // 96-bit IV for GCM
+        $key = hex2bin(self::encryptKey());
+        $iv = random_bytes(12);              // 96-bit IV for GCM
         $cipher = openssl_encrypt(
             json_encode($payload),
             'aes-256-gcm',
@@ -84,7 +86,7 @@ class ApiClient
 
         return json_encode([
             'enc' => base64_encode($cipher),
-            'iv'  => base64_encode($iv),
+            'iv' => base64_encode($iv),
             'tag' => base64_encode($tag),
         ]);
     }
@@ -94,11 +96,11 @@ class ApiClient
     /**
      * Make a signed HTTP request to the backend API.
      *
-     * @param  string  $method       HTTP verb (GET, POST, PUT, PATCH, DELETE)
-     * @param  string  $path         API path e.g. "/skills" (no base URL)
-     * @param  array   $data         Request payload
-     * @param  bool    $encrypt      Whether to AES-encrypt the payload
-     * @param  bool    $multipart    Whether to send as multipart/form-data (file uploads)
+     * @param  string  $method  HTTP verb (GET, POST, PUT, PATCH, DELETE)
+     * @param  string  $path  API path e.g. "/skills" (no base URL)
+     * @param  array  $data  Request payload
+     * @param  bool  $encrypt  Whether to AES-encrypt the payload
+     * @param  bool  $multipart  Whether to send as multipart/form-data (file uploads)
      */
     public static function request(
         string $method,
@@ -108,7 +110,7 @@ class ApiClient
         bool $multipart = false,
     ): Response {
         $timestamp = time();
-        $method    = strtoupper($method);
+        $method = strtoupper($method);
 
         // Determine raw body for signature computation
         if ($multipart || empty($data)) {
@@ -126,11 +128,11 @@ class ApiClient
             ->withHeaders([
                 'X-Signature' => $signature,
                 'X-Timestamp' => (string) $timestamp,
-                'Accept'      => 'application/json',
+                'Accept' => 'application/json',
             ]);
 
         // Attach bearer token if one is stored in session (admin routes)
-        $token = session('api_token');
+        $token = AuthApiService::token();
         if ($token) {
             $http = $http->withToken($token);
         }
@@ -139,7 +141,7 @@ class ApiClient
         if (str_starts_with($cleanPath, 'api/')) {
             $cleanPath = substr($cleanPath, 4);
         }
-        $url = self::baseUrl() . '/' . $cleanPath;
+        $url = self::baseUrl().'/'.$cleanPath;
 
         // Send request
         if ($multipart) {
@@ -150,26 +152,28 @@ class ApiClient
                     return;
                 }
 
-                if ($val instanceof \Illuminate\Http\UploadedFile || $val instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                if ($val instanceof UploadedFile || $val instanceof TemporaryUploadedFile) {
                     $realPath = method_exists($val, 'getRealPath') ? $val->getRealPath() : null;
                     if ($realPath && file_exists($realPath)) {
                         $stream = fopen($realPath, 'r');
                         if ($stream !== false) {
                             $multipartElements[] = [
-                                'name'     => $name,
+                                'name' => $name,
                                 'contents' => $stream,
                                 'filename' => $val->getClientOriginalName(),
                             ];
+
                             return;
                         }
                     }
 
                     $contents = method_exists($val, 'getContent') ? $val->getContent() : (method_exists($val, 'get') ? $val->get() : '');
                     $multipartElements[] = [
-                        'name'     => $name,
+                        'name' => $name,
                         'contents' => ($contents !== false && $contents !== null) ? $contents : '',
                         'filename' => $val->getClientOriginalName(),
                     ];
+
                     return;
                 }
 
@@ -178,19 +182,21 @@ class ApiClient
                         $subName = "{$name}[{$subKey}]";
                         $addMultipartElement($subName, $subVal);
                     }
+
                     return;
                 }
 
                 if (is_bool($val)) {
                     $multipartElements[] = [
-                        'name'     => $name,
+                        'name' => $name,
                         'contents' => $val ? '1' : '0',
                     ];
+
                     return;
                 }
 
                 $multipartElements[] = [
-                    'name'     => $name,
+                    'name' => $name,
                     'contents' => (string) $val,
                 ];
             };
@@ -214,7 +220,7 @@ class ApiClient
 
         return match ($method) {
             'GET', 'DELETE' => $http->$method($url, $data ?: null),
-            default         => $http->$method($url),
+            default => $http->$method($url),
         };
     }
 
@@ -243,6 +249,7 @@ class ApiClient
     public static function putMultipart(string $path, array $data = []): Response
     {
         $data['_method'] = 'PUT';
+
         return self::request('POST', $path, $data, false, true);
     }
 

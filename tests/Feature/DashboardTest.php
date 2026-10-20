@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class DashboardTest extends TestCase
@@ -18,10 +18,16 @@ class DashboardTest extends TestCase
 
     public function test_authenticated_users_can_visit_the_dashboard(): void
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        Http::fake([
+            '*/admin/projects' => Http::response([], 200),
+        ]);
 
-        $response = $this->get(route('dashboard'));
+        $response = $this->withSession([
+            'api_token' => 'mock-token',
+            'api_login_at' => time(),
+            'api_user' => ['id' => 1, 'name' => 'Krish', 'email' => 'krishtbhojwani@gmail.com'],
+        ])->get(route('dashboard'));
+
         $response->assertOk();
     }
 }

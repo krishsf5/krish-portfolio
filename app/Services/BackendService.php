@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -22,15 +23,39 @@ class BackendService
                 $data = json_decode($response->body());
                 if ($data) {
                     Cache::put('public.about_data', $data, 300);
+
                     return $data;
                 }
             }
-        } catch (\Exception) {}
+        } catch (\Exception) {
+        }
 
         return null;
     }
 
-    public static function getProjects(): \Illuminate\Support\Collection
+    public static function getExperiences(): Collection
+    {
+        if (Cache::has('public.experiences')) {
+            return Cache::get('public.experiences');
+        }
+
+        try {
+            $response = ApiClient::get('/experiences');
+            if ($response->successful()) {
+                $data = collect(json_decode($response->body()));
+                if ($data->isNotEmpty()) {
+                    Cache::put('public.experiences', $data, 300);
+                }
+
+                return $data;
+            }
+        } catch (\Exception) {
+        }
+
+        return collect();
+    }
+
+    public static function getProjects(): Collection
     {
         if (Cache::has('public.projects')) {
             return Cache::get('public.projects');
@@ -43,9 +68,11 @@ class BackendService
                 if ($data->isNotEmpty()) {
                     Cache::put('public.projects', $data, 300);
                 }
+
                 return $data;
             }
-        } catch (\Exception) {}
+        } catch (\Exception) {
+        }
 
         return collect();
     }
@@ -57,11 +84,12 @@ class BackendService
             if ($response->successful()) {
                 return json_decode($response->body());
             }
-        } catch (\Exception) {}
+        } catch (\Exception) {
+        }
         abort(404);
     }
 
-    public static function getSkills(): \Illuminate\Support\Collection
+    public static function getSkills(): Collection
     {
         if (Cache::has('public.skills')) {
             return Cache::get('public.skills');
@@ -74,9 +102,11 @@ class BackendService
                 if ($data->isNotEmpty()) {
                     Cache::put('public.skills', $data, 300);
                 }
+
                 return $data;
             }
-        } catch (\Exception) {}
+        } catch (\Exception) {
+        }
 
         return collect();
     }
@@ -91,20 +121,28 @@ class BackendService
             $response = ApiClient::get('/resumes');
             if ($response->successful()) {
                 $data = json_decode($response->body());
-                if ($data) {
+                if ($data && !empty($data->resume_url)) {
                     Cache::put('public.resume_data', $data, 300);
+
                     return $data;
                 }
             }
-        } catch (\Exception) {}
+        } catch (\Exception) {
+        }
 
-        return null;
+        return (object)[
+            'resume' => (object)[
+                'filename' => 'Krish_Bhojwani.pdf',
+            ],
+            'resume_url' => asset('resumes/Krish_Bhojwani.pdf'),
+        ];
     }
 
     public static function submitInquiry(array $data): bool
     {
         try {
             $response = ApiClient::post('/inquiries', $data);
+
             return $response->successful();
         } catch (\Exception) {
             return false;

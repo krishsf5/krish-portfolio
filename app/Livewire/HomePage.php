@@ -2,17 +2,14 @@
 
 namespace App\Livewire;
 
-use App\Models\About;
-use App\Models\Project;
-use App\Models\Skill;
-use App\Models\User;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
+use App\Services\BackendService;
 use Livewire\Component;
 
 class HomePage extends Component
 {
     public $projects;
+
+    public $experiences;
 
     public $skills;
 
@@ -22,10 +19,11 @@ class HomePage extends Component
 
     public function mount(): void
     {
-        $this->projects = \App\Services\BackendService::getProjects();
-        $this->skills = \App\Services\BackendService::getSkills();
+        $this->projects = BackendService::getProjects();
+        $this->experiences = BackendService::getExperiences();
+        $this->skills = BackendService::getSkills();
 
-        $aboutData = \App\Services\BackendService::getAbout();
+        $aboutData = BackendService::getAbout();
         $this->about = $aboutData?->about ?? null;
         $this->avatar = $aboutData?->avatar_url ?? null;
     }

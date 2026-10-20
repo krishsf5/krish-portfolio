@@ -65,18 +65,18 @@ class AboutManager extends Component
             $this->existingAvatar = $data['avatar_url'] ?? null;
 
             if ($about) {
-                $this->aboutId          = $about['id'] ?? null;
-                $this->full_name        = $about['full_name'] ?? '';
-                $this->title            = $about['title'] ?? '';
-                $this->bio              = $about['bio'] ?? '';
-                $this->location         = $about['location'] ?? '';
-                $this->email            = $about['email'] ?? '';
-                $this->github_url       = $about['github_url'] ?? '';
-                $this->linkedin_url     = $about['linkedin_url'] ?? '';
-                $this->website_url      = $about['website_url'] ?? '';
+                $this->aboutId = $about['id'] ?? null;
+                $this->full_name = $about['full_name'] ?? '';
+                $this->title = $about['title'] ?? '';
+                $this->bio = $about['bio'] ?? '';
+                $this->location = $about['location'] ?? '';
+                $this->email = $about['email'] ?? '';
+                $this->github_url = $about['github_url'] ?? '';
+                $this->linkedin_url = $about['linkedin_url'] ?? '';
+                $this->website_url = $about['website_url'] ?? '';
                 $this->years_experience = $about['years_experience'] ?? 0;
-                $this->availability     = $about['availability'] ?? 'available';
-                $this->stats            = is_array($about['stats'] ?? null) ? $about['stats'] : [];
+                $this->availability = $about['availability'] ?? 'available';
+                $this->stats = is_array($about['stats'] ?? null) ? $about['stats'] : [];
             }
         }
     }
@@ -90,17 +90,17 @@ class AboutManager extends Component
         }));
 
         $data = [
-            'full_name'        => trim($this->full_name),
-            'title'            => trim($this->title),
-            'bio'              => trim($this->bio) ?: null,
-            'location'         => trim($this->location) ?: null,
-            'email'            => trim($this->email) ?: null,
-            'github_url'       => trim($this->github_url) ?: null,
-            'linkedin_url'     => trim($this->linkedin_url) ?: null,
-            'website_url'      => trim($this->website_url) ?: null,
+            'full_name' => trim($this->full_name),
+            'title' => trim($this->title),
+            'bio' => trim($this->bio) ?: null,
+            'location' => trim($this->location) ?: null,
+            'email' => trim($this->email) ?: null,
+            'github_url' => trim($this->github_url) ?: null,
+            'linkedin_url' => trim($this->linkedin_url) ?: null,
+            'website_url' => trim($this->website_url) ?: null,
             'years_experience' => (int) $this->years_experience,
-            'availability'     => $this->availability,
-            'stats'            => ! empty($cleanStats) ? $cleanStats : null,
+            'availability' => $this->availability,
+            'stats' => ! empty($cleanStats) ? $cleanStats : null,
         ];
 
         $response = $this->avatar
@@ -123,9 +123,10 @@ class AboutManager extends Component
             session()->flash('success', 'Profile updated successfully.');
         } else {
             if ($response->status() === 401) {
-                session()->forget(['api_token', 'api_user']);
+                session()->forget(['api_token', 'api_user', 'api_token_expires_at']);
                 session()->flash('error', 'Your session expired. Please log in again.');
                 $this->redirect(route('login'), navigate: true);
+
                 return;
             }
             $this->error = $response->json('message', 'Failed to update profile.');
@@ -148,13 +149,26 @@ class AboutManager extends Component
         $user = AuthApiService::user();
 
         $projectsResponse = ApiClient::get('/admin/projects');
+        if ($projectsResponse->status() === 401) {
+            session()->forget(['api_token', 'api_user', 'api_token_expires_at']);
+            session()->flash('error', 'Your session expired. Please log in again.');
+            $this->redirect(route('login'), navigate: true);
+
+            return view('livewire.admin.about.about-manager', [
+                'about' => $this,
+                'existingAvatar' => $this->existingAvatar,
+                'authUser' => $user,
+                'liveProjectCount' => 0,
+            ])->layout('layouts.dashboard');
+        }
+
         $projects = $projectsResponse->successful() ? collect(json_decode($projectsResponse->body())) : collect();
         $liveProjectCount = $projects->where('status', 'live')->where('is_visible', true)->count();
 
         return view('livewire.admin.about.about-manager', [
-            'about'            => $this,
-            'existingAvatar'   => $this->existingAvatar,
-            'authUser'         => $user,
+            'about' => $this,
+            'existingAvatar' => $this->existingAvatar,
+            'authUser' => $user,
             'liveProjectCount' => $liveProjectCount,
         ])->layout('layouts.dashboard');
     }

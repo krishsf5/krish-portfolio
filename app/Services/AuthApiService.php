@@ -4,8 +4,10 @@ namespace App\Services;
 
 class AuthApiService
 {
-    private const SESSION_TOKEN      = 'api_token';
-    private const SESSION_USER       = 'api_user';
+    private const SESSION_TOKEN = 'api_token';
+
+    private const SESSION_USER = 'api_user';
+
     private const SESSION_LOGIN_TIME = 'api_login_at';
 
     /**
@@ -17,20 +19,22 @@ class AuthApiService
     {
         try {
             $response = ApiClient::post('/admin/login', [
-                'email'    => $email,
+                'email' => $email,
                 'password' => $password,
             ], encrypt: true);
 
             if ($response->successful()) {
                 $data = $response->json();
                 session([
-                    self::SESSION_TOKEN      => $data['token'],
-                    self::SESSION_USER       => $data['user'],
+                    self::SESSION_TOKEN => $data['token'],
+                    self::SESSION_USER => $data['user'],
                     self::SESSION_LOGIN_TIME => time(),
                 ]);
+
                 return true;
             }
-        } catch (\Exception) {}
+        } catch (\Exception) {
+        }
 
         return false;
     }
@@ -41,7 +45,8 @@ class AuthApiService
             if (session(self::SESSION_TOKEN)) {
                 ApiClient::post('/admin/logout');
             }
-        } catch (\Exception) {}
+        } catch (\Exception) {
+        }
 
         session()->forget([
             self::SESSION_TOKEN,
@@ -54,6 +59,7 @@ class AuthApiService
     {
         if (self::isExpired()) {
             self::logout();
+
             return null;
         }
 
@@ -64,6 +70,7 @@ class AuthApiService
     {
         if (self::isExpired()) {
             self::logout();
+
             return null;
         }
 

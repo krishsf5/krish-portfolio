@@ -22,13 +22,14 @@ class ApiLoginController extends Controller
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email'    => ['required', 'email'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
 
-        $key = 'login_attempts_' . sha1($request->ip());
+        $key = 'login_attempts_'.sha1($request->ip());
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
+
             return back()->withErrors([
                 'email' => "Too many login attempts. Please wait {$seconds} seconds.",
             ])->onlyInput('email');
@@ -37,6 +38,7 @@ class ApiLoginController extends Controller
         if (AuthApiService::login($credentials['email'], $credentials['password'])) {
             RateLimiter::clear($key);
             $request->session()->regenerate();
+
             return redirect()->intended(route('dashboard'));
         }
 

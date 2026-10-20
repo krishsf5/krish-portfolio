@@ -8,6 +8,7 @@ use App\Livewire\Inquiries\InquiryManager;
 use App\Livewire\Public\ProjectShow;
 use App\Livewire\Resume\ResumeManager;
 use App\Livewire\Skills\SkillManager;
+use App\Services\ApiClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
@@ -32,11 +33,11 @@ Route::middleware('api.auth')->group(function () {
     // Skill reorder (AJAX from drag-drop)
     Route::post('/dashboard/skills/reorder', function (Request $request) {
         $ids = $request->validate([
-            'ids'   => ['required', 'array'],
+            'ids' => ['required', 'array'],
             'ids.*' => ['integer'],
         ])['ids'];
 
-        $response = \App\Services\ApiClient::post('/admin/skills/reorder', ['ids' => $ids]);
+        $response = ApiClient::post('/admin/skills/reorder', ['ids' => $ids]);
 
         if ($response->successful()) {
             Cache::forget('public.skills');

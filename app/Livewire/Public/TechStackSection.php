@@ -2,15 +2,14 @@
 
 namespace App\Livewire\Public;
 
-use App\Models\Skill;
-use Illuminate\Support\Facades\Cache;
+use App\Services\BackendService;
 use Livewire\Component;
 
 class TechStackSection extends Component
 {
     public function render()
     {
-        $skills = \App\Services\BackendService::getSkills();
+        $skills = BackendService::getSkills();
 
         $row1 = $skills->filter(fn ($s) => in_array($s->category, ['Frontend', 'Backend']))->values();
         $row2 = $skills->filter(fn ($s) => in_array($s->category, ['Database', 'Tools']))->values();

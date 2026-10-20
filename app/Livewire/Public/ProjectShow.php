@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Public;
 
-use App\Models\Project;
+use App\Services\BackendService;
 use Livewire\Component;
 
 class ProjectShow extends Component
@@ -16,9 +16,9 @@ class ProjectShow extends Component
 
     public function render()
     {
-        $project = \App\Services\BackendService::getProject($this->slug);
+        $project = BackendService::getProject($this->slug);
 
-        $allProjects = \App\Services\BackendService::getProjects();
+        $allProjects = BackendService::getProjects();
         $related = $allProjects->where('id', '!=', $project->id)
             ->shuffle()
             ->take(3);
