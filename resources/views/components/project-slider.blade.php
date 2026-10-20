@@ -394,10 +394,10 @@
                                 @if (!empty($mediaList))
                                     @foreach ($mediaList as $mIdx => $mItem)
                                         @php
-                                            $mType = $mItem['type'] ?? 'image';
+                                            $mType = is_array($mItem) ? ($mItem['type'] ?? 'image') : ($mItem->type ?? 'image');
                                             $mPath = is_array($mItem) ? ($mItem['url'] ?? '') : ($mItem->url ?? '');
-                                            $isVid = $mType === 'video' || str_ends_with(strtolower($mPath), '.mp4') || str_ends_with(strtolower($mPath), '.webm');
-                                            $fullUrl = str_starts_with($mPath, 'http') ? $mPath : Storage::disk('r2')->url($mPath);
+                                            $isVid = $mType === 'video' || str_ends_with(strtolower((string) $mPath), '.mp4') || str_ends_with(strtolower((string) $mPath), '.webm');
+                                            $fullUrl = str_starts_with((string) $mPath, 'http') ? $mPath : Storage::disk('r2')->url($mPath);
                                         @endphp
                                         <div class="absolute inset-0 transition-opacity duration-700 ease-in-out w-full h-full"
                                             @if($hasMulti)

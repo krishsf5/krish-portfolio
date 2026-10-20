@@ -761,8 +761,10 @@
                                             {{-- Existing Media --}}
                                             @foreach($existingMedia as $idx => $item)
                                                 @php 
-                                                    $isVid = ($item['type'] ?? '') === 'video' || str_ends_with(strtolower($item['url'] ?? ''), '.mp4') || str_ends_with(strtolower($item['url'] ?? ''), '.webm');
-                                                    $mediaUrl = Storage::disk('r2')->url($item['url'] ?? '');
+                                                    $itemType = is_array($item) ? ($item['type'] ?? '') : ($item->type ?? '');
+                                                    $itemUrl = is_array($item) ? ($item['url'] ?? '') : ($item->url ?? '');
+                                                    $isVid = $itemType === 'video' || str_ends_with(strtolower((string) $itemUrl), '.mp4') || str_ends_with(strtolower((string) $itemUrl), '.webm');
+                                                    $mediaUrl = str_starts_with((string) $itemUrl, 'http') ? $itemUrl : Storage::disk('r2')->url($itemUrl);
                                                 @endphp
                                                 <div class="relative group rounded-lg overflow-hidden border border-slate-700 bg-slate-900 aspect-video flex items-center justify-center">
                                                     @if($isVid)

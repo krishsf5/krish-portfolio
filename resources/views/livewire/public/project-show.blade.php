@@ -102,10 +102,10 @@
                 <div class="relative rounded-2xl overflow-hidden group shadow-2xl border border-slate-200/80 dark:border-white/10 bg-slate-950 aspect-video flex items-center justify-center">
                     @foreach ($showMedia as $gIdx => $gItem)
                         @php
-                            $gType = $gItem['type'] ?? 'image';
+                            $gType = is_array($gItem) ? ($gItem['type'] ?? 'image') : ($gItem->type ?? 'image');
                             $gPath = is_array($gItem) ? ($gItem['url'] ?? '') : ($gItem->url ?? '');
-                            $isVid = $gType === 'video' || str_ends_with(strtolower($gPath), '.mp4') || str_ends_with(strtolower($gPath), '.webm');
-                            $gFullUrl = str_starts_with($gPath, 'http') ? $gPath : Storage::disk('r2')->url($gPath);
+                            $isVid = $gType === 'video' || str_ends_with(strtolower((string) $gPath), '.mp4') || str_ends_with(strtolower((string) $gPath), '.webm');
+                            $gFullUrl = str_starts_with((string) $gPath, 'http') ? $gPath : Storage::disk('r2')->url($gPath);
                         @endphp
                         <div class="absolute inset-0 w-full h-full flex items-center justify-center transition-all duration-300"
                             x-show="activeIdx === {{ $gIdx }}"
@@ -127,10 +127,10 @@
                     <div class="flex items-center gap-3 mt-4 overflow-x-auto pb-2">
                         @foreach ($showMedia as $thumbIdx => $thumbItem)
                             @php
-                                $tType = $thumbItem['type'] ?? 'image';
+                                $tType = is_array($thumbItem) ? ($thumbItem['type'] ?? 'image') : ($thumbItem->type ?? 'image');
                                 $tPath = is_array($thumbItem) ? ($thumbItem['url'] ?? '') : ($thumbItem->url ?? '');
-                                $isVid = $tType === 'video' || str_ends_with(strtolower($tPath), '.mp4') || str_ends_with(strtolower($tPath), '.webm');
-                                $tFullUrl = Storage::disk('r2')->url($tPath);
+                                $isVid = $tType === 'video' || str_ends_with(strtolower((string) $tPath), '.mp4') || str_ends_with(strtolower((string) $tPath), '.webm');
+                                $tFullUrl = str_starts_with((string) $tPath, 'http') ? $tPath : Storage::disk('r2')->url($tPath);
                             @endphp
                             <button type="button" @click="activeIdx = {{ $thumbIdx }}"
                                 class="relative rounded-xl overflow-hidden flex-shrink-0 w-24 h-16 border-2 transition-all duration-200 cursor-pointer"
